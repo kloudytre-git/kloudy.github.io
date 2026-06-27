@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jontre Gregory — DevOps Engineer & Cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">KLOUDY<span>.</span>DEV</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certifications">Certs</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <canvas class="radar-canvas" id="radarCanvas"></canvas>
+  <div class="hero-grid"></div>
+  <div class="hero-fade"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">DevOps Engineer &amp; Cybersecurity</p>
+    <h1 class="hero-name">Jontre <span class="highlight">Gregory</span></h1>
+    <p class="hero-title" id="typewriter"><span class="cursor"></span></p>
+    <p class="hero-desc">
+      Building resilient cloud infrastructure, automating CI/CD pipelines, and
+      securing systems at scale. Passionate about DevSecOps, Kubernetes, and
+      the future of cloud-native architecture.
+    </p>
+    <div class="hero-buttons">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a href="#blog" class="btn-secondary">Read Blog</a>
+    </div>
+    <div class="hero-status">
+      <div class="status-item">
+        <span class="status-dot"></span>
+        Available for Opportunities
+      </div>
+      <div class="status-item">📍 Remote / USA</div>
+      <div class="status-item">🔐 Security Clearance: Active</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">// who i am</p>
+    <h2 class="section-title">About Me</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-avatar">
+        <span>👨‍💻</span>
+        <div class="about-corner tl"></div>
+        <div class="about-corner tr"></div>
+        <div class="about-corner bl"></div>
+        <div class="about-corner br"></div>
+      </div>
+      <div class="about-stats">
+        <div class="stat-box">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Months in DevOps</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">2+</div>
+          <div class="stat-label">Projects Shipped</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Certifications</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-label">Uptime Record</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-text reveal">
+      <p>
+        I'm a DevOps engineer on a mission to bridge the gap between development speed
+        and operational stability. My journey started in systems administration and has evolved
+        into a passion for cloud-native architecture, infrastructure as code, and building
+        security-first pipelines that teams actually love to use.
+      </p>
+      <p>
+        Currently deepening my expertise in DevSecOps and cloud security — because in today's
+        threat landscape, security can't be an afterthought. I believe in automating everything
+        automatable, observing everything observable, and shipping with confidence.
+      </p>
+      <p>
+        When I'm not optimizing Kubernetes clusters or writing Terraform modules, you'll find
+        me documenting my learning journey here — sharing what works, what breaks, and everything
+        I wish I'd known earlier.
+      </p>
+      <div class="about-tags">
+        <span class="tag">AWS</span>
+        <span class="tag">Azure</span>
+        <span class="tag">Kubernetes</span>
+        <span class="tag">Terraform</span>
+        <span class="tag">Docker</span>
+        <span class="tag">GitOps</span>
+        <span class="tag">Zero Trust</span>
+        <span class="tag">SIEM</span>
+        <span class="tag">CI/CD</span>
+        <span class="tag">Python</span>
+        <span class="tag">Bash</span>
+        <span class="tag">Ansible</span>
+        <span class="tag">Prometheus</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILLS ═══ -->
+<section id="skills">
+  <div class="reveal">
+    <p class="section-label">// what i do</p>
+    <h2 class="section-title">Skills &amp; Expertise</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-categories">
+
+    <div class="skill-category reveal">
+      <div class="skill-cat-icon">☁️</div>
+      <div class="skill-cat-name">Cloud Platforms</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>AWS</span><span>25%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="92"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Azure</span><span>25%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="78"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>GCP</span><span>25%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="65"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-cat-icon">🔧</div>
+      <div class="skill-cat-name">DevOps Tools</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Kubernetes</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Docker</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="95"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Terraform</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Ansible</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-cat-icon">🔐</div>
+      <div class="skill-cat-name">Security</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>DevSecOps</span><span>10%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="82"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>SIEM / SOC</span><span>10%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="74"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Zero Trust</span><span>10%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="78"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Pen Testing</span><span>10%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="60"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-cat-icon">⚡</div>
+      <div class="skill-cat-name">CI/CD &amp; Automation</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>GitHub Actions</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Jenkins</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="83"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>ArgoCD</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="76"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-cat-icon">📊</div>
+      <div class="skill-cat-name">Observability</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Prometheus</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="87"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Grafana</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>ELK Stack</span><span>0%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="72"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-category reveal">
+      <div class="skill-cat-icon">💻</div>
+      <div class="skill-cat-name">Languages</div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Bash / Shell</span><span>92%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="92"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>Python</span><span>80%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-bar-row">
+        <div class="skill-bar-label"><span>YAML / HCL</span><span>95%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-width="95"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+<section id="certifications">
+  <div class="reveal">
+    <p class="section-label">// credentials</p>
+    <h2 class="section-title">Certifications</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="cert-grid">
+    <div class="cert-card reveal">
+      <div class="cert-badge">☁️</div>
+      <div class="cert-info">
+        <h4>AWS Certified Solutions Architect – Professional</h4>
+        <div class="cert-issuer">Amazon Web Services</div>
+        <span class="cert-status in-progress">⟳ In Progress</span>
+      </div>
+    </div>
+
+    <div class="cert-card reveal">
+      <div class="cert-badge">🔐</div>
+      <div class="cert-info">
+        <h4>Certified Kubernetes Administrator (CKA)</h4>
+        <div class="cert-issuer">CNCF / Linux Foundation</div>
+        <span class="cert-status in-progress">⟳ In Progress</span>
+      </div>
+    </div>
+
+    <div class="cert-card reveal">
+      <div class="cert-badge">🛡️</div>
+      <div class="cert-info">
+        <h4>CompTIA Security+</h4>
+        <div class="cert-issuer">CompTIA</div>
+        <span class="cert-status in-progress">⟳ In Progress</span>
+      </div>
+    </div>
+
+    <div class="cert-card reveal">
+      <div class="cert-badge">⚙️</div>
+      <div class="cert-info">
+        <h4>HashiCorp Terraform Associate</h4>
+        <div class="cert-issuer">HashiCorp</div>
+        <span class="cert-status in-progress">⟳ In Progress</span>
+      </div>
+    </div>
+
+    <div class="cert-card reveal">
+      <div class="cert-badge">🔍</div>
+      <div class="cert-info">
+        <h4>Certified Kubernetes Security Specialist (CKS)</h4>
+        <div class="cert-issuer">CNCF / Linux Foundation</div>
+        <span class="cert-status in-progress">⟳ In Progress</span>
+      </div>
+    </div>
+
+    <div class="cert-card reveal">
+      <div class="cert-badge">🌐</div>
+      <div class="cert-info">
+        <h4>AWS Certified Security – Specialty</h4>
+        <div class="cert-issuer">Amazon Web Services</div>
+        <span class="cert-status in-progress">⟳ In Progress</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects">
+  <div class="reveal">
+    <p class="section-label">// what i've built</p>
+    <h2 class="section-title">Featured Projects</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="project-grid">
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🚀</div>
+        <div class="project-meta">
+          <h3>Zero-Downtime K8s Migration</h3>
+          <div class="project-type">Cloud Infrastructure · DevOps</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <p>Migrated a monolithic legacy application to a microservices architecture on EKS with zero downtime using blue/green deployments, Istio service mesh, and automated rollback pipelines.</p>
+        <div class="project-tech">
+          <span class="tech-pill">AWS EKS</span>
+          <span class="tech-pill">Istio</span>
+          <span class="tech-pill">Helm</span>
+          <span class="tech-pill">ArgoCD</span>
+          <span class="tech-pill">Terraform</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">GitHub →</a>
+          <a href="#" class="project-link">Write-up →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🔐</div>
+        <div class="project-meta">
+          <h3>DevSecOps Pipeline Framework</h3>
+          <div class="project-type">Security · CI/CD</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <p>Built an end-to-end security-gated CI/CD pipeline integrating SAST, DAST, container scanning, and secrets detection — reducing vulnerability lead time by 70%.</p>
+        <div class="project-tech">
+          <span class="tech-pill">GitHub Actions</span>
+          <span class="tech-pill">Snyk</span>
+          <span class="tech-pill">Trivy</span>
+          <span class="tech-pill">OWASP ZAP</span>
+          <span class="tech-pill">SonarQube</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">GitHub →</a>
+          <a href="#" class="project-link">Demo →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">🌐</div>
+        <div class="project-meta">
+          <h3>Multi-Cloud IaC Platform</h3>
+          <div class="project-type">Infrastructure · Automation</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <p>Designed reusable Terraform modules for provisioning standardized cloud environments across AWS, Azure, and GCP — cutting new environment provisioning from days to under 20 minutes.</p>
+        <div class="project-tech">
+          <span class="tech-pill">Terraform</span>
+          <span class="tech-pill">AWS</span>
+          <span class="tech-pill">Azure</span>
+          <span class="tech-pill">GCP</span>
+          <span class="tech-pill">Atlantis</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">GitHub →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-header">
+        <div class="project-icon">📡</div>
+        <div class="project-meta">
+          <h3>Observability Stack Build-out</h3>
+          <div class="project-type">Monitoring · SRE</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <p>Deployed a full-stack observability platform using the LGTM stack (Loki, Grafana, Tempo, Mimir) on Kubernetes, enabling distributed tracing and real-time anomaly detection.</p>
+        <div class="project-tech">
+          <span class="tech-pill">Grafana</span>
+          <span class="tech-pill">Prometheus</span>
+          <span class="tech-pill">Loki</span>
+          <span class="tech-pill">Tempo</span>
+          <span class="tech-pill">OpenTelemetry</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">GitHub →</a>
+          <a href="#" class="project-link">Write-up →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ BLOG ═══ -->
+<section id="blog">
+  <div class="reveal">
+    <p class="section-label">// thoughts &amp; notes</p>
+    <h2 class="section-title">DevOps Journal</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="blog-grid">
+    <div class="blog-posts">
+
+      <div class="blog-post-card featured reveal">
+        <div class="blog-post-header">
+          <div class="blog-category">DevSecOps</div>
+          <h3>Why Security Should Live in Your Pipeline, Not After It</h3>
+        </div>
+        <p>Shifting security left isn't just a buzzword — it's how you stop shipping vulnerabilities. Here's how I integrated automated security gates into a CI/CD pipeline without destroying developer velocity...</p>
+        <div class="blog-post-footer">
+          <span class="blog-meta">June 3, 2025 · 8 min read · 💬 12 comments</span>
+          <a href="#" class="blog-read-more">Read more →</a>
+        </div>
+      </div>
+
+      <div class="blog-post-card reveal">
+        <div class="blog-post-header">
+          <div class="blog-category">Kubernetes</div>
+          <h3>Debugging That Mysterious CrashLoopBackOff at 2AM</h3>
+        </div>
+        <p>Every K8s engineer has been there. A pod won't start, the logs are cryptic, and the on-call alert won't stop. Walk through my exact debugging process for the most common causes...</p>
+        <div class="blog-post-footer">
+          <span class="blog-meta">May 18, 2025 · 6 min read · 💬 7 comments</span>
+          <a href="#" class="blog-read-more">Read more →</a>
+        </div>
+      </div>
+
+      <div class="blog-post-card reveal">
+        <div class="blog-post-header">
+          <div class="blog-category">Cloud Architecture</div>
+          <h3>Terraform State: Why Remote Backends Are Non-Negotiable</h3>
+        </div>
+        <p>State corruption has ended careers (okay, not really, but it feels that way). Here's a practical guide to remote state management, locking, and how to recover from the worst-case scenarios...</p>
+        <div class="blog-post-footer">
+          <span class="blog-meta">May 5, 2025 · 5 min read · 💬 4 comments</span>
+          <a href="#" class="blog-read-more">Read more →</a>
+        </div>
+      </div>
+
+      <div class="blog-post-card reveal">
+        <div class="blog-post-header">
+          <div class="blog-category">Career</div>
+          <h3>My Path from SysAdmin to DevOps: What Actually Mattered</h3>
+        </div>
+        <p>Spoiler: it wasn't the certifications alone. This is the honest story of the mindset shift, the tools I actually use daily, and the things I'd tell my past self starting this journey...</p>
+        <div class="blog-post-footer">
+          <span class="blog-meta">April 22, 2025 · 10 min read · 💬 19 comments</span>
+          <a href="#" class="blog-read-more">Read more →</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Comments panel -->
+    <div class="comments-panel reveal">
+      <h3>💬 Recent Comments</h3>
+
+      <div class="comment-item">
+        <div class="comment-author">
+          <div class="comment-avatar">JK</div>
+          <span class="comment-name">Jake K.</span>
+          <span class="comment-date">Jun 4</span>
+        </div>
+        <p class="comment-text">This is exactly what I needed — the Snyk integration part was super clear. Have you tried Semgrep as an alternative?</p>
+      </div>
+
+      <div class="comment-item">
+        <div class="comment-author">
+          <div class="comment-avatar">SM</div>
+          <span class="comment-name">Sarah M.</span>
+          <span class="comment-date">May 20</span>
+        </div>
+        <p class="comment-text">The CrashLoopBackOff post saved my Sunday. OOMKilled was the culprit. Thank you!</p>
+      </div>
+
+      <div class="comment-item">
+        <div class="comment-author">
+          <div class="comment-avatar">TC</div>
+          <span class="comment-name">T. Chen</span>
+          <span class="comment-date">Apr 24</span>
+        </div>
+        <p class="comment-text">Your career post resonated a lot. The mindset shift from "keep things running" to "automate everything" is huge.</p>
+      </div>
+
+      <!-- Leave a comment -->
+      <div class="comment-form">
+        <h4>Leave a Comment</h4>
+        <div class="form-row">
+          <input type="text" id="comment-name" placeholder="Your name" maxlength="50"/>
+        </div>
+        <div class="form-row">
+          <input type="email" id="comment-email" placeholder="Email (not published)"/>
+        </div>
+        <div class="form-row">
+          <textarea id="comment-text" rows="3" placeholder="Share your thoughts..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="submitComment()">Post Comment</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="reveal">
+    <p class="section-label">// let's connect</p>
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="section-line" style="margin: 0 auto 2.5rem;"></div>
+  </div>
+
+  <div class="contact-card reveal">
+    <p>
+      Whether you're a recruiter looking for a DevOps engineer, a team working on something
+      ambitious in cloud or security, or a fellow engineer who just wants to talk shop —
+      my inbox is always open.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:info.kloudytre@gmail.com" class="contact-link">
+        <span class="contact-link-icon">✉️</span> info.kloudytre@gmail.com
+      </a>
+      <a href="https://linkedin.com/in/jontregregory" class="contact-link" target="_blank">
+        <span class="contact-link-icon">💼</span> LinkedIn
+      </a>
+      <a href="https://github.com/kloudytre-git" class="contact-link" target="_blank">
+        <span class="contact-link-icon">🐙</span> GitHub
+      </a>
+      <a href="https://twitter.com" class="contact-link" target="_blank">
+        <span class="contact-link-icon">🐦</span> Twitter / X
+      </a>
+    </div>
+    <a href="#" class="resume-btn">📄 Download Resume</a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <span class="logo">KLOUDY.DEV</span>
+    <p>© 2026 Jontre Gregory · Built with purpose, secured by design</p>
+    <p>DevOps · Cloud · Security</p>
+  </div>
+</footer>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast">✓ Comment posted successfully!</div>
+
+<script>
+/* ═══ RADAR SWEEP (signature hero element) ═══ */
+(function() {
+  const canvas = document.getElementById('radarCanvas');
+  const ctx = canvas.getContext('2d');
+  let angle = 0;
+  let W, H, cx, cy, radius;
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    cx = W / 2; cy = H / 2;
+    radius = Math.min(W, H) * 0.48;
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Concentric circles
+    for (let r = radius / 4; r <= radius; r += radius / 4) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(15,240,252,0.12)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Cross hairs
+    ctx.beginPath();
+    ctx.moveTo(cx - radius, cy); ctx.lineTo(cx + radius, cy);
+    ctx.moveTo(cx, cy - radius); ctx.lineTo(cx, cy + radius);
+    ctx.strokeStyle = 'rgba(15,240,252,0.1)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Sweep gradient
+    const grad = ctx.createConicalGradient
+      ? ctx.createConicalGradient(cx, cy, angle - 1.2, angle)
+      : null;
+
+    // Fallback sweep using arc
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+
+    const sweep = ctx.createLinearGradient(0, 0, radius, 0);
+    sweep.addColorStop(0, 'rgba(15,240,252,0.35)');
+    sweep.addColorStop(1, 'rgba(15,240,252,0)');
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, radius, -0.4, 0);
+    ctx.closePath();
+    ctx.fillStyle = sweep;
+    ctx.fill();
+
+    // Sweep line
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(radius, 0);
+    ctx.strokeStyle = 'rgba(15,240,252,0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.restore();
+
+    // Blip dots
+    const blips = [
+      { a: 0.8, r: 0.55 }, { a: 2.1, r: 0.7 }, { a: 3.8, r: 0.35 },
+      { a: 4.5, r: 0.6 },  { a: 5.2, r: 0.8 }
+    ];
+    blips.forEach(b => {
+      const diff = ((b.a - angle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+      const fade = diff < 2.5 ? 1 - diff / 2.5 : 0;
+      if (fade > 0) {
+        const bx = cx + Math.cos(b.a) * b.r * radius;
+        const by = cy + Math.sin(b.a) * b.r * radius;
+        ctx.beginPath();
+        ctx.arc(bx, by, 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(15,240,252,${fade * 0.9})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(bx, by, 6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(15,240,252,${fade * 0.25})`;
+        ctx.fill();
+      }
+    });
+
+    angle += 0.008;
+    if (angle > Math.PI * 2) angle -= Math.PI * 2;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
+
+/* ═══ TYPEWRITER ═══ */
+(function() {
+  const phrases = [
+    'Cloud Infrastructure Engineer',
+    'DevSecOps Practitioner',
+    'Kubernetes Enthusiast',
+    'CI/CD Pipeline Architect',
+    'Cybersecurity Advocate',
+  ];
+  const el = document.getElementById('typewriter');
+  let pi = 0, ci = 0, deleting = false;
+
+  function type() {
+    const phrase = phrases[pi];
+    if (!deleting) {
+      el.innerHTML = phrase.slice(0, ci + 1) + '<span class="cursor"></span>';
+      ci++;
+      if (ci === phrase.length) { deleting = true; setTimeout(type, 2000); return; }
+      setTimeout(type, 70);
+    } else {
+      el.innerHTML = phrase.slice(0, ci - 1) + '<span class="cursor"></span>';
+      ci--;
+      if (ci === 0) {
+        deleting = false;
+        pi = (pi + 1) % phrases.length;
+        setTimeout(type, 400);
+        return;
+      }
+      setTimeout(type, 35);
+    }
+  }
+  setTimeout(type, 1500);
+})();
+
+/* ═══ SCROLL REVEAL ═══ */
+(function() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // Animate skill bars when in view
+        e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+
+/* ═══ HAMBURGER MENU ═══ */
+document.getElementById('hamburger').addEventListener('click', function() {
+  document.getElementById('navbar').classList.toggle('mobile-open');
+});
+
+/* ═══ COMMENT FORM ═══ */
+function submitComment() {
+  const name = document.getElementById('comment-name').value.trim();
+  const text = document.getElementById('comment-text').value.trim();
+
+  if (!name || !text) {
+    showToast('⚠ Please fill in your name and comment.', '#eab308');
+    return;
+  }
+
+  // Build new comment
+  const panel = document.querySelector('.comments-panel');
+  const firstComment = panel.querySelector('.comment-item');
+  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  const newComment = document.createElement('div');
+  newComment.className = 'comment-item';
+  newComment.style.opacity = '0';
+  newComment.style.transform = 'translateY(-10px)';
+  newComment.style.transition = 'opacity 0.4s, transform 0.4s';
+  newComment.innerHTML = `
+    <div class="comment-author">
+      <div class="comment-avatar">${initials}</div>
+      <span class="comment-name">${name}</span>
+      <span class="comment-date">${today}</span>
+    </div>
+    <p class="comment-text">${text}</p>
+  `;
+
+  panel.insertBefore(newComment, firstComment);
+  requestAnimationFrame(() => {
+    newComment.style.opacity = '1';
+    newComment.style.transform = 'translateY(0)';
+  });
+
+  // Clear form
+  document.getElementById('comment-name').value = '';
+  document.getElementById('comment-email').value = '';
+  document.getElementById('comment-text').value = '';
+
+  showToast('✓ Comment posted successfully!');
+}
+
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.color = color || 'var(--cyan-glow)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ═══ ACTIVE NAV LINK ═══ */
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-links a');
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.style.color = '');
+        const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+        if (link) link.style.color = 'var(--cyan-glow)';
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => obs.observe(s));
+})();
+</script>
+</body>
+</html>
