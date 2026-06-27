@@ -434,64 +434,32 @@
     <div class="section-line"></div>
   </div>
 
-  <div class="blog-grid">
-    <div class="blog-posts">
+  <!-- LIST VIEW -->
+  <div id="blog-list-view">
+    <div class="blog-actions">
+      <button class="btn-new-post" onclick="openNewPostForm()">+ New Post</button>
+    </div>
+    <div class="blog-posts" id="blog-posts-container">
+      <p class="blog-meta">Loading posts…</p>
+    </div>
+  </div>
 
-      <div class="blog-post-card featured reveal">
-        <div class="blog-post-header">
-          <div class="blog-category">DevSecOps</div>
-          <h3>Why Security Should Live in Your Pipeline, Not After It</h3>
-        </div>
-        <p>Shifting security left isn't just a buzzword — it's how you stop shipping vulnerabilities. Here's how I integrated automated security gates into a CI/CD pipeline without destroying developer velocity...</p>
-        <div class="blog-post-footer">
-          <span class="blog-meta">June 3, 2025 · 8 min read · 💬 12 comments</span>
-          <a href="#" class="blog-read-more">Read more →</a>
-        </div>
+  <!-- DETAIL VIEW (a single post + its comments) -->
+  <div id="blog-detail-view" style="display:none;">
+    <a href="#" class="back-link" onclick="closePostDetail(); return false;">← Back to Journal</a>
+    <div class="blog-post-card featured" id="post-detail-card">
+      <div class="blog-post-header">
+        <div class="blog-category" id="detail-category"></div>
+        <h3 id="detail-title"></h3>
       </div>
-
-      <div class="blog-post-card reveal">
-        <div class="blog-post-header">
-          <div class="blog-category">Kubernetes</div>
-          <h3>Debugging That Mysterious CrashLoopBackOff at 2AM</h3>
-        </div>
-        <p>Every K8s engineer has been there. A pod won't start, the logs are cryptic, and the on-call alert won't stop. Walk through my exact debugging process for the most common causes...</p>
-        <div class="blog-post-footer">
-          <span class="blog-meta">May 18, 2025 · 6 min read · 💬 7 comments</span>
-          <a href="#" class="blog-read-more">Read more →</a>
-        </div>
+      <div class="post-detail-content" id="detail-content"></div>
+      <div class="blog-post-footer">
+        <span class="blog-meta" id="detail-meta"></span>
       </div>
-
-      <div class="blog-post-card reveal">
-        <div class="blog-post-header">
-          <div class="blog-category">Cloud Architecture</div>
-          <h3>Terraform State: Why Remote Backends Are Non-Negotiable</h3>
-        </div>
-        <p>State corruption has ended careers (okay, not really, but it feels that way). Here's a practical guide to remote state management, locking, and how to recover from the worst-case scenarios...</p>
-        <div class="blog-post-footer">
-          <span class="blog-meta">May 5, 2025 · 5 min read · 💬 4 comments</span>
-          <a href="#" class="blog-read-more">Read more →</a>
-        </div>
-      </div>
-
-      <div class="blog-post-card reveal">
-        <div class="blog-post-header">
-          <div class="blog-category">Career</div>
-          <h3>My Path from SysAdmin to DevOps: What Actually Mattered</h3>
-        </div>
-        <p>Spoiler: it wasn't the certifications alone. This is the honest story of the mindset shift, the tools I actually use daily, and the things I'd tell my past self starting this journey...</p>
-        <div class="blog-post-footer">
-          <span class="blog-meta">April 22, 2025 · 10 min read · 💬 19 comments</span>
-          <a href="#" class="blog-read-more">Read more →</a>
-        </div>
-      </div>
-
     </div>
 
-    <!-- Comments panel -->
-    <div class="comments-panel reveal">
-      <h3>💬 Recent Comments</h3>
-
-      <!-- Leave a comment -->
+    <div class="comments-panel" id="post-comments-panel" style="margin-top: 1.5rem;">
+      <h3>💬 Comments</h3>
       <div class="comment-form">
         <h4>Leave a Comment</h4>
         <div class="form-row">
@@ -504,6 +472,32 @@
           <textarea id="comment-text" rows="3" placeholder="Share your thoughts..."></textarea>
         </div>
         <button class="btn-submit" onclick="submitComment()">Post Comment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW POST FORM (admin only — protected by your ADMIN_KEY, not by hiding this button) -->
+  <div id="new-post-form-view" style="display:none;">
+    <a href="#" class="back-link" onclick="closeNewPostForm(); return false;">← Back to Journal</a>
+    <div class="comments-panel">
+      <h3>✍️ New Journal Entry</h3>
+      <div class="comment-form" style="margin-top:0; padding-top:0; border-top:none;">
+        <div class="form-row">
+          <input type="text" id="post-category" placeholder="Category (e.g. Kubernetes)" maxlength="50"/>
+        </div>
+        <div class="form-row">
+          <input type="text" id="post-title" placeholder="Post title" maxlength="200"/>
+        </div>
+        <div class="form-row">
+          <textarea id="post-summary" rows="2" placeholder="Short summary shown on the card" maxlength="500"></textarea>
+        </div>
+        <div class="form-row">
+          <textarea id="post-content" rows="10" placeholder="Full post content… (separate paragraphs with a blank line)"></textarea>
+        </div>
+        <div class="form-row">
+          <input type="password" id="post-admin-key" placeholder="Admin key"/>
+        </div>
+        <button class="btn-submit" onclick="submitNewPost()">Publish Post</button>
       </div>
     </div>
   </div>
@@ -533,8 +527,8 @@
       <a href="https://github.com/kloudytre-git" class="contact-link" target="_blank">
         <span class="contact-link-icon">🐙</span> GitHub
       </a>
-      <a href="https://instagram.com/kloudy.dev" class="contact-link" target="_blank">
-        <span class="contact-link-icon">📸</span> Instagram
+      <a href="https://twitter.com" class="contact-link" target="_blank">
+        <span class="contact-link-icon">🐦</span> Twitter / X
       </a>
     </div>
     <a href="Jontre_Gregory_Resume.pdf" download class="resume-btn">📄 Download Resume</a>
@@ -708,15 +702,155 @@ document.getElementById('hamburger').addEventListener('click', function() {
   document.getElementById('navbar').classList.toggle('mobile-open');
 });
 
-/* ═══ COMMENT FORM (backed by a real API + database) ═══ */
+/* ═══ DEVOPS JOURNAL (posts + per-post comments, backed by a real API + database) ═══ */
 // ⚠️ Replace this with your deployed Render URL once the API is live
-const COMMENTS_API_URL = 'https://comments-api2.onrender.com';
+const COMMENTS_API_URL = 'https://YOUR-RENDER-SERVICE.onrender.com';
+
+let currentPostId = null; // which post is open in the detail view, if any
 
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+/* ─── Posts: list view ─── */
+
+async function loadPosts() {
+  const container = document.getElementById('blog-posts-container');
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/posts`);
+    if (!res.ok) throw new Error('Bad response');
+    const posts = await res.json();
+
+    container.innerHTML = '';
+    if (posts.length === 0) {
+      container.innerHTML = '<p class="blog-meta">No posts yet — click "+ New Post" to write the first one.</p>';
+      return;
+    }
+    posts.forEach((post, i) => container.appendChild(buildPostCard(post, i === 0)));
+  } catch (err) {
+    console.error('Failed to load posts:', err);
+    container.innerHTML = '<p class="blog-meta">Couldn\'t load posts right now. Try refreshing.</p>';
+  }
+}
+
+function buildPostCard(post, featured) {
+  const card = document.createElement('div');
+  card.className = 'blog-post-card' + (featured ? ' featured' : '');
+  card.innerHTML = `
+    <div class="blog-post-header">
+      <div class="blog-category">${escapeHtml(post.category)}</div>
+      <h3>${escapeHtml(post.title)}</h3>
+    </div>
+    <p>${escapeHtml(post.summary)}</p>
+    <div class="blog-post-footer">
+      <span class="blog-meta">${formatDate(post.created_at)} · ${post.read_time_minutes} min read · 💬 ${post.comment_count} comments</span>
+      <span class="blog-read-more">Read more →</span>
+    </div>
+  `;
+  card.addEventListener('click', () => openPostDetail(post.id));
+  return card;
+}
+
+/* ─── Posts: detail view ─── */
+
+async function openPostDetail(id) {
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/posts/${id}`);
+    if (!res.ok) throw new Error('Post not found');
+    const post = await res.json();
+
+    document.getElementById('detail-category').textContent = post.category;
+    document.getElementById('detail-title').textContent = post.title;
+    document.getElementById('detail-meta').textContent = `${formatDate(post.created_at)} · ${post.read_time_minutes} min read`;
+
+    const contentEl = document.getElementById('detail-content');
+    contentEl.innerHTML = '';
+    post.content.split(/\n\s*\n/).forEach(paragraph => {
+      if (!paragraph.trim()) return;
+      const p = document.createElement('p');
+      p.textContent = paragraph.trim();
+      contentEl.appendChild(p);
+    });
+
+    currentPostId = id;
+    document.getElementById('blog-list-view').style.display = 'none';
+    document.getElementById('new-post-form-view').style.display = 'none';
+    document.getElementById('blog-detail-view').style.display = 'block';
+    document.getElementById('blog').scrollIntoView({ behavior: 'smooth' });
+
+    loadPostComments(id);
+  } catch (err) {
+    console.error('Failed to open post:', err);
+    showToast('⚠ Could not load that post.', '#ef4444');
+  }
+}
+
+function closePostDetail() {
+  currentPostId = null;
+  document.getElementById('blog-detail-view').style.display = 'none';
+  document.getElementById('blog-list-view').style.display = 'block';
+}
+
+/* ─── New post form (admin only — gated by ADMIN_KEY on the server, not by hiding the button) ─── */
+
+function openNewPostForm() {
+  document.getElementById('blog-list-view').style.display = 'none';
+  document.getElementById('blog-detail-view').style.display = 'none';
+  document.getElementById('new-post-form-view').style.display = 'block';
+}
+
+function closeNewPostForm() {
+  document.getElementById('new-post-form-view').style.display = 'none';
+  document.getElementById('blog-list-view').style.display = 'block';
+}
+
+async function submitNewPost() {
+  const category = document.getElementById('post-category').value.trim();
+  const title = document.getElementById('post-title').value.trim();
+  const summary = document.getElementById('post-summary').value.trim();
+  const content = document.getElementById('post-content').value.trim();
+  const adminKey = document.getElementById('post-admin-key').value;
+
+  if (!category || !title || !summary || !content) {
+    showToast('⚠ Please fill in every field.', '#eab308');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/posts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
+      body: JSON.stringify({ category, title, summary, content }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to publish post');
+    }
+
+    document.getElementById('post-category').value = '';
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-summary').value = '';
+    document.getElementById('post-content').value = '';
+    document.getElementById('post-admin-key').value = '';
+
+    showToast('✓ Post published!');
+    closeNewPostForm();
+    loadPosts();
+  } catch (err) {
+    console.error(err);
+    const msg = err.message === 'Unauthorized' ? '⚠ Wrong admin key.' : '⚠ Could not publish. Try again.';
+    showToast(msg, '#ef4444');
+  }
+}
+
+/* ─── Comments (scoped to whichever post is open) ─── */
 
 function buildCommentEl(c) {
   const div = document.createElement('div');
@@ -734,15 +868,14 @@ function buildCommentEl(c) {
   return div;
 }
 
-async function loadComments() {
-  const panel = document.querySelector('.comments-panel');
+async function loadPostComments(postId) {
+  const panel = document.getElementById('post-comments-panel');
   const form = panel.querySelector('.comment-form');
   try {
-    const res = await fetch(`${COMMENTS_API_URL}/api/comments`);
+    const res = await fetch(`${COMMENTS_API_URL}/api/comments?post_id=${postId}`);
     if (!res.ok) throw new Error('Bad response');
     const comments = await res.json();
     panel.querySelectorAll('.comment-item').forEach(el => el.remove());
-    // API returns newest-first; reverse so newest still ends up closest to the form
     comments.slice().reverse().forEach(c => {
       panel.insertBefore(buildCommentEl(c), form);
     });
@@ -759,12 +892,16 @@ async function submitComment() {
     showToast('⚠ Please fill in your name and comment.', '#eab308');
     return;
   }
+  if (!currentPostId) {
+    showToast('⚠ Open a post before commenting.', '#eab308');
+    return;
+  }
 
   try {
     const res = await fetch(`${COMMENTS_API_URL}/api/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, text }),
+      body: JSON.stringify({ name, text, post_id: currentPostId }),
     });
 
     if (!res.ok) {
@@ -773,7 +910,7 @@ async function submitComment() {
     }
 
     const saved = await res.json();
-    const panel = document.querySelector('.comments-panel');
+    const panel = document.getElementById('post-comments-panel');
     const form = panel.querySelector('.comment-form');
 
     const newComment = buildCommentEl(saved);
@@ -797,8 +934,8 @@ async function submitComment() {
   }
 }
 
-// Load real comments as soon as the page is ready
-loadComments();
+// Load real posts as soon as the page is ready
+loadPosts();
 
 function showToast(msg, color) {
   const t = document.getElementById('toast');
