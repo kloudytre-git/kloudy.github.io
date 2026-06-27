@@ -491,33 +491,6 @@
     <div class="comments-panel reveal">
       <h3>💬 Recent Comments</h3>
 
-      <div class="comment-item">
-        <div class="comment-author">
-          <div class="comment-avatar">JK</div>
-          <span class="comment-name">Jake K.</span>
-          <span class="comment-date">Jun 4</span>
-        </div>
-        <p class="comment-text">This is exactly what I needed — the Snyk integration part was super clear. Have you tried Semgrep as an alternative?</p>
-      </div>
-
-      <div class="comment-item">
-        <div class="comment-author">
-          <div class="comment-avatar">SM</div>
-          <span class="comment-name">Sarah M.</span>
-          <span class="comment-date">May 20</span>
-        </div>
-        <p class="comment-text">The CrashLoopBackOff post saved my Sunday. OOMKilled was the culprit. Thank you!</p>
-      </div>
-
-      <div class="comment-item">
-        <div class="comment-author">
-          <div class="comment-avatar">TC</div>
-          <span class="comment-name">T. Chen</span>
-          <span class="comment-date">Apr 24</span>
-        </div>
-        <p class="comment-text">Your career post resonated a lot. The mindset shift from "keep things running" to "automate everything" is huge.</p>
-      </div>
-
       <!-- Leave a comment -->
       <div class="comment-form">
         <h4>Leave a Comment</h4>
@@ -735,8 +708,50 @@ document.getElementById('hamburger').addEventListener('click', function() {
   document.getElementById('navbar').classList.toggle('mobile-open');
 });
 
-/* ═══ COMMENT FORM ═══ */
-function submitComment() {
+/* ═══ COMMENT FORM (backed by a real API + database) ═══ */
+// ⚠️ Replace this with your deployed Render URL once the API is live
+const COMMENTS_API_URL = 'https://YOUR-RENDER-SERVICE.onrender.com';
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function buildCommentEl(c) {
+  const div = document.createElement('div');
+  div.className = 'comment-item';
+  const initials = c.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const date = new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  div.innerHTML = `
+    <div class="comment-author">
+      <div class="comment-avatar">${escapeHtml(initials)}</div>
+      <span class="comment-name">${escapeHtml(c.name)}</span>
+      <span class="comment-date">${date}</span>
+    </div>
+    <p class="comment-text">${escapeHtml(c.text)}</p>
+  `;
+  return div;
+}
+
+async function loadComments() {
+  const panel = document.querySelector('.comments-panel');
+  const form = panel.querySelector('.comment-form');
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/comments`);
+    if (!res.ok) throw new Error('Bad response');
+    const comments = await res.json();
+    panel.querySelectorAll('.comment-item').forEach(el => el.remove());
+    // API returns newest-first; reverse so newest still ends up closest to the form
+    comments.slice().reverse().forEach(c => {
+      panel.insertBefore(buildCommentEl(c), form);
+    });
+  } catch (err) {
+    console.error('Failed to load comments:', err);
+  }
+}
+
+async function submitComment() {
   const name = document.getElementById('comment-name').value.trim();
   const text = document.getElementById('comment-text').value.trim();
 
@@ -745,39 +760,45 @@ function submitComment() {
     return;
   }
 
-  // Build new comment
-  const panel = document.querySelector('.comments-panel');
-  const firstComment = panel.querySelector('.comment-item');
-  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, text }),
+    });
 
-  const newComment = document.createElement('div');
-  newComment.className = 'comment-item';
-  newComment.style.opacity = '0';
-  newComment.style.transform = 'translateY(-10px)';
-  newComment.style.transition = 'opacity 0.4s, transform 0.4s';
-  newComment.innerHTML = `
-    <div class="comment-author">
-      <div class="comment-avatar">${initials}</div>
-      <span class="comment-name">${name}</span>
-      <span class="comment-date">${today}</span>
-    </div>
-    <p class="comment-text">${text}</p>
-  `;
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to post comment');
+    }
 
-  panel.insertBefore(newComment, firstComment);
-  requestAnimationFrame(() => {
-    newComment.style.opacity = '1';
-    newComment.style.transform = 'translateY(0)';
-  });
+    const saved = await res.json();
+    const panel = document.querySelector('.comments-panel');
+    const form = panel.querySelector('.comment-form');
 
-  // Clear form
-  document.getElementById('comment-name').value = '';
-  document.getElementById('comment-email').value = '';
-  document.getElementById('comment-text').value = '';
+    const newComment = buildCommentEl(saved);
+    newComment.style.opacity = '0';
+    newComment.style.transform = 'translateY(-10px)';
+    newComment.style.transition = 'opacity 0.4s, transform 0.4s';
+    panel.insertBefore(newComment, form);
+    requestAnimationFrame(() => {
+      newComment.style.opacity = '1';
+      newComment.style.transform = 'translateY(0)';
+    });
 
-  showToast('✓ Comment posted successfully!');
+    document.getElementById('comment-name').value = '';
+    document.getElementById('comment-email').value = '';
+    document.getElementById('comment-text').value = '';
+
+    showToast('✓ Comment posted successfully!');
+  } catch (err) {
+    console.error(err);
+    showToast('⚠ Could not post comment. Try again later.', '#ef4444');
+  }
 }
+
+// Load real comments as soon as the page is ready
+loadComments();
 
 function showToast(msg, color) {
   const t = document.getElementById('toast');
