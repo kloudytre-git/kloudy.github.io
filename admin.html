@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin — Moderation</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body {
+    background: var(--navy-deep);
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--white-pure);
+  }
+  .admin-wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem; }
+  .admin-gate { max-width: 420px; margin: 4rem auto; text-align: center; }
+  .admin-gate p { color: var(--white-dim); }
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--white-pure);
+  }
+  .admin-section-title {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan-soft);
+    margin: 2rem 0 1rem;
+  }
+  .admin-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .admin-item > div:first-child { flex: 1; min-width: 0; }
+  .delete-btn {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .delete-btn:hover { background: rgba(239, 68, 68, 0.3); }
+  .logout-link {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--cyan-soft);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .logout-link:hover { color: var(--cyan-glow); }
+  .empty-state { color: var(--white-ghost); font-family: var(--font-mono); font-size: 0.85rem; }
+  .admin-comment-context {
+    display: block;
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--white-ghost);
+  }
+</style>
+</head>
+<body>
+
+<div class="admin-wrap">
+
+  <!-- GATE -->
+  <div id="admin-gate" class="admin-gate comments-panel">
+    <h3>🔒 Admin Access</h3>
+    <p style="margin-bottom: 1.2rem;">Enter your admin key to manage posts and comments.</p>
+    <div class="form-row">
+      <input type="password" id="gate-key-input" placeholder="Admin key"/>
+    </div>
+    <button class="btn-submit" onclick="unlock()">Unlock</button>
+  </div>
+
+  <!-- PANEL (hidden until unlocked) -->
+  <div id="admin-panel" style="display:none;">
+    <div class="admin-header">
+      <h2>Moderation</h2>
+      <span class="logout-link" onclick="logout()">Log out</span>
+    </div>
+
+    <p class="admin-section-title">// posts (<span id="post-count">0</span>)</p>
+    <div id="admin-posts-list"></div>
+
+    <p class="admin-section-title">// recent comments (<span id="comment-count">0</span>)</p>
+    <div id="admin-comments-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ⚠️ Keep this in sync with the COMMENTS_API_URL in index.html
+const COMMENTS_API_URL = 'https://comments-api2.onrender.com';
+
+function getKey() { return localStorage.getItem('admin_key') || ''; }
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function unlock() {
+  const key = document.getElementById('gate-key-input').value;
+  if (!key) return;
+  try {
+    // Validation trick: id 0 never exists (ids start at 1), so this call either
+    // confirms the key (200) or rejects it (401) without deleting anything real.
+    const res = await fetch(`${COMMENTS_API_URL}/api/comments/0`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': key },
+    });
+    if (res.status === 401) {
+      alert('Wrong admin key.');
+      return;
+    }
+    localStorage.setItem('admin_key', key);
+    showPanel();
+  } catch (err) {
+    console.error(err);
+    alert('Could not reach the API. Check your connection and try again.');
+  }
+}
+
+function logout() {
+  localStorage.removeItem('admin_key');
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('admin-gate').style.display = 'block';
+  document.getElementById('gate-key-input').value = '';
+}
+
+function showPanel() {
+  document.getElementById('admin-gate').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'block';
+  loadAdminPosts();
+  loadAdminComments();
+}
+
+async function loadAdminPosts() {
+  const list = document.getElementById('admin-posts-list');
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/posts`);
+    const posts = await res.json();
+    document.getElementById('post-count').textContent = posts.length;
+    list.innerHTML = '';
+    if (posts.length === 0) {
+      list.innerHTML = '<p class="empty-state">No posts yet.</p>';
+      return;
+    }
+    posts.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'blog-post-card';
+      card.innerHTML = `
+        <div class="admin-item">
+          <div>
+            <div class="blog-post-header">
+              <div class="blog-category">${escapeHtml(post.category)}</div>
+              <h3>${escapeHtml(post.title)}</h3>
+            </div>
+            <p>${escapeHtml(post.summary)}</p>
+            <span class="blog-meta">${formatDate(post.created_at)} · ${post.read_time_minutes} min read · 💬 ${post.comment_count} comments</span>
+          </div>
+          <button class="delete-btn">Delete</button>
+        </div>
+      `;
+      card.querySelector('.delete-btn').addEventListener('click', () => deletePost(post.id, post.title));
+      list.appendChild(card);
+    });
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = '<p class="empty-state">Failed to load posts.</p>';
+  }
+}
+
+async function deletePost(id, title) {
+  if (!confirm(`Delete the post "${title}"? This also deletes its comments. This can't be undone.`)) return;
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/posts/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': getKey() },
+    });
+    if (!res.ok) throw new Error('Failed');
+    loadAdminPosts();
+    loadAdminComments();
+  } catch (err) {
+    console.error(err);
+    alert('Failed to delete post.');
+  }
+}
+
+async function loadAdminComments() {
+  const list = document.getElementById('admin-comments-list');
+  try {
+    const [commentsRes, postsRes] = await Promise.all([
+      fetch(`${COMMENTS_API_URL}/api/comments`),
+      fetch(`${COMMENTS_API_URL}/api/posts`),
+    ]);
+    const comments = await commentsRes.json();
+    const posts = await postsRes.json();
+    const postTitleById = {};
+    posts.forEach(p => { postTitleById[p.id] = p.title; });
+
+    document.getElementById('comment-count').textContent = comments.length;
+    list.innerHTML = '';
+    if (comments.length === 0) {
+      list.innerHTML = '<p class="empty-state">No comments yet.</p>';
+      return;
+    }
+    comments.forEach(c => {
+      const initials = c.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+      const context = c.post_id
+        ? `on "${escapeHtml(postTitleById[c.post_id] || 'a deleted post')}"`
+        : '(general comment)';
+      const item = document.createElement('div');
+      item.className = 'comment-item';
+      item.innerHTML = `
+        <div class="admin-item">
+          <div>
+            <div class="comment-author">
+              <div class="comment-avatar">${escapeHtml(initials)}</div>
+              <span class="comment-name">${escapeHtml(c.name)}</span>
+              <span class="comment-date">${formatDate(c.created_at)}</span>
+            </div>
+            <p class="comment-text">${escapeHtml(c.text)}</p>
+            <span class="admin-comment-context">${context}</span>
+          </div>
+          <button class="delete-btn">Delete</button>
+        </div>
+      `;
+      item.querySelector('.delete-btn').addEventListener('click', () => deleteComment(c.id));
+      list.appendChild(item);
+    });
+  } catch (err) {
+    console.error(err);
+    list.innerHTML = '<p class="empty-state">Failed to load comments.</p>';
+  }
+}
+
+async function deleteComment(id) {
+  if (!confirm("Delete this comment? This can't be undone.")) return;
+  try {
+    const res = await fetch(`${COMMENTS_API_URL}/api/comments/${id}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-key': getKey() },
+    });
+    if (!res.ok) throw new Error('Failed');
+    loadAdminComments();
+    loadAdminPosts(); // refresh comment counts shown on post cards
+  } catch (err) {
+    console.error(err);
+    alert('Failed to delete comment.');
+  }
+}
+
+// Skip the gate if we already have a key stored from last time
+if (getKey()) {
+  showPanel();
+}
+</script>
+
+</body>
+</html>
