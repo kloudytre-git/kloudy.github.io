@@ -15,3 +15,5 @@ A simple static website, displaying my resume as a portfolio website for employe
 ✅ Update 1.5.0 — Today I implemented a rate limiter for the posts and comments section of my website, this prevents brtue force entry to my Admin Key and prevents flood attacks to the comments. (06/28/2026)
 
 ✅ Update 1.6.0 — Certifications section of my website has been updated to current in progress certifications. (06/28/2026)
+
+✅ Update 2.6.0 — A page was created for admins to access posts and comments in order to delete spam or other comments seen fit for deletion. (06/28/2026)
