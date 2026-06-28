@@ -8,4 +8,8 @@ A simple static website, displaying my resume as a portfolio website for employe
 
 ✅ Update 1.2.0 — Download resume button now allows site visitors to download my resume as a PDF. (06/27/2026)
 
-✅ Update 1.3.0 — Social links are now updated on the static website
+✅ Update 1.3.0 — Social links are now updated on the static website (06/27/2026)
+
+✅ Update 1.4.0 — Added a "New Post" button so that I can add custom blog posts to the website using my Admin Key and delete posts with my Admin Key via Terminal (06/27/2026)
+
+✅ Update 1.5.0 — Today I implemented a rate limiter for the posts and comments section of my website, this prevents brtue force entry to my Admin Key and prevents flood attacks to the comments. (06/28/2026)
