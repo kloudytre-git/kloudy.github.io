@@ -17,3 +17,5 @@ A simple static website, displaying my resume as a portfolio website for employe
 ✅ Update 1.6.0 — Certifications section of my website has been updated to current in progress certifications. (06/28/2026)
 
 ✅ Update 2.6.0 — A page was created for admins to access posts and comments in order to delete spam or other comments seen fit for deletion. (06/28/2026)
+
+✅ Update 2.7.0 — Admin page no longer runs on localStorage, it has been replaced with sessionStorage so that the Admin Key doesn't save once entered.
