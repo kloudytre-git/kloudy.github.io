@@ -104,7 +104,7 @@
 // ⚠️ Keep this in sync with the COMMENTS_API_URL in index.html
 const COMMENTS_API_URL = 'https://comments-api2.onrender.com';
 
-function getKey() { return localStorage.getItem('admin_key') || ''; }
+function getKey() { return sessionStorage.getItem('admin_key') || ''; }
 
 function escapeHtml(str) {
   const div = document.createElement('div');
@@ -130,7 +130,7 @@ async function unlock() {
       alert('Wrong admin key.');
       return;
     }
-    localStorage.setItem('admin_key', key);
+    sessionStorage.setItem('admin_key', key);
     showPanel();
   } catch (err) {
     console.error(err);
@@ -139,7 +139,7 @@ async function unlock() {
 }
 
 function logout() {
-  localStorage.removeItem('admin_key');
+  sessionStorage.removeItem('admin_key');
   document.getElementById('admin-panel').style.display = 'none';
   document.getElementById('admin-gate').style.display = 'block';
   document.getElementById('gate-key-input').value = '';
@@ -268,7 +268,7 @@ async function deleteComment(id) {
   }
 }
 
-// Skip the gate if we already have a key stored from last time
+// Skip the gate if this tab still has a key (cleared automatically when the tab closes)
 if (getKey()) {
   showPanel();
 }
