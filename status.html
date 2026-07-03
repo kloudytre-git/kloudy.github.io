@@ -189,8 +189,6 @@ function buildHistory(monitor) {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const createdMs = (monitor.create_datetime || 0) * 1000;
 
-  // Turn "down" log entries into [start, end] downtime intervals.
-  // duration is how long the monitor stayed down until the next log entry.
   const downIntervals = (monitor.logs || [])
     .filter(l => l.type === 1)
     .map(l => {
