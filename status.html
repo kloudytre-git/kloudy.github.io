@@ -145,7 +145,7 @@
       anyone can view it via "View Page Source."
    3. Paste that read-only key below.
    ═══════════════════════════════════════════════════════════════ */
-const UPTIMEROBOT_READ_ONLY_KEY = 'm803394680-fe7dba0016b9a0715b8667e4';
+const UPTIMEROBOT_READ_ONLY_KEY = 'ur3607984-4a27f7def0f5f35dadd78d0b';
 const REFRESH_INTERVAL_MS = 60000; // 60s — free plan allows 10 req/min, stay well under that
 
 const STATUS_MAP = {
@@ -253,7 +253,7 @@ async function refresh() {
   }
 }
 
-if (UPTIMEROBOT_READ_ONLY_KEY === 'm803394680-fe7dba0016b9a0715b8667e4') {
+if (UPTIMEROBOT_READ_ONLY_KEY === 'ur3607984-4a27f7def0f5f35dadd78d0b') {
   bannerText.textContent = 'API key not configured';
   bannerSub.textContent = '&nbsp;';
   setDotColor(bannerDot, '#eab308');
