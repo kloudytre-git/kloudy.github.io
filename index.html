@@ -135,6 +135,77 @@
     .term-window { height: 80vh; }
     .term-trigger { bottom: 1.1rem; right: 1.1rem; width: 46px; height: 46px; }
   }
+  /* ═══ DRAGON EASTER EGG ═══ */
+  .dragon-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .dragon-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: min(56vw, 480px);
+    height: auto;
+    filter: drop-shadow(0 0 18px rgba(15, 240, 252, 0.55));
+    animation: dragonFlight 8.5s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes dragonFlight {
+    0%    { transform: translate(-40vw, 16vh) scaleX(1)  rotate(-6deg);  opacity: 1; }
+    13%   { transform: translate(140vw, 26vh) scaleX(1)  rotate(5deg);   opacity: 1; }
+    13.1% { transform: translate(140vw, 26vh) scaleX(-1) rotate(-5deg);  opacity: 1; }
+    27%   { transform: translate(-40vw, 48vh) scaleX(-1) rotate(7deg);   opacity: 1; }
+    27.1% { transform: translate(-40vw, 48vh) scaleX(1)  rotate(-6deg);  opacity: 1; }
+    41%   { transform: translate(140vw, 34vh) scaleX(1)  rotate(5deg);   opacity: 1; }
+    41.1% { transform: translate(140vw, 34vh) scaleX(-1) rotate(-3deg);  opacity: 1; }
+    58%   { transform: translate(32vw, 42vh)  scaleX(-1) scale(1)    rotate(0deg); opacity: 1; }
+    66%   { transform: translate(32vw, 41vh)  scaleX(-1) scale(1.12) rotate(0deg); opacity: 1; }
+    74%   { transform: translate(32vw, 42vh)  scaleX(-1) scale(1.32) rotate(0deg); opacity: 1; }
+    83%   { transform: translate(32vw, 42vh)  scaleX(-1) scale(1.5)  rotate(0deg); opacity: 0.55; }
+    100%  { transform: translate(32vw, 42vh)  scaleX(-1) scale(1.7)  rotate(0deg); opacity: 0; }
+  }
+
+  .lightning-bolt {
+    position: absolute;
+    width: 60px;
+    height: 140px;
+    opacity: 0;
+    filter: drop-shadow(0 0 8px rgba(15, 240, 252, 0.9));
+    animation-name: boltFlicker;
+    animation-timing-function: steps(1, end);
+    animation-fill-mode: forwards;
+  }
+  @keyframes boltFlicker {
+    0%, 100% { opacity: 0; }
+    10% { opacity: 1; }
+    20% { opacity: 0.2; }
+    30% { opacity: 1; }
+    45% { opacity: 0; }
+    55% { opacity: 0.9; }
+    70% { opacity: 0; }
+  }
+
+  .dragon-explosion {
+    position: absolute;
+    top: 42vh;
+    left: 32vw;
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(15,240,252,0.85) 35%, rgba(15,240,252,0) 72%);
+    opacity: 0;
+    animation: dragonBoom 8.5s ease-out forwards;
+  }
+  @keyframes dragonBoom {
+    0%, 78%   { opacity: 0; transform: scale(0.2); }
+    82%       { opacity: 1; transform: scale(1); }
+    88%       { opacity: 0.8; transform: scale(2.6); }
+    100%      { opacity: 0; transform: scale(3.4); }
+  }
 </style>
 </head>
 <body>
@@ -1210,6 +1281,7 @@ function showToast(msg, color) {
   let booted = false;
   let history = [];
   let historyIndex = -1;
+  let dragonActive = false;
 
   const REAL_LINKS = {
     email: 'info.kloudytre@gmail.com',
@@ -1259,6 +1331,80 @@ function showToast(msg, color) {
     })();
   }
 
+  const DRAGON_DURATION_MS = 8500;
+
+  function spawnDragon() {
+    const overlay = document.createElement('div');
+    overlay.className = 'dragon-overlay';
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'dragon-svg');
+    svg.setAttribute('viewBox', '-30 -20 640 280');
+
+    const CYAN = '#0FF0FC';
+    svg.innerHTML = `
+      <defs>
+        <filter id="dragonGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#dragonGlow)">
+        <polygon points="315,128 295,45 275,78 250,55 232,90 210,68 275,148" fill="${CYAN}" fill-opacity="0.12" stroke="#0a8f9c" stroke-width="1.5" opacity="0.6"/>
+        <polygon points="260,175 245,215 258,212 268,178" fill="${CYAN}" fill-opacity="0.25" stroke="${CYAN}" stroke-width="1.5"/>
+        <polygon points="220,178 205,222 220,218 232,180" fill="${CYAN}" fill-opacity="0.25" stroke="${CYAN}" stroke-width="1.5"/>
+        <polygon points="245,215 236,228 250,222" fill="${CYAN}"/>
+        <polygon points="205,222 196,235 210,229" fill="${CYAN}"/>
+        <polygon points="15,154 -15,140 0,154 -15,168" fill="${CYAN}" fill-opacity="0.3" stroke="${CYAN}" stroke-width="1.5"/>
+        <polygon points="445,86 395,102 340,75 285,113 225,98 165,136 105,123 45,142 15,151 15,157 45,158 105,153 165,180 225,158 285,187 340,161 395,194 445,170"
+                  fill="#0d2530" fill-opacity="0.85" stroke="${CYAN}" stroke-width="2.5"/>
+        <polyline points="445,128 395,148 340,118 285,150 225,128 165,158 105,138 45,150 15,154" fill="none" stroke="${CYAN}" stroke-width="1" opacity="0.35"/>
+        <line x1="395" y1="142" x2="395" y2="154" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <line x1="340" y1="112" x2="340" y2="124" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <line x1="285" y1="144" x2="285" y2="156" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <line x1="225" y1="122" x2="225" y2="134" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <line x1="165" y1="152" x2="165" y2="164" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <line x1="105" y1="132" x2="105" y2="144" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <line x1="45" y1="144" x2="45" y2="156" stroke="${CYAN}" stroke-width="1.5" opacity="0.55"/>
+        <polygon points="305,148 285,5 258,48 222,15 192,62 158,35 135,78 250,158" fill="${CYAN}" fill-opacity="0.18" stroke="${CYAN}" stroke-width="2"/>
+        <polygon points="585,148 520,108 468,96 445,100 445,156 468,162 520,172" fill="#0d2530" fill-opacity="0.9" stroke="${CYAN}" stroke-width="2.5"/>
+        <polygon points="478,100 512,44 498,104" fill="${CYAN}" fill-opacity="0.4" stroke="${CYAN}" stroke-width="2"/>
+        <circle cx="520" cy="122" r="5" fill="#ffffff"/>
+        <circle cx="520" cy="122" r="9" fill="${CYAN}" fill-opacity="0.5"/>
+      </g>`;
+
+    overlay.appendChild(svg);
+
+    // Lightning bolts scattered along the flight corridor, staggered so they
+    // flicker roughly in time with the swoop passes. Each has a FINITE
+    // iteration count -- never infinite -- so it always ends on its own.
+    const boltSpots = [
+      [15, 20], [70, 30], [30, 55], [80, 60], [20, 40], [60, 45], [40, 68], [65, 20],
+    ];
+    boltSpots.forEach(([leftPct, topPct], i) => {
+      const bolt = document.createElement('div');
+      bolt.className = 'lightning-bolt';
+      bolt.style.left = leftPct + 'vw';
+      bolt.style.top = topPct + 'vh';
+      bolt.style.transform = `rotate(${(i % 2 ? -1 : 1) * (15 + i * 5)}deg)`;
+      bolt.style.animationDuration = '0.9s';
+      bolt.style.animationIterationCount = '2';
+      bolt.style.animationDelay = (i * 0.6) + 's';
+      bolt.innerHTML = `<svg viewBox="0 0 60 140" width="100%" height="100%">
+        <polygon points="38,0 12,55 28,55 8,140 52,50 34,50" fill="#e8fdff" stroke="${CYAN}" stroke-width="2"/>
+      </svg>`;
+      overlay.appendChild(bolt);
+    });
+
+    const boom = document.createElement('div');
+    boom.className = 'dragon-explosion';
+    overlay.appendChild(boom);
+
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
   const COMMANDS = {
     help() {
       printLine('Available commands:');
@@ -1274,6 +1420,7 @@ function showToast(msg, color) {
       printLine('  aws-ccp       - AWS Cloud Practitioner practice quiz');
       printLine('  ls            - list site contents');
       printLine('  sudo hire-me  - ???');
+      printLine('  dragon        - ???');
       printLine('  clear         - clear the terminal');
       printLine('  exit          - close this terminal');
       printLine('  status        - check the site status');
@@ -1373,6 +1520,19 @@ function showToast(msg, color) {
         printLine('Permission denied: you already have root access to my attention.', 'error');
         printLine("Try 'sudo hire-me' instead.", 'info');
       }
+    },
+    dragon() {
+      if (dragonActive) {
+        printLine('The dragon is already circling. Wait for it to pass.', 'error');
+        return;
+      }
+      dragonActive = true;
+      printLine('// summoning something...', 'info');
+      const overlay = spawnDragon();
+      setTimeout(() => {
+        overlay.remove();
+        dragonActive = false;
+      }, DRAGON_DURATION_MS);
     },
     clear() { body.innerHTML = ''; },
     exit() { closeTerminal(); },
