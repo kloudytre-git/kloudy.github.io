@@ -1269,6 +1269,7 @@ function showToast(msg, color) {
       printLine('  projects      - featured projects');
       printLine('  blog          - the DevOps journal');
       printLine('  contact       - how to reach me');
+      printLine('  links         - quick links to all important places');
       printLine('  resume        - download my resume');
       printLine('  aws-ccp       - AWS Cloud Practitioner practice quiz');
       printLine('  ls            - list site contents');
@@ -1323,6 +1324,10 @@ function showToast(msg, color) {
       printLine('  ' + REAL_LINKS.github);
       printLine('Scrolling you there...', 'info');
       scrollToSection('contact', 1400);
+    },
+    links() {
+      printLine('Launching your browser to open these links...', 'info');
+      setTimeout(() => { window.location.href = 'links.html'; }, 700);
     },
     resume() {
       printLine('Fetching Jontre_Gregory_Resume.pdf...', 'info');
