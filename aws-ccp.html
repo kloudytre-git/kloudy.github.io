@@ -36,17 +36,28 @@
     margin-bottom: 0.5rem;
   }
   .quiz-select-row select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     width: 100%;
-    background: rgba(15, 240, 252, 0.04);
+    background-color: rgba(15, 240, 252, 0.06);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230ff0fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8l5 5 5-5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 13px;
     border: 1px solid rgba(15, 240, 252, 0.25);
     color: var(--white-pure);
     font-family: var(--font-body);
     font-size: 0.95rem;
-    padding: 0.7rem 0.9rem;
+    padding: 0.7rem 2.2rem 0.7rem 0.9rem;
     border-radius: 8px;
     cursor: pointer;
   }
   .quiz-select-row select:focus { outline: none; border-color: var(--cyan-glow); }
+  .quiz-select-row select option {
+    background-color: var(--navy-deep);
+    color: var(--white-pure);
+  }
 
   .quiz-mode-toggle { display: flex; gap: 0.6rem; margin-bottom: 1.4rem; }
   .quiz-mode-btn {
