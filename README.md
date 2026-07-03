@@ -23,3 +23,5 @@ A simple static website, displaying my resume as a portfolio website for employe
 ✅ Update 2.7.1 — I've implemented UptimeRobot to monitor my static website, first monitor alert was 100% Uptime. This will update every 5 minutes.
 
 ✅ Update 3.7.1 — Implemented AWS CCP practice exam page and flashcards for site visitors to practice. (07/02/2026)
+
+✅ Update 3.8.1 — Implented a toggle switch for the practice exam page, you can now quiz between definitions/terms questions & scenario questions. (07/02/2026)
