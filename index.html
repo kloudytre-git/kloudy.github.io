@@ -1270,7 +1270,7 @@ function showToast(msg, color) {
       printLine('  blog          - the DevOps journal');
       printLine('  contact       - how to reach me');
       printLine('  resume        - download my resume');
-      printLine('  quiz          - AWS Cloud Practitioner practice quiz');
+      printLine('  aws-ccp       - AWS Cloud Practitioner practice quiz');
       printLine('  ls            - list site contents');
       printLine('  sudo hire-me  - ???');
       printLine('  clear         - clear the terminal');
@@ -1298,7 +1298,7 @@ function showToast(msg, color) {
       printLine('  \u2699  HashiCorp Terraform Associate');
       printLine('  \u2601  Microsoft Azure Fundamentals');
       printLine('  \uD83D\uDEE1  CompTIA Cloud+');
-      printLine("Tip: try 'quiz' to practice for the AWS exam.", 'info');
+      printLine("Tip: try 'aws-ccp' to practice for the AWS CCP exam.", 'info');
       scrollToSection('certifications', 1600);
     },
     certifications() { COMMANDS.certs(); },
@@ -1336,9 +1336,9 @@ function showToast(msg, color) {
         printLine('Download started.', 'success');
       }, 500);
     },
-    quiz() {
+    'aws-ccp'() {
       printLine('Launching AWS Cloud Practitioner practice quiz...', 'info');
-      setTimeout(() => { window.location.href = 'quiz.html'; }, 700);
+      setTimeout(() => { window.location.href = 'aws-ccp.html'; }, 700);
     },
     ls() {
       printLine('about.md   skills.json   certs.log   projects/   blog/   contact.sh   resume.pdf');
