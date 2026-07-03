@@ -253,7 +253,9 @@ async function refresh() {
   }
 }
 
-if (UPTIMEROBOT_READ_ONLY_KEY === 'ur3607984-4a27f7def0f5f35dadd78d0b') {
+const isKeyMissing = !UPTIMEROBOT_READ_ONLY_KEY || /paste|your.*key|here/i.test(UPTIMEROBOT_READ_ONLY_KEY);
+
+if (isKeyMissing) {
   bannerText.textContent = 'API key not configured';
   bannerSub.textContent = '&nbsp;';
   setDotColor(bannerDot, '#eab308');
