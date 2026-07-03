@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KLOUDY.DEV — Links</title>
+<meta name="description" content="Links, socials, and projects — all in one place."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body {
+    background: radial-gradient(ellipse 620px 420px at 50% 0%, rgba(15, 240, 252, 0.09), transparent 70%), var(--navy-deep);
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--white-pure);
+    display: flex;
+    justify-content: center;
+    padding: 3.5rem 1.25rem 3rem;
+  }
+
+  .links-wrap { width: 100%; max-width: 440px; }
+
+  .links-profile { text-align: center; margin-bottom: 2.2rem; }
+
+  .links-avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    margin: 0 auto 1.2rem;
+    background: linear-gradient(135deg, rgba(15, 240, 252, 0.28), rgba(15, 240, 252, 0.04));
+    border: 2px solid rgba(15, 240, 252, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--white-pure);
+  }
+  /* Swap the avatar for a real photo by replacing the div above with:
+     <img src="your-photo.jpg" alt="Your name" class="links-avatar" style="object-fit:cover;"/> */
+
+  .links-name { font-size: 1.35rem; margin-bottom: 0.5rem; display: inline-block; }
+  .links-bio {
+    color: var(--white-dim);
+    font-size: 0.92rem;
+    max-width: 320px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+
+  .links-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .link-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(15, 240, 252, 0.22);
+    border-radius: 12px;
+    padding: 0.95rem 1.15rem;
+    color: var(--white-pure);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    font-weight: 500;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  }
+  .link-btn:hover {
+    border-color: var(--cyan-glow);
+    background: rgba(15, 240, 252, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(15, 240, 252, 0.15);
+  }
+  .link-btn:active { transform: translateY(0); }
+  .link-icon { flex-shrink: 0; width: 22px; height: 22px; color: var(--cyan-soft); transition: color 0.2s; }
+  .link-btn:hover .link-icon { color: var(--cyan-glow); }
+  .link-label { flex: 1; }
+  .link-arrow { flex-shrink: 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--white-ghost); }
+
+  .links-footer {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--white-ghost);
+  }
+  .links-footer a { color: var(--cyan-soft); text-decoration: none; }
+  .links-footer a:hover { color: var(--cyan-glow); }
+</style>
+</head>
+<body>
+
+<div class="links-wrap">
+
+  <div class="links-profile">
+    <div class="links-avatar">JG</div>
+    <!-- TODO: swap "JG" above for your real initials, or replace the div with an <img> — see comment near .links-avatar -->
+
+    <a href="index.html" class="nav-logo links-name">KLOUDY<span>.</span>DEV</a>
+    <p class="links-bio">Cloud engineer &amp; developer. Building things, breaking things, writing about both.</p>
+    <!-- TODO: replace the bio line above with your own tagline -->
+  </div>
+
+  <div class="links-list">
+
+    <a class="link-btn" href="index.html">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg>
+      <span class="link-label">Portfolio Website</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+    <a class="link-btn" href="https://github.com/kloudytre-git" target="_blank" rel="noopener">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.54 2.87 8.38 6.84 9.75.5.1.68-.22.68-.49 0-.24-.01-.89-.01-1.75-2.78.62-3.37-1.36-3.37-1.36-.46-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.55 2.34 1.1 2.91.84.09-.65.35-1.1.64-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.75-.1-.26-.45-1.3.1-2.72 0 0 .84-.28 2.75 1.05a9.4 9.4 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.46.1 2.72.64.71 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.59.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+      <span class="link-label">GitHub</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+    <a class="link-btn" href="https://linkedin.com/in/jontregregory" target="_blank" rel="noopener">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.11 1 2.48 1s2.5 1.12 2.5 2.5zM.22 8.5h4.5V23h-4.5V8.5zM8.5 8.5h4.32v1.98h.06c.6-1.14 2.07-2.34 4.26-2.34 4.56 0 5.4 3 5.4 6.9V23h-4.5v-6.98c0-1.66-.03-3.8-2.32-3.8-2.32 0-2.68 1.81-2.68 3.68V23H8.5V8.5z"/></svg>
+      <span class="link-label">LinkedIn</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+    <a class="link-btn" href="https://www.youtube.com/@kloudytre" target="_blank" rel="noopener">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.54 2.87 8.38 6.84 9.75.5.1.68-.22.68-.49 0-.24-.01-.89-.01-1.75-2.78.62-3.37-1.36-3.37-1.36-.46-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.55 2.34 1.1 2.91.84.09-.65.35-1.1.64-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.75-.1-.26-.45-1.3.1-2.72 0 0 .84-.28 2.75 1.05a9.4 9.4 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.42.2 2.46.1 2.72.64.71 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.59.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+      <span class="link-label">YouTube</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+    <a class="link-btn" href="https://instagram.com/kloudy.dev" target="_blank" rel="noopener">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg>
+      <span class="link-label">Instagram</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+    <a class="link-btn" href="discord.com" target="_blank" rel="noopener">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4"/><path d="M22 8v6"/></svg>
+      <span class="link-label">Discord (Coming Soon!)</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+    <a class="link-btn" href="quiz.html">
+      <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4"/><path d="M22 8v6"/></svg>
+      <span class="link-label">AWS Cloud Practitioner Practice</span>
+      <span class="link-arrow">&rarr;</span>
+    </a>
+
+  </div>
+
+  <p class="links-footer">&copy; 2026 <a href="index.html">KLOUDY.DEV</a></p>
+
+</div>
+
+</body>
+</html>
