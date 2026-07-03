@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>System Status — KLOUDY.DEV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body {
+    background: var(--navy-deep);
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--white-pure);
+  }
+  .status-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+  .status-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .status-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.1rem 1.3rem;
+    border-radius: 12px;
+    border: 1px solid rgba(15, 240, 252, 0.22);
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 2rem;
+  }
+  .status-banner-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px currentColor;
+  }
+  .status-banner-text { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; }
+  .status-banner-sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--white-ghost); margin-top: 0.2rem; }
+
+  .status-list { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; }
+
+  .monitor-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(15, 240, 252, 0.18);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+  }
+  .monitor-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .monitor-dot.up { background: #22c55e; color: #22c55e; }
+  .monitor-dot.down { background: #ef4444; color: #ef4444; }
+  .monitor-dot.warn { background: #eab308; color: #eab308; }
+  .monitor-dot.paused { background: var(--white-ghost); color: var(--white-ghost); }
+
+  .monitor-main { flex: 1; min-width: 0; }
+  .monitor-name { font-size: 0.98rem; font-weight: 500; margin: 0 0 0.15rem; }
+  .monitor-status-label { font-family: var(--font-mono); font-size: 0.72rem; }
+  .monitor-status-label.up { color: #22c55e; }
+  .monitor-status-label.down { color: #ef4444; }
+  .monitor-status-label.warn { color: #eab308; }
+  .monitor-status-label.paused { color: var(--white-ghost); }
+
+  .monitor-stats {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--white-dim);
+    flex-shrink: 0;
+    line-height: 1.5;
+  }
+  .monitor-stats .uptime-pct { color: var(--cyan-soft); font-size: 0.85rem; display: block; }
+
+  .status-footer {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--white-ghost);
+  }
+
+  .status-empty, .status-error {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--white-dim);
+    padding: 2rem 1rem;
+    border: 1px dashed rgba(15, 240, 252, 0.25);
+    border-radius: 12px;
+  }
+  .status-error { color: #ef4444; }
+</style>
+</head>
+<body>
+
+<div class="status-wrap">
+
+  <div class="status-topbar">
+    <a href="index.html" class="nav-logo">KLOUDY<span>.</span>DEV</a>
+    <a href="index.html" class="back-link">&larr; Back to Portfolio</a>
+  </div>
+
+  <p class="section-label">// live monitoring</p>
+  <h2 class="section-title">System Status</h2>
+  <div class="section-line" style="margin-bottom: 2rem;"></div>
+
+  <div class="status-banner" id="statusBanner">
+    <span class="status-banner-dot" id="bannerDot" style="background:var(--white-ghost); color:var(--white-ghost);"></span>
+    <div>
+      <div class="status-banner-text" id="bannerText">Checking status...</div>
+      <div class="status-banner-sub" id="bannerSub">&nbsp;</div>
+    </div>
+  </div>
+
+  <div class="status-list" id="statusList">
+    <p class="status-empty">Loading monitors&hellip;</p>
+  </div>
+
+  <p class="status-footer" id="statusFooter">Powered by UptimeRobot</p>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIG — read this before deploying
+   ═══════════════════════════════════════════════════════════════
+   1. Log in to UptimeRobot → My Settings → Integrations & API.
+   2. Generate a "Read-Only API Key" (NOT your Main/Account API key).
+      The read-only key can only fetch monitor data — it can't create,
+      edit, pause, or delete anything — which is why it's safe to put
+      in a public HTML file. Your Main key must never go here, since
+      anyone can view it via "View Page Source."
+   3. Paste that read-only key below.
+   ═══════════════════════════════════════════════════════════════ */
+const UPTIMEROBOT_READ_ONLY_KEY = 'ur3607984-4a27f7def0f5f35dadd78d0b';
+const REFRESH_INTERVAL_MS = 60000; // 60s — free plan allows 10 req/min, stay well under that
+
+const STATUS_MAP = {
+  0: { label: 'Paused',      dotClass: 'paused' },
+  1: { label: 'Pending',     dotClass: 'paused' },
+  2: { label: 'Operational', dotClass: 'up' },
+  8: { label: 'Degraded',    dotClass: 'warn' },
+  9: { label: 'Down',        dotClass: 'down' },
+};
+
+const banner = document.getElementById('statusBanner');
+const bannerDot = document.getElementById('bannerDot');
+const bannerText = document.getElementById('bannerText');
+const bannerSub = document.getElementById('bannerSub');
+const list = document.getElementById('statusList');
+const footer = document.getElementById('statusFooter');
+
+function setDotColor(el, hex) {
+  el.style.background = hex;
+  el.style.color = hex;
+}
+
+async function fetchMonitors() {
+  const params = new URLSearchParams({
+    api_key: UPTIMEROBOT_READ_ONLY_KEY,
+    format: 'json',
+    custom_uptime_ratios: '30',
+    response_times: '1',
+    response_times_limit: '1',
+  });
+  const res = await fetch('https://api.uptimerobot.com/v2/getMonitors?' + params.toString());
+  if (!res.ok) throw new Error('Request failed (' + res.status + ')');
+  const data = await res.json();
+  if (data.stat !== 'ok') {
+    throw new Error((data.error && data.error.message) || 'UptimeRobot API returned an error');
+  }
+  return data.monitors || [];
+}
+
+function renderMonitors(monitors) {
+  if (monitors.length === 0) {
+    list.innerHTML = '<p class="status-empty">No monitors found on this account yet.</p>';
+    setDotColor(bannerDot, 'var(--white-ghost)');
+    bannerText.textContent = 'No monitors configured';
+    bannerSub.innerHTML = '&nbsp;';
+    return;
+  }
+
+  const anyDown = monitors.some(m => m.status === 9);
+  const anyWarn = monitors.some(m => m.status === 8);
+  const allUp = monitors.every(m => m.status === 2);
+
+  if (anyDown) {
+    setDotColor(bannerDot, '#ef4444');
+    bannerText.textContent = 'Partial Outage';
+  } else if (anyWarn) {
+    setDotColor(bannerDot, '#eab308');
+    bannerText.textContent = 'Degraded Performance';
+  } else if (allUp) {
+    setDotColor(bannerDot, '#22c55e');
+    bannerText.textContent = 'All Systems Operational';
+  } else {
+    setDotColor(bannerDot, 'var(--white-ghost)');
+    bannerText.textContent = 'Some Monitors Paused';
+  }
+  bannerSub.textContent = monitors.length + ' monitor' + (monitors.length === 1 ? '' : 's') + ' tracked';
+
+  list.innerHTML = monitors.map(m => {
+    const meta = STATUS_MAP[m.status] || { label: 'Unknown', dotClass: 'paused' };
+    const uptime = m.custom_uptime_ratio ? parseFloat(m.custom_uptime_ratio).toFixed(2) + '%' : '—';
+    const rt = (m.response_times && m.response_times.length) ? Math.round(m.response_times[0].value) + ' ms' : '—';
+    return (
+      '<div class="monitor-card">' +
+        '<span class="monitor-dot ' + meta.dotClass + '"></span>' +
+        '<div class="monitor-main">' +
+          '<p class="monitor-name">' + escapeHtml(m.friendly_name) + '</p>' +
+          '<span class="monitor-status-label ' + meta.dotClass + '">' + meta.label + '</span>' +
+        '</div>' +
+        '<div class="monitor-stats">' +
+          '<span class="uptime-pct">' + uptime + '</span>' +
+          rt + ' resp' +
+        '</div>' +
+      '</div>'
+    );
+  }).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function refresh() {
+  try {
+    const monitors = await fetchMonitors();
+    renderMonitors(monitors);
+    footer.textContent = 'Last checked: ' + new Date().toLocaleTimeString();
+  } catch (err) {
+    console.error(err);
+    setDotColor(bannerDot, '#ef4444');
+    bannerText.textContent = 'Unable to load status';
+    bannerSub.textContent = '&nbsp;';
+    list.innerHTML = '<p class="status-error">' + escapeHtml(err.message) + '<br/>Check that your read-only API key is set correctly in status.html.</p>';
+  }
+}
+
+if (UPTIMEROBOT_READ_ONLY_KEY === 'ur3607984-4a27f7def0f5f35dadd78d0b') {
+  bannerText.textContent = 'API key not configured';
+  bannerSub.textContent = '&nbsp;';
+  setDotColor(bannerDot, '#eab308');
+  list.innerHTML = '<p class="status-empty">Paste your UptimeRobot read-only API key into status.html to activate this page.</p>';
+} else {
+  refresh();
+  setInterval(refresh, REFRESH_INTERVAL_MS);
+}
+</script>
+
+</body>
+</html>
