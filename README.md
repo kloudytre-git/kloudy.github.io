@@ -21,3 +21,5 @@ A simple static website, displaying my resume as a portfolio website for employe
 ✅ Update 2.7.0 — Admin page no longer runs on localStorage, it has been replaced with sessionStorage so that the Admin Key doesn't save once entered.
 
 ✅ Update 2.7.1 — I've implemented UptimeRobot to monitor my static website, first monitor alert was 100% Uptime. This will update every 5 minutes.
+
+✅ Update 3.7.1 — Implemented AWS CCP practice exam page and flashcards for site visitors to practice. (07/02/2026)
