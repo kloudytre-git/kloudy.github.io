@@ -1499,6 +1499,7 @@ function showToast(msg, color) {
       printLine('  clear         - clear the terminal');
       printLine('  exit          - close this terminal');
       printLine('  status        - check the site status');
+      printLine('  az-900        - Microsoft Azure Fundamentals practice quiz');
     },
     whoami() {
       printLine('guest');
@@ -1555,6 +1556,10 @@ function showToast(msg, color) {
     status() {
       printLine('Checking site status...', 'info');
       setTimeout(() => { window.location.href = 'status.html'; }, 700);
+    },
+    'az-900'() {
+      printLine('Launching Microsoft Azure Fundamentals practice quiz...', 'info');
+      setTimeout(() => { window.location.href = 'az-900.html'; }, 700);
     },
     resume() {
       printLine('Fetching Jontre_Gregory_Resume.pdf...', 'info');
