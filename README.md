@@ -26,4 +26,11 @@ A simple static website, displaying my resume as a portfolio website for employe
 
 ✅ Update 3.8.1 — Implented a toggle switch for the practice exam page, you can now quiz between definitions/terms questions & scenario questions. (07/02/2026)
 
+✅ Update 3.9.1 — Implemented custom terminal to navigate my static website, with fun easter eggs included. (07/07/2026)
+
+✅ Update 3.10.1 — Updated AWS Cloud Practitioner Certification to completed, Implemented a view certification button (07/07/2026)
+
+✅ Update 4.10.1 — Created a new (AZ-900) practice exam page similiar to my AWS CCP practice exam (07/07/2026)
+
+✅ Update 4.11.1 — Uploaded newer resume PDF to repo (07/07/2026)
 ## Features
