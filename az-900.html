@@ -220,6 +220,7 @@
   .quiz-review-given { font-size: 0.82rem; color: #ef4444; margin: 0 0 0.15rem; }
   .quiz-review-correct { font-size: 0.82rem; color: #22c55e; margin: 0; }
 
+  #quiz-review-btn { width: 100%; margin-top: 0.5rem; }
   #quiz-restart-btn { width: 100%; margin-top: 0.5rem; }
 </style>
 </head>
@@ -290,6 +291,7 @@
     <p class="quiz-review-title">// review missed questions</p>
     <div id="quiz-review-list"></div>
 
+    <button class="btn-submit" id="quiz-review-btn" style="display:none;">Review What You Missed</button>
     <button class="btn-submit" id="quiz-restart-btn">Try Again</button>
   </div>
 
@@ -367,6 +369,8 @@ let idx = 0;
 let score = 0;
 let missed = [];
 let locked = false;
+let quizMode = 'def';   // mode the current run was started in (def or exam)
+let forcedDirs = [];    // per-question forced direction for review runs; empty otherwise
 
 function shuffle(arr) {
   const a = arr.slice();
@@ -377,7 +381,7 @@ function shuffle(arr) {
   return a;
 }
 
-function buildQuestion(card) {
+function buildQuestion(card, forceAskFront) {
   if (currentMode === 'exam') {
     // Prefer distractors from the same section first (plausible, exam-like
     // wrong answers); top up from the full pool if the section is too small.
@@ -394,7 +398,7 @@ function buildQuestion(card) {
     return { mode: 'exam', correct: card.f, options };
   }
 
-  const askFront = Math.random() < 0.5;
+  const askFront = (forceAskFront === undefined) ? (Math.random() < 0.5) : forceAskFront;
   const prompt = askFront ? card.f : card.b;
   const label = askFront ? 'Which service or concept is this?' : 'What does this do?';
   const correct = askFront ? card.b : card.f;
@@ -406,13 +410,15 @@ function buildQuestion(card) {
     if (distractors.length === 3) break;
   }
   const options = shuffle([correct, ...distractors]);
-  return { mode: 'def', label, prompt, correct, options };
+  return { mode: 'def', label, prompt, correct, options, askFront };
 }
 
 document.getElementById('quiz-start-btn').addEventListener('click', () => {
   const pool = getPool();
   const n = parseInt(countSelect.value, 10);
   quizCards = shuffle(pool).slice(0, n);
+  forcedDirs = [];
+  quizMode = currentMode;
   idx = 0;
   score = 0;
   missed = [];
@@ -425,7 +431,8 @@ document.getElementById('quiz-start-btn').addEventListener('click', () => {
 function renderQuestion() {
   locked = false;
   const card = quizCards[idx];
-  const q = buildQuestion(card);
+  const forced = forcedDirs.length ? forcedDirs[idx] : undefined;
+  const q = buildQuestion(card, forced);
   document.getElementById('quiz-progress-text').textContent = 'Question ' + (idx + 1) + ' of ' + quizCards.length;
   document.getElementById('quiz-score-text').textContent = 'Score: ' + score;
   document.getElementById('quiz-progress-fill').style.width = Math.round((idx / quizCards.length) * 100) + '%';
@@ -483,7 +490,9 @@ function selectOption(opt, q, card, btn) {
       correct: q.correct,
       given: opt,
       section: card.s,
-      definition: q.mode === 'exam' ? card.b : ''
+      definition: q.mode === 'exam' ? card.b : '',
+      card: card,
+      askFront: q.mode === 'exam' ? undefined : q.askFront
     });
   }
 
@@ -520,6 +529,14 @@ function showResults() {
   document.getElementById('quiz-final-score').textContent = score + '/' + quizCards.length;
   document.getElementById('quiz-final-pct').textContent = pct + '%';
 
+  const reviewBtn = document.getElementById('quiz-review-btn');
+  if (missed.length > 0) {
+    reviewBtn.style.display = 'block';
+    reviewBtn.textContent = 'Review What You Missed (' + missed.length + ')';
+  } else {
+    reviewBtn.style.display = 'none';
+  }
+
   const reviewList = document.getElementById('quiz-review-list');
   if (missed.length === 0) {
     reviewList.innerHTML = '<p style="color: var(--white-dim); font-family: var(--font-mono); font-size: 0.85rem;">No misses. Clean sweep.</p>';
@@ -535,6 +552,25 @@ function showResults() {
     `).join('');
   }
 }
+
+document.getElementById('quiz-review-btn').addEventListener('click', () => {
+  if (!missed.length) return;
+  // Re-quiz ONLY the cards missed in the run that just finished. Pair each missed
+  // card with the direction it was asked in (def mode), then shuffle the pairs so
+  // order varies while keeping card and direction aligned. All state is in-memory,
+  // so this is scoped to this user, this tab, this session.
+  const pairs = shuffle(missed.map(m => ({ card: m.card, dir: m.askFront })));
+  quizCards = pairs.map(p => p.card);
+  forcedDirs = pairs.map(p => p.dir);
+  currentMode = quizMode;   // review in the same mode the quiz was taken in
+  idx = 0;
+  score = 0;
+  missed = [];
+  document.getElementById('quiz-setup').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'none';
+  document.getElementById('quiz-active').style.display = 'block';
+  renderQuestion();
+});
 
 document.getElementById('quiz-restart-btn').addEventListener('click', () => {
   document.getElementById('quiz-results').style.display = 'none';
