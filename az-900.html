@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Azure Fundamentals (AZ-900) Quiz — Jontre Gregory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body {
+    background: var(--navy-deep);
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--white-pure);
+  }
+  .quiz-wrap { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  .quiz-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .quiz-topbar .nav-logo { font-size: 1.1rem; }
+
+  .quiz-select-row { margin-bottom: 1.1rem; }
+  .quiz-select-row label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cyan-soft);
+    margin-bottom: 0.5rem;
+  }
+  .quiz-select-row select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    background-color: rgba(15, 240, 252, 0.06);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230ff0fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8l5 5 5-5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 13px;
+    border: 1px solid rgba(15, 240, 252, 0.25);
+    color: var(--white-pure);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 0.7rem 2.2rem 0.7rem 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .quiz-select-row select:focus { outline: none; border-color: var(--cyan-glow); }
+  .quiz-select-row select option {
+    background-color: var(--navy-deep);
+    color: var(--white-pure);
+  }
+
+  .quiz-mode-toggle { display: flex; gap: 0.6rem; margin-bottom: 1.4rem; }
+  .quiz-mode-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: var(--white-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.75rem 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  }
+  .quiz-mode-btn:hover { border-color: var(--cyan-soft); color: var(--white-pure); }
+  .quiz-mode-btn.active {
+    background: rgba(15, 240, 252, 0.10);
+    border-color: var(--cyan-glow);
+    color: var(--white-pure);
+    box-shadow: 0 0 10px rgba(15, 240, 252, 0.25);
+  }
+
+  .quiz-question-suffix {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0.6rem 0 0;
+    color: var(--white-pure);
+  }
+  .quiz-definition {
+    font-size: 0.85rem;
+    color: var(--white-dim);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
+    margin-bottom: 1.1rem;
+    display: none;
+  }
+
+  #quiz-start-btn { width: 100%; margin-top: 0.5rem; }
+
+  .quiz-progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--white-dim);
+    margin-bottom: 0.6rem;
+  }
+  .quiz-progress-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 1.6rem;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--cyan-glow);
+    box-shadow: 0 0 8px rgba(15, 240, 252, 0.6);
+    width: 0%;
+    transition: width 0.25s ease;
+  }
+
+  .quiz-question-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(15, 240, 252, 0.18);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .quiz-question-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--cyan-soft);
+    margin: 0 0 0.7rem;
+  }
+  .quiz-question-text {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--white-pure);
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.1rem; }
+  .quiz-option {
+    text-align: left;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--white-pure);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.4;
+    padding: 0.85rem 1.05rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .quiz-option:hover:not(:disabled) {
+    border-color: var(--cyan-soft);
+    background: rgba(15, 240, 252, 0.06);
+  }
+  .quiz-option:disabled { cursor: default; }
+  .quiz-option.correct {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+  .quiz-option.incorrect {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
+  .quiz-feedback { min-height: 1.3rem; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 1.1rem; }
+  .quiz-feedback.correct { color: #22c55e; }
+  .quiz-feedback.incorrect { color: #ef4444; }
+
+  #quiz-next-btn { width: 100%; display: none; }
+
+  .quiz-results-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .quiz-results-stats .stat-box { text-align: center; }
+
+  .quiz-review-title {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan-soft);
+    margin: 0 0 1rem;
+  }
+  .quiz-review-item {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.65rem;
+  }
+  .quiz-review-section {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--white-ghost);
+    margin-bottom: 0.3rem;
+  }
+  .quiz-review-prompt { font-size: 0.92rem; color: var(--white-pure); margin: 0 0 0.4rem; }
+  .quiz-review-given { font-size: 0.82rem; color: #ef4444; margin: 0 0 0.15rem; }
+  .quiz-review-correct { font-size: 0.82rem; color: #22c55e; margin: 0; }
+
+  #quiz-restart-btn { width: 100%; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div class="quiz-wrap">
+
+  <div class="quiz-topbar">
+    <a href="index.html" class="nav-logo">KLOUDY<span>.</span>DEV</a>
+    <a href="index.html" class="back-link">&larr; Back to Portfolio</a>
+  </div>
+
+  <p class="section-label">// study tool</p>
+  <h2 class="section-title">Azure Fundamentals (AZ-900) Quiz</h2>
+  <div class="section-line" style="margin-bottom: 2rem;"></div>
+
+  <div id="quiz-setup" class="comments-panel">
+    <h3 style="margin-bottom: 0.4rem;">Practice Quiz</h3>
+    <p id="quiz-mode-desc" style="color: var(--white-dim); margin-bottom: 1.25rem;"></p>
+
+    <div class="quiz-mode-toggle">
+      <button type="button" class="quiz-mode-btn active" id="mode-def-btn">Definitions &amp; Terms</button>
+      <button type="button" class="quiz-mode-btn" id="mode-exam-btn">Exam-Style Scenarios</button>
+    </div>
+
+    <div class="quiz-select-row">
+      <label for="quiz-section-select">Section</label>
+      <select id="quiz-section-select"></select>
+    </div>
+    <div class="quiz-select-row">
+      <label for="quiz-count-select">Number of questions</label>
+      <select id="quiz-count-select"></select>
+    </div>
+    <button class="btn-submit" id="quiz-start-btn">Start Quiz</button>
+  </div>
+
+  <div id="quiz-active" style="display:none;">
+    <div class="quiz-progress-row">
+      <span id="quiz-progress-text"></span>
+      <span id="quiz-score-text"></span>
+    </div>
+    <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+
+    <div class="quiz-question-card">
+      <p class="quiz-question-label" id="quiz-question-label"></p>
+      <p class="quiz-question-text" id="quiz-question-text"></p>
+      <p class="quiz-question-suffix" id="quiz-question-suffix" style="display:none;"></p>
+    </div>
+
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <div class="quiz-definition" id="quiz-definition"></div>
+    <button class="btn-submit" id="quiz-next-btn">Next Question &rarr;</button>
+  </div>
+
+  <div id="quiz-results" style="display:none;">
+    <div class="quiz-results-stats">
+      <div class="stat-box">
+        <div class="stat-number" id="quiz-final-score">0/0</div>
+        <div class="stat-label">Score</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="quiz-final-pct">0%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
+
+    <p class="quiz-review-title">// review missed questions</p>
+    <div id="quiz-review-list"></div>
+
+    <button class="btn-submit" id="quiz-restart-btn">Try Again</button>
+  </div>
+
+</div>
+
+<script>
+const CARDS_DEF = [{"s": "Cloud Concepts", "f": "Cloud computing", "b": "Delivering computing services (compute, storage, networking, software) over the internet on a pay-as-you-go basis instead of owning hardware."}, {"s": "Cloud Concepts", "f": "Shared responsibility model", "b": "Framework splitting security and management duties between Microsoft and the customer; data and identities always stay the customer's responsibility."}, {"s": "Cloud Concepts", "f": "Public cloud", "b": "Cloud services delivered over the public internet and shared across many organizations, owned and run by a provider like Azure."}, {"s": "Cloud Concepts", "f": "Private cloud", "b": "A cloud environment used exclusively by a single organization, offering more control at higher cost."}, {"s": "Cloud Concepts", "f": "Hybrid cloud", "b": "Combines public and private cloud (and on-premises), letting workloads and data move between them."}, {"s": "Cloud Concepts", "f": "Cloud model use cases", "b": "Public suits variable demand and low cost; private suits strict compliance and control; hybrid suits gradual migration and mixed needs."}, {"s": "Cloud Concepts", "f": "Consumption-based model", "b": "You pay only for the resources you actually use, with no upfront cost."}, {"s": "Cloud Concepts", "f": "CapEx vs OpEx", "b": "CapEx is upfront spend on owned assets; OpEx is ongoing pay-as-you-go spend. Cloud favors OpEx."}, {"s": "Cloud Concepts", "f": "Cloud pricing models", "b": "Ways Azure charges: pay-as-you-go, reserved (1- or 3-year commitment), spot (spare capacity), and Azure Hybrid Benefit."}, {"s": "Cloud Concepts", "f": "Serverless", "b": "The provider fully manages and auto-scales infrastructure; you deploy only code and pay only while it runs."}, {"s": "Benefits of Cloud", "f": "High availability", "b": "Keeping services operational with minimal downtime through redundancy and SLAs."}, {"s": "Benefits of Cloud", "f": "Scalability", "b": "Adding or removing resources to meet demand; vertical (resize) or horizontal (add instances)."}, {"s": "Benefits of Cloud", "f": "Elasticity", "b": "Automatic scaling up or down in near real time to match changing demand."}, {"s": "Benefits of Cloud", "f": "Reliability", "b": "A system's ability to recover from failures and keep functioning."}, {"s": "Benefits of Cloud", "f": "Predictability", "b": "Confidence in performance and cost through autoscaling, load balancing, and cost tools."}, {"s": "Benefits of Cloud", "f": "Security and governance", "b": "Built-in security controls plus governance tools that enforce standards and compliance across resources."}, {"s": "Benefits of Cloud", "f": "Manageability", "b": "Managing OF the cloud (autoscale, templates, monitoring) and IN the cloud (portal, CLI, APIs)."}, {"s": "Benefits of Cloud", "f": "Service Level Agreement (SLA)", "b": "A Microsoft commitment to a service's uptime, expressed as a percentage like 99.9%."}, {"s": "Cloud Service Types", "f": "Infrastructure as a Service (IaaS)", "b": "Cloud provides compute, storage, and networking; the customer manages the OS and apps. Most control. Example: Azure VMs."}, {"s": "Cloud Service Types", "f": "Platform as a Service (PaaS)", "b": "Cloud manages infrastructure and platform; the customer manages only apps and data. Example: Azure App Service."}, {"s": "Cloud Service Types", "f": "Software as a Service (SaaS)", "b": "Fully managed ready-to-use software over the internet; provider manages all but your data and identities. Example: Microsoft 365."}, {"s": "Cloud Service Types", "f": "IaaS / PaaS / SaaS use cases", "b": "IaaS: lift-and-shift and full OS control. PaaS: building apps without managing servers. SaaS: ready-to-use software."}, {"s": "Azure Architecture", "f": "Azure region", "b": "A geographic area containing one or more networked datacenters where you deploy resources."}, {"s": "Azure Architecture", "f": "Region pairs", "b": "Two regions 300+ miles apart in the same geography, paired for disaster recovery and staged updates."}, {"s": "Azure Architecture", "f": "Sovereign regions", "b": "Isolated, physically and logically separate Azure instances for compliance, such as Azure Government."}, {"s": "Azure Architecture", "f": "Availability zones", "b": "Physically separate datacenters within a region, each with independent power, cooling, and networking."}, {"s": "Azure Architecture", "f": "Azure datacenters", "b": "The physical facilities housing the servers and infrastructure that run Azure services."}, {"s": "Azure Architecture", "f": "Azure resource", "b": "Any manageable item in Azure, such as a VM, storage account, or database."}, {"s": "Azure Architecture", "f": "Resource group", "b": "A logical container holding related resources; deleting it deletes its contents."}, {"s": "Azure Architecture", "f": "Subscription", "b": "A logical unit of Azure services that provides a billing and access-control boundary."}, {"s": "Azure Architecture", "f": "Management group", "b": "A container above subscriptions used to apply governance to many subscriptions at once."}, {"s": "Azure Architecture", "f": "Resource hierarchy", "b": "Top-down: Management groups > Subscriptions > Resource groups > Resources, with inheritance downward."}, {"s": "Compute & Networking", "f": "Compute types comparison", "b": "VMs give full OS control; containers are lightweight and portable; functions are serverless and event-driven."}, {"s": "Compute & Networking", "f": "Azure Virtual Machines (VMs)", "b": "IaaS on-demand, scalable Windows or Linux virtual servers with full OS control."}, {"s": "Compute & Networking", "f": "Azure Virtual Machine Scale Sets", "b": "A group of identical, load-balanced VMs that automatically scale in number based on demand."}, {"s": "Compute & Networking", "f": "Availability sets", "b": "Grouping VMs across fault and update domains in one datacenter to protect from hardware failures and maintenance."}, {"s": "Compute & Networking", "f": "Azure Virtual Desktop", "b": "Cloud desktop and app virtualization (DaaS) delivering Windows desktops to any device."}, {"s": "Compute & Networking", "f": "Resources required for a VM", "b": "A VM typically needs a size, OS image, disks, virtual network and subnet, a NIC, an IP, and a network security group."}, {"s": "Compute & Networking", "f": "Azure Container Instances (ACI)", "b": "A serverless way to run a single container quickly without managing VMs or orchestration."}, {"s": "Compute & Networking", "f": "Azure Container Apps", "b": "A serverless managed service for microservices and containers at scale with autoscaling, no Kubernetes to manage."}, {"s": "Compute & Networking", "f": "Azure Kubernetes Service (AKS)", "b": "A managed Kubernetes service for deploying, managing, and scaling containerized apps."}, {"s": "Compute & Networking", "f": "Azure Functions", "b": "Serverless, event-driven compute that runs small code snippets on triggers, billed per execution."}, {"s": "Compute & Networking", "f": "Azure App Service (Web Apps)", "b": "PaaS for hosting web apps and APIs without managing servers, with autoscaling and CI/CD."}, {"s": "Compute & Networking", "f": "Application hosting options", "b": "Web Apps for standard PaaS apps, containers for portable microservices, and VMs for full control."}, {"s": "Compute & Networking", "f": "Azure Virtual Network (VNet)", "b": "The fundamental building block for private networking, letting Azure resources communicate securely."}, {"s": "Compute & Networking", "f": "Subnet", "b": "A segmented IP range within a virtual network used to organize and isolate resources."}, {"s": "Compute & Networking", "f": "VNet peering", "b": "Connects two virtual networks so resources communicate privately over the Microsoft backbone."}, {"s": "Compute & Networking", "f": "Azure DNS", "b": "A hosting service for DNS domains providing name resolution on Azure infrastructure."}, {"s": "Compute & Networking", "f": "Azure VPN Gateway", "b": "Sends encrypted traffic between a VNet and on-premises (or devices) over the public internet."}, {"s": "Compute & Networking", "f": "Azure ExpressRoute", "b": "A private, dedicated connection from a provider into Azure, bypassing the public internet."}, {"s": "Compute & Networking", "f": "Public endpoint", "b": "An endpoint with a public IP address that is reachable over the internet."}, {"s": "Compute & Networking", "f": "Private endpoint", "b": "A network interface using a private IP from your VNet to reach a service without the public internet."}, {"s": "Storage", "f": "Azure Storage services comparison", "b": "Blob for objects, Files for file shares, Queue for messages, Table for NoSQL, Disk for VM block storage."}, {"s": "Storage", "f": "Azure Blob Storage", "b": "Massively scalable object storage for unstructured data like files, media, and backups."}, {"s": "Storage", "f": "Azure Files", "b": "Fully managed cloud file shares accessible via SMB and NFS."}, {"s": "Storage", "f": "Azure Queue Storage", "b": "Stores large numbers of messages for asynchronous communication between app components."}, {"s": "Storage", "f": "Azure Table Storage", "b": "A NoSQL key/attribute store for large amounts of structured, non-relational data."}, {"s": "Storage", "f": "Azure Disk Storage", "b": "Block-level managed disks attached to Azure VMs."}, {"s": "Storage", "f": "Storage tiers (access tiers)", "b": "Blob access tiers—Hot, Cool, Cold, Archive—priced by how often data is accessed."}, {"s": "Storage", "f": "Redundancy options", "b": "How many copies of data are kept and where: LRS, ZRS, GRS, GZRS (and read-access variants)."}, {"s": "Storage", "f": "Storage account", "b": "A container grouping blob, file, queue, and table services under one namespace with redundancy and tier settings."}, {"s": "Storage", "f": "AzCopy", "b": "A command-line tool for copying large amounts of data to, from, and between storage accounts."}, {"s": "Storage", "f": "Azure Storage Explorer", "b": "A free GUI app to browse and manage Azure Storage data visually."}, {"s": "Storage", "f": "Azure File Sync", "b": "Centralizes on-premises Windows file shares in Azure Files with local caching."}, {"s": "Storage", "f": "Azure Migrate", "b": "A hub of tools to discover, assess, and migrate on-premises servers, databases, and apps to Azure."}, {"s": "Storage", "f": "Azure Data Box", "b": "A physical appliance for transferring very large data volumes offline."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra ID", "b": "Microsoft's cloud identity and access management service (formerly Azure Active Directory)."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Domain Services", "b": "Managed domain services (domain join, group policy, LDAP) without managing domain controllers."}, {"s": "Identity, Access & Security", "f": "Single sign-on (SSO)", "b": "Signing in once to access many apps without re-authenticating each time."}, {"s": "Identity, Access & Security", "f": "Multifactor authentication (MFA)", "b": "Requires two or more verification factors from different categories to sign in."}, {"s": "Identity, Access & Security", "f": "Passwordless authentication", "b": "Sign-in without a password using Windows Hello, an authenticator app, or FIDO2 keys."}, {"s": "Identity, Access & Security", "f": "External identities (B2B / B2C)", "b": "Features letting people outside your org access resources: B2B guests and B2C customer identities."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Conditional Access", "b": "Policies that evaluate sign-in signals and grant, block, or require extra checks like MFA."}, {"s": "Identity, Access & Security", "f": "Role-based access control (RBAC)", "b": "Grants users only the permissions they need by assigning roles at a scope (least privilege)."}, {"s": "Identity, Access & Security", "f": "Zero Trust", "b": "A security model that assumes breach: verify explicitly, use least privilege, verify every request."}, {"s": "Identity, Access & Security", "f": "Defense in depth", "b": "A layered security strategy so that if one control fails, others still protect the data."}, {"s": "Identity, Access & Security", "f": "Microsoft Defender for Cloud", "b": "A CNAPP providing security posture management and threat protection across Azure and multicloud."}, {"s": "Cost Management", "f": "Factors affecting cost", "b": "Cost drivers include resource type, service, region, outbound data transfer, and subscription/pricing type."}, {"s": "Cost Management", "f": "Pricing calculator", "b": "A free tool to estimate the cost of Azure services before deploying."}, {"s": "Cost Management", "f": "TCO (Total Cost of Ownership) calculator", "b": "A tool to estimate the savings from moving on-premises workloads to Azure."}, {"s": "Cost Management", "f": "Microsoft Cost Management", "b": "Tools to monitor, allocate, and optimize Azure spend, including budgets and alerts."}, {"s": "Cost Management", "f": "Tags", "b": "Name/value metadata on resources used to organize them and report on cost."}, {"s": "Governance & Compliance", "f": "Microsoft Purview", "b": "Unified data governance and compliance to discover, classify, and protect data across sources."}, {"s": "Governance & Compliance", "f": "Azure Policy", "b": "Creates and enforces rules to keep resources compliant, and reports on compliance."}, {"s": "Governance & Compliance", "f": "Resource locks", "b": "Locks preventing accidental deletion (CanNotDelete) or changes (ReadOnly) to resources."}, {"s": "Managing & Deploying", "f": "Azure portal", "b": "A web-based graphical console to build, manage, and monitor Azure resources."}, {"s": "Managing & Deploying", "f": "Azure Cloud Shell", "b": "A browser-based authenticated shell offering Bash and PowerShell with tools preinstalled."}, {"s": "Managing & Deploying", "f": "Azure CLI", "b": "A cross-platform command-line tool for managing Azure via commands and scripts."}, {"s": "Managing & Deploying", "f": "Azure PowerShell", "b": "PowerShell cmdlets (the Az module) for managing Azure from the command line and scripts."}, {"s": "Managing & Deploying", "f": "Azure Arc", "b": "Extends Azure management and governance to on-premises servers, other clouds, and Kubernetes."}, {"s": "Managing & Deploying", "f": "Infrastructure as Code (IaC)", "b": "Defining and provisioning infrastructure through config files for repeatable, version-controlled deployments."}, {"s": "Managing & Deploying", "f": "Azure Resource Manager (ARM)", "b": "Azure's deployment and management layer that handles every create, update, and delete request."}, {"s": "Managing & Deploying", "f": "ARM templates", "b": "JSON files that declaratively define Azure resources to deploy (IaC); Bicep is a simpler alternative."}, {"s": "Monitoring", "f": "Azure Advisor", "b": "Free, personalized recommendations across reliability, security, performance, operations, and cost."}, {"s": "Monitoring", "f": "Azure Service Health", "b": "A personalized view of the health of the Azure services and regions you use, with alerts."}, {"s": "Monitoring", "f": "Azure Monitor", "b": "A platform to collect, analyze, and act on metrics and logs across Azure and beyond."}, {"s": "Monitoring", "f": "Log Analytics", "b": "The Azure Monitor tool to write and run KQL queries against collected log data."}, {"s": "Monitoring", "f": "Azure Monitor alerts", "b": "Proactive notifications and actions triggered when monitoring data crosses defined thresholds."}, {"s": "Monitoring", "f": "Application Insights", "b": "An Azure Monitor feature for application performance monitoring: availability, performance, usage, and failures."}];
+
+const CARDS_EXAM = [{"s": "Cloud Concepts", "f": "Cloud computing", "b": "Delivering computing services (compute, storage, networking, software) over the internet on a pay-as-you-go basis instead of owning hardware.", "q": "An organization rents servers, storage, and software over the internet and pays only for what it uses instead of buying its own datacenter."}, {"s": "Cloud Concepts", "f": "Shared responsibility model", "b": "Framework splitting security and management duties between Microsoft and the customer; data and identities always stay the customer's responsibility.", "q": "A team needs to know who secures their data and user identities versus who secures the physical datacenter in Azure."}, {"s": "Cloud Concepts", "f": "Public cloud", "b": "Cloud services delivered over the public internet and shared across many organizations, owned and run by a provider like Azure.", "q": "A startup wants to run its app on shared, provider-owned infrastructure with no hardware to buy and the ability to scale instantly."}, {"s": "Cloud Concepts", "f": "Private cloud", "b": "A cloud environment used exclusively by a single organization, offering more control at higher cost.", "q": "A bank must keep all workloads on infrastructure dedicated solely to itself for strict control and compliance."}, {"s": "Cloud Concepts", "f": "Hybrid cloud", "b": "Combines public and private cloud (and on-premises), letting workloads and data move between them.", "q": "A company keeps sensitive records in its own datacenter but bursts to Azure during seasonal peak demand."}, {"s": "Cloud Concepts", "f": "Consumption-based model", "b": "You pay only for the resources you actually use, with no upfront cost.", "q": "A finance team wants to eliminate upfront capital spending and be billed only for the compute they actually consume each month."}, {"s": "Cloud Concepts", "f": "Serverless", "b": "The provider fully manages and auto-scales infrastructure; you deploy only code and pay only while it runs.", "q": "Developers want to run event-driven code without provisioning or managing any servers, paying only during execution."}, {"s": "Benefits of Cloud", "f": "High availability", "b": "Keeping services operational with minimal downtime through redundancy and SLAs.", "q": "A company wants its application to stay online with minimal downtime by spreading it across redundant infrastructure."}, {"s": "Benefits of Cloud", "f": "Scalability", "b": "Adding or removing resources to meet demand; vertical (resize) or horizontal (add instances).", "q": "An app needs to handle more load by adding identical servers during busy periods and removing them afterward."}, {"s": "Benefits of Cloud", "f": "Elasticity", "b": "Automatic scaling up or down in near real time to match changing demand.", "q": "Resources automatically expand and contract in near real time as traffic rises and falls, with no manual action."}, {"s": "Benefits of Cloud", "f": "Reliability", "b": "A system's ability to recover from failures and keep functioning.", "q": "A workload is designed to recover automatically from component failures and continue operating."}, {"s": "Benefits of Cloud", "f": "Predictability", "b": "Confidence in performance and cost through autoscaling, load balancing, and cost tools.", "q": "Leadership wants confidence that both performance and monthly spend will stay consistent and forecastable."}, {"s": "Benefits of Cloud", "f": "Security and governance", "b": "Built-in security controls plus governance tools that enforce standards and compliance across resources.", "q": "A company values built-in encryption and patching plus policy tools that enforce organizational standards across resources."}, {"s": "Benefits of Cloud", "f": "Manageability", "b": "Managing OF the cloud (autoscale, templates, monitoring) and IN the cloud (portal, CLI, APIs).", "q": "Admins value deploying from templates, autoscaling, and managing resources through a portal, CLI, and APIs."}, {"s": "Benefits of Cloud", "f": "Service Level Agreement (SLA)", "b": "A Microsoft commitment to a service's uptime, expressed as a percentage like 99.9%.", "q": "A team needs to reference Microsoft's formal guarantee that a service will be available 99.9% of the time."}, {"s": "Cloud Service Types", "f": "Infrastructure as a Service (IaaS)", "b": "Cloud provides compute, storage, and networking; the customer manages the OS and apps. Most control. Example: Azure VMs.", "q": "A team wants full control of the operating system and installed software, managing everything except the physical hardware."}, {"s": "Cloud Service Types", "f": "Platform as a Service (PaaS)", "b": "Cloud manages infrastructure and platform; the customer manages only apps and data. Example: Azure App Service.", "q": "Developers want to deploy web apps without managing the OS, patching, or servers—just their code and data."}, {"s": "Cloud Service Types", "f": "Software as a Service (SaaS)", "b": "Fully managed ready-to-use software over the internet; provider manages all but your data and identities. Example: Microsoft 365.", "q": "An organization wants ready-to-use email and collaboration software with nothing to install or maintain."}, {"s": "Azure Architecture", "f": "Azure region", "b": "A geographic area containing one or more networked datacenters where you deploy resources.", "q": "To reduce latency, an admin deploys resources in a geographic area close to users, made up of networked datacenters."}, {"s": "Azure Architecture", "f": "Region pairs", "b": "Two regions 300+ miles apart in the same geography, paired for disaster recovery and staged updates.", "q": "For disaster recovery, data replicates to a second region at least 300 miles away within the same geography."}, {"s": "Azure Architecture", "f": "Sovereign regions", "b": "Isolated, physically and logically separate Azure instances for compliance, such as Azure Government.", "q": "A US federal agency needs an isolated Azure instance that meets government compliance requirements."}, {"s": "Azure Architecture", "f": "Availability zones", "b": "Physically separate datacenters within a region, each with independent power, cooling, and networking.", "q": "To survive a single datacenter failure, an app is deployed across physically separate facilities within the same region."}, {"s": "Azure Architecture", "f": "Azure datacenters", "b": "The physical facilities housing the servers and infrastructure that run Azure services.", "q": "A candidate is asked what the physical facilities are called that house Azure's servers and networking hardware."}, {"s": "Azure Architecture", "f": "Azure resource", "b": "Any manageable item in Azure, such as a VM, storage account, or database.", "q": "A VM, a storage account, and a database are each examples of which fundamental manageable item in Azure?"}, {"s": "Azure Architecture", "f": "Resource group", "b": "A logical container holding related resources; deleting it deletes its contents.", "q": "An admin wants to manage all resources for one application together and delete them in a single action."}, {"s": "Azure Architecture", "f": "Subscription", "b": "A logical unit of Azure services that provides a billing and access-control boundary.", "q": "A company wants to separate billing and access for two departments at a level above resource groups."}, {"s": "Azure Architecture", "f": "Management group", "b": "A container above subscriptions used to apply governance to many subscriptions at once.", "q": "An enterprise needs to apply the same policy and access rules across dozens of subscriptions at once."}, {"s": "Compute & Networking", "f": "Azure Virtual Machines (VMs)", "b": "IaaS on-demand, scalable Windows or Linux virtual servers with full OS control.", "q": "A team needs to lift-and-shift a legacy Windows Server app and requires full control of the operating system."}, {"s": "Compute & Networking", "f": "Azure Virtual Machine Scale Sets", "b": "A group of identical, load-balanced VMs that automatically scale in number based on demand.", "q": "An app needs a set of identical VMs that automatically grow and shrink in count behind a load balancer."}, {"s": "Compute & Networking", "f": "Availability sets", "b": "Grouping VMs across fault and update domains in one datacenter to protect from hardware failures and maintenance.", "q": "To protect VMs from rack-level hardware failure and host maintenance within a single datacenter, they're grouped across fault and update domains."}, {"s": "Compute & Networking", "f": "Azure Virtual Desktop", "b": "Cloud desktop and app virtualization (DaaS) delivering Windows desktops to any device.", "q": "A company wants employees to access a Windows desktop and apps from any device via a cloud-hosted virtual desktop."}, {"s": "Compute & Networking", "f": "Azure Container Instances (ACI)", "b": "A serverless way to run a single container quickly without managing VMs or orchestration.", "q": "A developer wants to run a single short-lived container quickly without managing servers or an orchestrator."}, {"s": "Compute & Networking", "f": "Azure Container Apps", "b": "A serverless managed service for microservices and containers at scale with autoscaling, no Kubernetes to manage.", "q": "A team wants to run scalable containerized microservices serverlessly without managing Kubernetes infrastructure."}, {"s": "Compute & Networking", "f": "Azure Kubernetes Service (AKS)", "b": "A managed Kubernetes service for deploying, managing, and scaling containerized apps.", "q": "An organization already uses Kubernetes and wants a managed cluster in Azure to orchestrate its containers."}, {"s": "Compute & Networking", "f": "Azure Functions", "b": "Serverless, event-driven compute that runs small code snippets on triggers, billed per execution.", "q": "A developer wants a small piece of code to run automatically whenever a file is uploaded, paying only for execution time."}, {"s": "Compute & Networking", "f": "Azure App Service (Web Apps)", "b": "PaaS for hosting web apps and APIs without managing servers, with autoscaling and CI/CD.", "q": "A team wants to host a web app and REST API with built-in scaling and deployment, without managing any servers."}, {"s": "Compute & Networking", "f": "Azure Virtual Network (VNet)", "b": "The fundamental building block for private networking, letting Azure resources communicate securely.", "q": "Resources need to communicate privately and securely with each other and with on-premises networks."}, {"s": "Compute & Networking", "f": "Subnet", "b": "A segmented IP range within a virtual network used to organize and isolate resources.", "q": "An admin wants to divide a virtual network's address space to isolate groups of resources."}, {"s": "Compute & Networking", "f": "VNet peering", "b": "Connects two virtual networks so resources communicate privately over the Microsoft backbone.", "q": "Two virtual networks must communicate privately as if one network, over Microsoft's backbone."}, {"s": "Compute & Networking", "f": "Azure DNS", "b": "A hosting service for DNS domains providing name resolution on Azure infrastructure.", "q": "A company wants to host and manage its domain's DNS records using Azure infrastructure."}, {"s": "Compute & Networking", "f": "Azure VPN Gateway", "b": "Sends encrypted traffic between a VNet and on-premises (or devices) over the public internet.", "q": "A business needs an encrypted site-to-site connection between its office and Azure over the public internet."}, {"s": "Compute & Networking", "f": "Azure ExpressRoute", "b": "A private, dedicated connection from a provider into Azure, bypassing the public internet.", "q": "An enterprise needs a private, high-throughput, dedicated connection to Azure that does not traverse the public internet."}, {"s": "Compute & Networking", "f": "Public endpoint", "b": "An endpoint with a public IP address that is reachable over the internet.", "q": "A service is exposed via a public IP address that clients reach over the internet."}, {"s": "Compute & Networking", "f": "Private endpoint", "b": "A network interface using a private IP from your VNet to reach a service without the public internet.", "q": "A company wants to reach Azure Storage using a private IP inside its VNet, keeping traffic off the public internet."}, {"s": "Storage", "f": "Azure Blob Storage", "b": "Massively scalable object storage for unstructured data like files, media, and backups.", "q": "A company needs to store millions of images and video files as scalable object data."}, {"s": "Storage", "f": "Azure Files", "b": "Fully managed cloud file shares accessible via SMB and NFS.", "q": "Teams need a managed cloud file share they can mount over SMB from multiple machines at once."}, {"s": "Storage", "f": "Azure Queue Storage", "b": "Stores large numbers of messages for asynchronous communication between app components.", "q": "An app needs to decouple its components by passing large numbers of messages asynchronously."}, {"s": "Storage", "f": "Azure Table Storage", "b": "A NoSQL key/attribute store for large amounts of structured, non-relational data.", "q": "A developer needs a cheap, schemaless NoSQL store for large amounts of structured key/value data."}, {"s": "Storage", "f": "Azure Disk Storage", "b": "Block-level managed disks attached to Azure VMs.", "q": "A VM needs a persistent block-level disk for its operating system and data."}, {"s": "Storage", "f": "Storage tiers (access tiers)", "b": "Blob access tiers—Hot, Cool, Cold, Archive—priced by how often data is accessed.", "q": "Choosing between Hot, Cool, Cold, and Archive for blob data based on how often it is accessed describes which set of options?"}, {"s": "Storage", "f": "Redundancy options", "b": "How many copies of data are kept and where: LRS, ZRS, GRS, GZRS (and read-access variants).", "q": "Deciding whether data is copied within one datacenter, across zones, or to a paired region describes which set of options?"}, {"s": "Storage", "f": "Storage account", "b": "A container grouping blob, file, queue, and table services under one namespace with redundancy and tier settings.", "q": "Before creating blobs or file shares, an admin must first create a container that provides a unique namespace and redundancy settings."}, {"s": "Storage", "f": "AzCopy", "b": "A command-line tool for copying large amounts of data to, from, and between storage accounts.", "q": "An admin wants to script the transfer of large volumes of data between two storage accounts from the command line."}, {"s": "Storage", "f": "Azure Storage Explorer", "b": "A free GUI app to browse and manage Azure Storage data visually.", "q": "A user wants a free desktop app to visually browse blobs, files, and tables in their storage account."}, {"s": "Storage", "f": "Azure File Sync", "b": "Centralizes on-premises Windows file shares in Azure Files with local caching.", "q": "A company wants its on-premises Windows file server to cache locally while centralizing files in Azure Files."}, {"s": "Storage", "f": "Azure Migrate", "b": "A hub of tools to discover, assess, and migrate on-premises servers, databases, and apps to Azure.", "q": "An IT team wants to discover, assess, and migrate its on-premises servers and databases to Azure from one central hub."}, {"s": "Storage", "f": "Azure Data Box", "b": "A physical appliance for transferring very large data volumes offline.", "q": "A company must move petabytes of data to Azure, but network transfer would be far too slow."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra ID", "b": "Microsoft's cloud identity and access management service (formerly Azure Active Directory).", "q": "A company needs a cloud service to manage user sign-ins and access to Azure and Microsoft 365."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Domain Services", "b": "Managed domain services (domain join, group policy, LDAP) without managing domain controllers.", "q": "A team needs domain join and group policy in the cloud without deploying and managing their own domain controllers."}, {"s": "Identity, Access & Security", "f": "Single sign-on (SSO)", "b": "Signing in once to access many apps without re-authenticating each time.", "q": "Employees want to sign in once and access many applications without re-entering their credentials."}, {"s": "Identity, Access & Security", "f": "Multifactor authentication (MFA)", "b": "Requires two or more verification factors from different categories to sign in.", "q": "To reduce account compromise, sign-in requires a password plus a code from a phone app."}, {"s": "Identity, Access & Security", "f": "Passwordless authentication", "b": "Sign-in without a password using Windows Hello, an authenticator app, or FIDO2 keys.", "q": "A company wants users to sign in with Windows Hello or a FIDO2 security key instead of a password."}, {"s": "Identity, Access & Security", "f": "External identities (B2B / B2C)", "b": "Features letting people outside your org access resources: B2B guests and B2C customer identities.", "q": "A business wants to invite partner vendors as guests and manage customer sign-ins to its public app."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Conditional Access", "b": "Policies that evaluate sign-in signals and grant, block, or require extra checks like MFA.", "q": "An admin wants to require MFA only when users sign in from an unfamiliar location or a risky device."}, {"s": "Identity, Access & Security", "f": "Role-based access control (RBAC)", "b": "Grants users only the permissions they need by assigning roles at a scope (least privilege).", "q": "An admin wants to let a user manage only the VMs in one resource group and nothing else."}, {"s": "Identity, Access & Security", "f": "Zero Trust", "b": "A security model that assumes breach: verify explicitly, use least privilege, verify every request.", "q": "A security strategy trusts no user or device by default and verifies every request regardless of network location."}, {"s": "Identity, Access & Security", "f": "Defense in depth", "b": "A layered security strategy so that if one control fails, others still protect the data.", "q": "Security is applied in multiple independent layers—physical, identity, network, app, and data—so one failure doesn't expose data."}, {"s": "Identity, Access & Security", "f": "Microsoft Defender for Cloud", "b": "A CNAPP providing security posture management and threat protection across Azure and multicloud.", "q": "A company wants a secure score, security recommendations, and threat protection across its Azure and multicloud resources."}, {"s": "Cost Management", "f": "Pricing calculator", "b": "A free tool to estimate the cost of Azure services before deploying.", "q": "Before deploying, a team wants an itemized cost estimate for a proposed set of Azure services."}, {"s": "Cost Management", "f": "TCO (Total Cost of Ownership) calculator", "b": "A tool to estimate the savings from moving on-premises workloads to Azure.", "q": "Leadership wants to compare current on-premises costs against projected Azure costs to justify a migration."}, {"s": "Cost Management", "f": "Microsoft Cost Management", "b": "Tools to monitor, allocate, and optimize Azure spend, including budgets and alerts.", "q": "A finance team wants to track actual Azure spend, set budgets, and get alerts when nearing limits."}, {"s": "Cost Management", "f": "Tags", "b": "Name/value metadata on resources used to organize them and report on cost.", "q": "An org wants to label resources with 'Department: Finance' to organize them and break down costs."}, {"s": "Governance & Compliance", "f": "Microsoft Purview", "b": "Unified data governance and compliance to discover, classify, and protect data across sources.", "q": "A company wants to discover, classify, and map sensitive data across on-premises, multicloud, and SaaS sources."}, {"s": "Governance & Compliance", "f": "Azure Policy", "b": "Creates and enforces rules to keep resources compliant, and reports on compliance.", "q": "An admin wants to enforce that resources can only be created in approved regions and flag any that aren't compliant."}, {"s": "Governance & Compliance", "f": "Resource locks", "b": "Locks preventing accidental deletion (CanNotDelete) or changes (ReadOnly) to resources.", "q": "To prevent accidental deletion of a critical production database, an admin applies a control that blocks deletion."}, {"s": "Managing & Deploying", "f": "Azure portal", "b": "A web-based graphical console to build, manage, and monitor Azure resources.", "q": "A new admin prefers a graphical, browser-based console to create and manage resources by pointing and clicking."}, {"s": "Managing & Deploying", "f": "Azure Cloud Shell", "b": "A browser-based authenticated shell offering Bash and PowerShell with tools preinstalled.", "q": "An admin wants to run CLI commands from the browser with no local install, choosing either Bash or PowerShell."}, {"s": "Managing & Deploying", "f": "Azure CLI", "b": "A cross-platform command-line tool for managing Azure via commands and scripts.", "q": "A Linux admin wants to manage Azure resources with cross-platform, Bash-friendly commands."}, {"s": "Managing & Deploying", "f": "Azure PowerShell", "b": "PowerShell cmdlets (the Az module) for managing Azure from the command line and scripts.", "q": "A Windows admin wants to automate Azure resource management using PowerShell cmdlets."}, {"s": "Managing & Deploying", "f": "Azure Arc", "b": "Extends Azure management and governance to on-premises servers, other clouds, and Kubernetes.", "q": "A company wants to manage its on-premises servers and another cloud's resources as if they were native Azure resources."}, {"s": "Managing & Deploying", "f": "Infrastructure as Code (IaC)", "b": "Defining and provisioning infrastructure through config files for repeatable, version-controlled deployments.", "q": "A team wants to define its entire environment in version-controlled files for consistent, repeatable deployments."}, {"s": "Managing & Deploying", "f": "Azure Resource Manager (ARM)", "b": "Azure's deployment and management layer that handles every create, update, and delete request.", "q": "Every request to create or modify an Azure resource passes through which management layer that handles auth and access control?"}, {"s": "Managing & Deploying", "f": "ARM templates", "b": "JSON files that declaratively define Azure resources to deploy (IaC); Bicep is a simpler alternative.", "q": "A team wants to deploy the same set of Azure resources repeatedly using declarative JSON definition files."}, {"s": "Monitoring", "f": "Azure Advisor", "b": "Free, personalized recommendations across reliability, security, performance, operations, and cost.", "q": "A team wants free, personalized recommendations to improve reliability, security, performance, and cost."}, {"s": "Monitoring", "f": "Azure Service Health", "b": "A personalized view of the health of the Azure services and regions you use, with alerts.", "q": "An admin wants alerts about Azure outages and planned maintenance that affect the specific services they use."}, {"s": "Monitoring", "f": "Azure Monitor", "b": "A platform to collect, analyze, and act on metrics and logs across Azure and beyond.", "q": "A company wants one platform to collect metrics and logs from all its resources and act on that telemetry."}, {"s": "Monitoring", "f": "Log Analytics", "b": "The Azure Monitor tool to write and run KQL queries against collected log data.", "q": "An engineer wants to run KQL queries against collected logs to troubleshoot an issue."}, {"s": "Monitoring", "f": "Azure Monitor alerts", "b": "Proactive notifications and actions triggered when monitoring data crosses defined thresholds.", "q": "A team wants to be automatically notified when a VM's CPU usage crosses a set threshold."}, {"s": "Monitoring", "f": "Application Insights", "b": "An Azure Monitor feature for application performance monitoring: availability, performance, usage, and failures.", "q": "Developers want to monitor a live web app's performance, failures, and usage, and detect anomalies."}];
+
+const SECTION_SUFFIX = {"Cloud Concepts": "Which cloud concept does this describe?", "Benefits of Cloud": "Which cloud benefit does this describe?", "Cloud Service Types": "Which cloud service type does this describe?", "Azure Architecture": "Which Azure architectural component does this describe?", "Compute & Networking": "Which Azure compute or networking service should they use?", "Storage": "Which Azure storage service or option should they use?", "Identity, Access & Security": "Which identity, access, or security capability does this describe?", "Cost Management": "Which Azure cost management tool or concept does this describe?", "Governance & Compliance": "Which governance or compliance tool does this describe?", "Managing & Deploying": "Which Azure management or deployment tool should they use?", "Monitoring": "Which Azure monitoring tool should they use?"};
+
+const sectionSelect = document.getElementById('quiz-section-select');
+const countSelect = document.getElementById('quiz-count-select');
+const modeDefBtn = document.getElementById('mode-def-btn');
+const modeExamBtn = document.getElementById('mode-exam-btn');
+const modeDesc = document.getElementById('quiz-mode-desc');
+
+let currentMode = 'def';
+
+function activeCards() {
+  return currentMode === 'exam' ? CARDS_EXAM : CARDS_DEF;
+}
+
+function updateModeDesc() {
+  if (currentMode === 'exam') {
+    modeDesc.textContent = CARDS_EXAM.length + ' scenario-based questions written in the style of the real AZ-900 exam. Pick a section and question count, then go.';
+  } else {
+    const domainCount = new Set(CARDS_DEF.map(c => c.s)).size;
+    modeDesc.textContent = CARDS_DEF.length + ' flashcards across ' + domainCount + ' domains. Pick a section and question count, then go.';
+  }
+}
+
+function populateSections() {
+  const cards = activeCards();
+  const sections = [...new Set(cards.map(c => c.s))];
+  sectionSelect.innerHTML = '<option value="all">All sections (' + cards.length + ' cards)</option>' +
+    sections.map(s => {
+      const n = cards.filter(c => c.s === s).length;
+      return '<option value="' + s + '">' + s + ' (' + n + ')</option>';
+    }).join('');
+}
+
+function refreshCounts() {
+  const pool = getPool();
+  const opts = [5, 10, 15, 20, 30, 50].filter(n => n <= pool.length);
+  opts.push(pool.length);
+  const uniq = [...new Set(opts)];
+  countSelect.innerHTML = uniq.map(n => '<option value="' + n + '">' + n + (n === pool.length ? ' (all)' : '') + '</option>').join('');
+}
+
+function getPool() {
+  const sec = sectionSelect.value || 'all';
+  const cards = activeCards();
+  return sec === 'all' ? cards : cards.filter(c => c.s === sec);
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  modeDefBtn.classList.toggle('active', mode === 'def');
+  modeExamBtn.classList.toggle('active', mode === 'exam');
+  updateModeDesc();
+  populateSections();
+  refreshCounts();
+}
+
+modeDefBtn.addEventListener('click', () => setMode('def'));
+modeExamBtn.addEventListener('click', () => setMode('exam'));
+sectionSelect.addEventListener('change', refreshCounts);
+
+setMode('def');
+
+let quizCards = [];
+let idx = 0;
+let score = 0;
+let missed = [];
+let locked = false;
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildQuestion(card) {
+  if (currentMode === 'exam') {
+    // Prefer distractors from the same section first (plausible, exam-like
+    // wrong answers); top up from the full pool if the section is too small.
+    const sameSection = shuffle(activeCards().filter(c => c !== card && c.s === card.s));
+    const distractors = sameSection.slice(0, 3).map(c => c.f);
+    if (distractors.length < 3) {
+      const rest = shuffle(activeCards().filter(c => c !== card && !distractors.includes(c.f)));
+      for (const c of rest) {
+        if (distractors.length === 3) break;
+        distractors.push(c.f);
+      }
+    }
+    const options = shuffle([card.f, ...distractors]);
+    return { mode: 'exam', correct: card.f, options };
+  }
+
+  const askFront = Math.random() < 0.5;
+  const prompt = askFront ? card.f : card.b;
+  const label = askFront ? 'Which service or concept is this?' : 'What does this do?';
+  const correct = askFront ? card.b : card.f;
+  const others = shuffle(activeCards().filter(c => c !== card));
+  const distractors = [];
+  for (const c of others) {
+    const val = askFront ? c.b : c.f;
+    if (val !== correct && !distractors.includes(val)) distractors.push(val);
+    if (distractors.length === 3) break;
+  }
+  const options = shuffle([correct, ...distractors]);
+  return { mode: 'def', label, prompt, correct, options };
+}
+
+document.getElementById('quiz-start-btn').addEventListener('click', () => {
+  const pool = getPool();
+  const n = parseInt(countSelect.value, 10);
+  quizCards = shuffle(pool).slice(0, n);
+  idx = 0;
+  score = 0;
+  missed = [];
+  document.getElementById('quiz-setup').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'none';
+  document.getElementById('quiz-active').style.display = 'block';
+  renderQuestion();
+});
+
+function renderQuestion() {
+  locked = false;
+  const card = quizCards[idx];
+  const q = buildQuestion(card);
+  document.getElementById('quiz-progress-text').textContent = 'Question ' + (idx + 1) + ' of ' + quizCards.length;
+  document.getElementById('quiz-score-text').textContent = 'Score: ' + score;
+  document.getElementById('quiz-progress-fill').style.width = Math.round((idx / quizCards.length) * 100) + '%';
+
+  const suffixEl = document.getElementById('quiz-question-suffix');
+  if (q.mode === 'exam') {
+    document.getElementById('quiz-question-label').textContent = card.s;
+    document.getElementById('quiz-question-text').textContent = card.q;
+    suffixEl.textContent = SECTION_SUFFIX[card.s] || 'Which Azure service or concept best fits this?';
+    suffixEl.style.display = 'block';
+  } else {
+    document.getElementById('quiz-question-label').textContent = q.label + '  ·  ' + card.s;
+    document.getElementById('quiz-question-text').textContent = q.prompt;
+    suffixEl.textContent = '';
+    suffixEl.style.display = 'none';
+  }
+
+  const feedback = document.getElementById('quiz-feedback');
+  feedback.textContent = '';
+  feedback.className = 'quiz-feedback';
+  const defBox = document.getElementById('quiz-definition');
+  defBox.style.display = 'none';
+  defBox.textContent = '';
+  document.getElementById('quiz-next-btn').style.display = 'none';
+
+  const optWrap = document.getElementById('quiz-options');
+  optWrap.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectOption(opt, q, card, btn));
+    optWrap.appendChild(btn);
+  });
+}
+
+function selectOption(opt, q, card, btn) {
+  if (locked) return;
+  locked = true;
+  const isCorrect = opt === q.correct;
+  const feedback = document.getElementById('quiz-feedback');
+  const promptText = q.mode === 'exam' ? card.q : q.prompt;
+
+  if (isCorrect) {
+    score++;
+    btn.classList.add('correct');
+    feedback.textContent = 'Correct.';
+    feedback.className = 'quiz-feedback correct';
+  } else {
+    btn.classList.add('incorrect');
+    feedback.textContent = 'Not quite. Correct answer: ' + q.correct;
+    feedback.className = 'quiz-feedback incorrect';
+    missed.push({
+      prompt: promptText,
+      correct: q.correct,
+      given: opt,
+      section: card.s,
+      definition: q.mode === 'exam' ? card.b : ''
+    });
+  }
+
+  [...document.getElementById('quiz-options').children].forEach(b => {
+    b.disabled = true;
+    if (b.textContent === q.correct) b.classList.add('correct');
+  });
+
+  if (q.mode === 'exam') {
+    const defBox = document.getElementById('quiz-definition');
+    defBox.textContent = card.f + ' — ' + card.b;
+    defBox.style.display = 'block';
+  }
+
+  document.getElementById('quiz-score-text').textContent = 'Score: ' + score;
+  document.getElementById('quiz-next-btn').style.display = 'block';
+}
+
+document.getElementById('quiz-next-btn').addEventListener('click', () => {
+  idx++;
+  if (idx >= quizCards.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+});
+
+function showResults() {
+  document.getElementById('quiz-progress-fill').style.width = '100%';
+  document.getElementById('quiz-active').style.display = 'none';
+  document.getElementById('quiz-results').style.display = 'block';
+
+  const pct = Math.round((score / quizCards.length) * 100);
+  document.getElementById('quiz-final-score').textContent = score + '/' + quizCards.length;
+  document.getElementById('quiz-final-pct').textContent = pct + '%';
+
+  const reviewList = document.getElementById('quiz-review-list');
+  if (missed.length === 0) {
+    reviewList.innerHTML = '<p style="color: var(--white-dim); font-family: var(--font-mono); font-size: 0.85rem;">No misses. Clean sweep.</p>';
+  } else {
+    reviewList.innerHTML = missed.map(m => `
+      <div class="quiz-review-item">
+        <span class="quiz-review-section">${m.section}</span>
+        <p class="quiz-review-prompt">${m.prompt}</p>
+        <p class="quiz-review-given">Your answer: ${m.given}</p>
+        <p class="quiz-review-correct">Correct: ${m.correct}</p>
+        ${m.definition ? `<p style="font-size:0.78rem;color:var(--white-ghost);margin:0.4rem 0 0;">${m.definition}</p>` : ''}
+      </div>
+    `).join('');
+  }
+}
+
+document.getElementById('quiz-restart-btn').addEventListener('click', () => {
+  document.getElementById('quiz-results').style.display = 'none';
+  document.getElementById('quiz-setup').style.display = 'block';
+});
+</script>
+<script src="cursor.js"></script>
+</body>
+</html>
