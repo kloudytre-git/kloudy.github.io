@@ -1,582 +1,776 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Azure Fundamentals (AZ-900) Quiz — Jontre Gregory</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ-900 Prep — Azure Fundamentals Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  body {
-    background: var(--navy-deep);
-    min-height: 100vh;
-    font-family: var(--font-body);
-    color: var(--white-pure);
+  /* ═══════════════ TOKENS — Navy Mirage ═══════════════ */
+  :root{
+    --navy-deep:#141E30;
+    --navy-mid:#1a2a4a;
+    --navy-steel:#35577D;
+    --navy-light:#4a6d96;
+    --cyan-glow:#0FF0FC;
+    --cyan-soft:#7EC8E3;
+    --cyan-dim:#3a8faa;
+    --white-pure:#E8F4F8;
+    --white-dim:#9bbdd4;
+    --white-ghost:#4d6e87;
+    --glass-bg:rgba(20,30,48,0.72);
+    --glass-border:rgba(14,240,252,0.18);
+    --card-bg:rgba(26,42,74,0.7);
+    --card-border:rgba(53,87,125,0.5);
+    --green:#22c55e;
+    --red:#FF5E6C;
+    --font-display:'Orbitron',monospace;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
   }
-  .quiz-wrap { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
-  .quiz-topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--navy-deep);
+    color:var(--white-pure);
+    font-family:var(--font-body);
+    font-size:16px;line-height:1.6;
+    min-height:100vh;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
   }
-  .quiz-topbar .nav-logo { font-size: 1.1rem; }
+  /* fixed atmosphere: grid + radial cyan glow */
+  .backdrop{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .backdrop .grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(15,240,252,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(15,240,252,0.04) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+  .backdrop .glow{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(680px 420px at 82% -6%,rgba(15,240,252,0.10),transparent 60%),
+      radial-gradient(560px 360px at 6% 2%,rgba(53,87,125,0.28),transparent 55%);
+  }
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:var(--navy-deep)}
+  ::-webkit-scrollbar-thumb{background:var(--navy-steel);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--cyan-dim)}
 
-  .quiz-select-row { margin-bottom: 1.1rem; }
-  .quiz-select-row label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--cyan-soft);
-    margin-bottom: 0.5rem;
-  }
-  .quiz-select-row select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 100%;
-    background-color: rgba(15, 240, 252, 0.06);
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%230ff0fc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M5 8l5 5 5-5'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 0.85rem center;
-    background-size: 13px;
-    border: 1px solid rgba(15, 240, 252, 0.25);
-    color: var(--white-pure);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    padding: 0.7rem 2.2rem 0.7rem 0.9rem;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .quiz-select-row select:focus { outline: none; border-color: var(--cyan-glow); }
-  .quiz-select-row select option {
-    background-color: var(--navy-deep);
-    color: var(--white-pure);
-  }
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:30px 20px 80px}
 
-  .quiz-mode-toggle { display: flex; gap: 0.6rem; margin-bottom: 1.4rem; }
-  .quiz-mode-btn {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: var(--white-dim);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 0.75rem 0.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, color 0.15s;
+  /* ═══════════════ shared ═══════════════ */
+  .eyebrow{
+    font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.25em;
+    text-transform:uppercase;color:var(--cyan-glow);
   }
-  .quiz-mode-btn:hover { border-color: var(--cyan-soft); color: var(--white-pure); }
-  .quiz-mode-btn.active {
-    background: rgba(15, 240, 252, 0.10);
-    border-color: var(--cyan-glow);
-    color: var(--white-pure);
-    box-shadow: 0 0 10px rgba(15, 240, 252, 0.25);
+  .eyebrow::before{content:'> ';opacity:0.5}
+  .section-line{width:60px;height:2px;background:linear-gradient(90deg,var(--cyan-glow),transparent);margin:0.9rem 0 0}
+  .card{
+    background:var(--card-bg);border:1px solid var(--card-border);
+    border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   }
+  button{font-family:var(--font-body);cursor:pointer}
+  .btn{
+    font-family:var(--font-mono);font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;
+    padding:0.8rem 2rem;border-radius:4px;border:none;transition:transform 0.2s,box-shadow 0.2s,background 0.2s;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--navy-steel),var(--cyan-dim));
+    color:var(--white-pure);
+    box-shadow:0 0 0 1px rgba(15,240,252,0.3),0 4px 24px rgba(0,0,0,0.4);
+  }
+  .btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 24px rgba(15,240,252,0.3),0 8px 32px rgba(0,0,0,0.5)}
+  .btn-primary:disabled{background:rgba(53,87,125,0.35);color:var(--white-ghost);box-shadow:none;cursor:not-allowed}
+  .btn-ghost{
+    background:transparent;color:var(--cyan-glow);border:1px solid rgba(15,240,252,0.4);
+  }
+  .btn-ghost:hover{transform:translateY(-2px);background:rgba(15,240,252,0.08);box-shadow:0 0 20px rgba(15,240,252,0.2)}
+  :focus-visible{outline:2px solid var(--cyan-glow);outline-offset:3px;border-radius:4px}
 
-  .quiz-question-suffix {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin: 0.6rem 0 0;
-    color: var(--white-pure);
+  /* ═══════════════ masthead ═══════════════ */
+  .masthead{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .glyph{
+    width:44px;height:44px;flex:none;border-radius:8px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,var(--navy-steel),var(--navy-mid));
+    border:1px solid var(--glass-border);box-shadow:0 0 18px rgba(15,240,252,0.18);
   }
-  .quiz-definition {
-    font-size: 0.85rem;
-    color: var(--white-dim);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.7rem 0.9rem;
-    margin-bottom: 1.1rem;
-    display: none;
+  .glyph::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(15,240,252,0.22) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(15,240,252,0.22) 1px,transparent 1px);
+    background-size:9px 9px;
   }
+  .glyph::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 120%,rgba(15,240,252,0.55),transparent 55%);
+  }
+  .logo{font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:0.15em;color:var(--cyan-glow);text-shadow:0 0 18px rgba(15,240,252,0.5)}
+  .logo span{color:var(--white-pure)}
+  .masthead .tagline{font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);letter-spacing:0.12em;margin-top:2px}
 
-  #quiz-start-btn { width: 100%; margin-top: 0.5rem; }
+  /* ═══════════════ start ═══════════════ */
+  .hero{padding:2.6rem 2.2rem 2.2rem}
+  .hero .eyebrow{margin-bottom:1.1rem;display:inline-block}
+  .hero h2{
+    font-family:var(--font-display);font-weight:700;font-size:clamp(1.7rem,4.5vw,2.5rem);
+    line-height:1.15;color:var(--white-pure);margin-bottom:1.1rem;
+  }
+  .hero h2 .hl{
+    background:linear-gradient(135deg,var(--cyan-glow),var(--cyan-soft));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 20px rgba(15,240,252,0.4));
+  }
+  .hero p.lead{color:var(--white-dim);font-size:1rem;line-height:1.75;margin-bottom:1.8rem;max-width:58ch}
+  .domains{display:grid;gap:0.7rem;margin-bottom:1.9rem}
+  .domain-row{
+    display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;
+    background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;backdrop-filter:blur(8px);
+    transition:border-color 0.3s,transform 0.3s;
+  }
+  .domain-row:hover{border-color:rgba(15,240,252,0.3);transform:translateY(-2px)}
+  .domain-row .idx{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--cyan-glow);width:2rem;flex:none}
+  .domain-row .nm{font-weight:500;font-size:0.9rem;color:var(--white-pure)}
+  .domain-row .nm span{display:block;font-weight:400;color:var(--white-ghost);font-size:0.72rem;font-family:var(--font-mono);letter-spacing:0.02em;margin-top:2px}
+  .domain-row .wt{margin-left:auto;font-family:var(--font-mono);font-size:0.75rem;color:var(--cyan-soft)}
+  .startbar{display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
+  .toggle{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--white-dim);cursor:pointer;user-select:none;letter-spacing:0.05em}
+  .toggle input{position:absolute;opacity:0;width:0;height:0}
+  .switch{width:38px;height:22px;border-radius:12px;background:rgba(53,87,125,0.5);position:relative;transition:background 0.2s,box-shadow 0.2s;flex:none;border:1px solid var(--card-border)}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--white-dim);transition:transform 0.2s,background 0.2s}
+  .toggle input:checked + .switch{background:rgba(15,240,252,0.18);box-shadow:0 0 12px rgba(15,240,252,0.3);border-color:rgba(15,240,252,0.5)}
+  .toggle input:checked + .switch::after{transform:translateX(16px);background:var(--cyan-glow)}
+  .practice-flag{display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.7rem;color:var(--white-dim);letter-spacing:0.05em;margin-top:1.6rem}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse-green 2s infinite}
+  .disclaimer{margin-top:1.4rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);line-height:1.7;border-top:1px solid rgba(53,87,125,0.3);padding-top:1rem}
 
-  .quiz-progress-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--white-dim);
-    margin-bottom: 0.6rem;
+  /* ═══════════════ progress header ═══════════════ */
+  .quiz-head{margin-bottom:1.1rem}
+  .quiz-head .meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;gap:0.8rem}
+  .counter{font-family:var(--font-mono);font-size:0.78rem;color:var(--white-dim);letter-spacing:0.05em}
+  .counter b{color:var(--cyan-glow)}
+  .chip{
+    font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;
+    padding:0.35rem 0.8rem;border-radius:4px;color:var(--cyan-soft);
+    background:rgba(53,87,125,0.3);border:1px solid rgba(53,87,125,0.5);white-space:nowrap;
   }
-  .quiz-progress-track {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 1.6rem;
-  }
-  .quiz-progress-fill {
-    height: 100%;
-    background: var(--cyan-glow);
-    box-shadow: 0 0 8px rgba(15, 240, 252, 0.6);
-    width: 0%;
-    transition: width 0.25s ease;
-  }
+  .track{height:5px;border-radius:3px;background:rgba(53,87,125,0.3);overflow:hidden}
+  .track .fill{height:100%;border-radius:3px;width:0;background:linear-gradient(90deg,var(--navy-steel),var(--cyan-glow));box-shadow:0 0 8px rgba(15,240,252,0.4);transition:width 0.4s cubic-bezier(0.4,0,0.2,1)}
 
-  .quiz-question-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(15, 240, 252, 0.18);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.25rem;
+  /* ═══════════════ question card ═══════════════ */
+  .qcard{padding:1.9rem 1.9rem 1.7rem}
+  .qtype{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan-soft);margin-bottom:0.8rem}
+  .qtype::before{content:'// '}
+  .qtext{font-family:var(--font-body);font-weight:500;font-size:1.18rem;line-height:1.5;color:var(--white-pure);margin-bottom:1.5rem}
+  .options{display:grid;gap:0.7rem}
+  .opt{
+    display:flex;align-items:flex-start;gap:0.85rem;width:100%;text-align:left;
+    padding:0.9rem 1rem;border:1px solid var(--card-border);border-radius:10px;
+    background:rgba(20,30,48,0.55);color:var(--white-pure);font-family:var(--font-body);font-size:0.95rem;line-height:1.45;
+    transition:border-color 0.2s,background 0.2s,box-shadow 0.2s;
   }
-  .quiz-question-label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--cyan-soft);
-    margin: 0 0 0.7rem;
+  .opt:hover:not(:disabled){border-color:rgba(15,240,252,0.4);background:rgba(15,240,252,0.05)}
+  .opt:disabled{cursor:default}
+  .opt .mark{
+    flex:none;width:24px;height:24px;border-radius:5px;border:1px solid var(--card-border);
+    display:grid;place-items:center;font-family:var(--font-mono);font-size:0.72rem;font-weight:500;
+    color:var(--white-dim);background:rgba(53,87,125,0.25);transition:0.2s;margin-top:1px;
   }
-  .quiz-question-text {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    line-height: 1.5;
-    margin: 0;
-    color: var(--white-pure);
-  }
+  .opt[data-shape="round"] .mark{border-radius:50%}
+  .opt.selected{border-color:var(--cyan-glow);background:rgba(15,240,252,0.08);box-shadow:0 0 16px rgba(15,240,252,0.12)}
+  .opt.selected .mark{background:var(--cyan-glow);border-color:var(--cyan-glow);color:var(--navy-deep)}
+  .opt.correct{border-color:rgba(34,197,94,0.6);background:rgba(34,197,94,0.1)}
+  .opt.correct .mark{background:var(--green);border-color:var(--green);color:var(--navy-deep)}
+  .opt.wrong{border-color:rgba(255,94,108,0.55);background:rgba(255,94,108,0.09)}
+  .opt.wrong .mark{background:var(--red);border-color:var(--red);color:var(--navy-deep)}
+  .opt .lbl{flex:1}
 
-  .quiz-options { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.1rem; }
-  .quiz-option {
-    text-align: left;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: var(--white-pure);
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.4;
-    padding: 0.85rem 1.05rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
+  .feedback{
+    margin-top:1.3rem;border-radius:10px;padding:1rem 1.1rem;font-size:0.9rem;line-height:1.6;
+    border:1px solid var(--card-border);background:rgba(20,30,48,0.6);display:none;
   }
-  .quiz-option:hover:not(:disabled) {
-    border-color: var(--cyan-soft);
-    background: rgba(15, 240, 252, 0.06);
-  }
-  .quiz-option:disabled { cursor: default; }
-  .quiz-option.correct {
-    background: rgba(34, 197, 94, 0.12);
-    border-color: rgba(34, 197, 94, 0.5);
-  }
-  .quiz-option.incorrect {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.5);
-  }
+  .feedback.show{display:block;animation:fadeUp 0.3s ease}
+  .feedback .verdict{font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;margin-bottom:0.5rem}
+  .feedback .verdict::before{content:'> '}
+  .feedback.ok{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.45)}
+  .feedback.ok .verdict{color:var(--green)}
+  .feedback.no{background:rgba(255,94,108,0.07);border-color:rgba(255,94,108,0.4)}
+  .feedback.no .verdict{color:var(--red)}
+  .feedback .exp{color:var(--white-dim)}
+  .feedback .exp b{color:var(--cyan-soft);font-weight:600}
 
-  .quiz-feedback { min-height: 1.3rem; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 1.1rem; }
-  .quiz-feedback.correct { color: #22c55e; }
-  .quiz-feedback.incorrect { color: #ef4444; }
+  .qfoot{display:flex;align-items:center;gap:0.8rem;margin-top:1.5rem}
+  .qfoot .hint{font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);letter-spacing:0.04em}
+  .qfoot .spacer{flex:1}
 
-  #quiz-next-btn { width: 100%; display: none; }
+  /* ═══════════════ results ═══════════════ */
+  .results{padding:2.3rem 2rem 2rem}
+  .score-head{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap}
+  .ring{position:relative;width:132px;height:132px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring .pct b{font-family:var(--font-display);font-size:2.1rem;font-weight:700;line-height:1;color:var(--cyan-glow);text-shadow:0 0 18px rgba(15,240,252,0.5)}
+  .ring .pct span{font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);letter-spacing:0.06em;margin-top:4px}
+  .verdict-block{flex:1;min-width:220px}
+  .verdict-block .tag{display:inline-block;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:4px;margin-bottom:0.7rem}
+  .tag.pass{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.5)}
+  .tag.fail{background:rgba(255,94,108,0.1);color:var(--red);border:1px solid rgba(255,94,108,0.45)}
+  .verdict-block h2{font-family:var(--font-display);font-weight:700;font-size:1.5rem;color:var(--white-pure);margin-bottom:0.4rem}
+  .verdict-block p{margin:0;color:var(--white-dim);font-size:0.9rem;line-height:1.7;max-width:44ch}
 
-  .quiz-results-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .quiz-results-stats .stat-box { text-align: center; }
+  .breakdown{margin-top:2rem;display:grid;gap:1.1rem}
+  .breakdown h3{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan-glow);margin-bottom:0.2rem}
+  .bar-row{display:grid;grid-template-columns:1fr auto;gap:0.4rem 1rem;align-items:center}
+  .bar-row .name{font-size:0.88rem;font-weight:500;color:var(--white-pure)}
+  .bar-row .frac{font-family:var(--font-mono);font-size:0.78rem;color:var(--cyan-soft)}
+  .bar{grid-column:1 / -1;height:5px;border-radius:3px;background:rgba(53,87,125,0.3);overflow:hidden}
+  .bar .in{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy-steel),var(--cyan-glow));box-shadow:0 0 8px rgba(15,240,252,0.4);width:0;transition:width 1.1s cubic-bezier(0.4,0,0.2,1)}
 
-  .quiz-review-title {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--cyan-soft);
-    margin: 0 0 1rem;
-  }
-  .quiz-review-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 0.8rem 1rem;
-    margin-bottom: 0.65rem;
-  }
-  .quiz-review-section {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--white-ghost);
-    margin-bottom: 0.3rem;
-  }
-  .quiz-review-prompt { font-size: 0.92rem; color: var(--white-pure); margin: 0 0 0.4rem; }
-  .quiz-review-given { font-size: 0.82rem; color: #ef4444; margin: 0 0 0.15rem; }
-  .quiz-review-correct { font-size: 0.82rem; color: #22c55e; margin: 0; }
+  .results-actions{display:flex;gap:0.9rem;flex-wrap:wrap;margin-top:2rem}
 
-  #quiz-review-btn { width: 100%; margin-top: 0.5rem; }
-  #quiz-restart-btn { width: 100%; margin-top: 0.5rem; }
+  /* ═══════════════ review ═══════════════ */
+  .review{margin-top:0.5rem;display:none}
+  .review.show{display:block}
+  .review > h3{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--white-pure);margin:1.8rem 0.2rem 1rem;letter-spacing:0.05em}
+  .rev-item{
+    background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;
+    padding:1.2rem 1.3rem;margin-bottom:0.8rem;backdrop-filter:blur(8px);position:relative;overflow:hidden;
+  }
+  .rev-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--navy-steel),var(--cyan-glow),var(--navy-steel))}
+  .rev-item.missed::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+  .rev-item .top{display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.8rem}
+  .rev-item .num{font-family:var(--font-mono);font-size:0.78rem;font-weight:500;color:var(--cyan-soft);flex:none;margin-top:2px}
+  .rev-item .qq{font-weight:500;font-size:0.95rem;line-height:1.45;color:var(--white-pure)}
+  .rev-item .status{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:4px;flex:none;margin-top:1px}
+  .status.ok{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.4)}
+  .status.no{background:rgba(255,94,108,0.1);color:var(--red);border:1px solid rgba(255,94,108,0.4)}
+  .rev-item ul{list-style:none;padding:0;margin:0 0 0.7rem}
+  .rev-item li{font-size:0.85rem;padding:0.5rem 0.75rem;border-radius:6px;margin-bottom:0.35rem;border:1px solid transparent;line-height:1.4}
+  .rev-item li.c{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.4);color:#b8f0cf}
+  .rev-item li.w{background:rgba(255,94,108,0.09);border-color:rgba(255,94,108,0.4);color:#ffc4cb}
+  .rev-item li .tick{font-family:var(--font-mono);font-weight:500;margin-right:0.5rem}
+  .rev-item .why{font-size:0.85rem;color:var(--white-dim);line-height:1.65;border-top:1px solid rgba(53,87,125,0.3);padding-top:0.7rem}
+  .rev-item .why b{color:var(--cyan-soft);font-weight:600}
+
+  .hidden{display:none !important}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse-green{0%,100%{box-shadow:0 0 8px var(--green)}50%{box-shadow:0 0 16px var(--green),0 0 24px rgba(34,197,94,0.4)}}
+
+  @media (max-width:560px){
+    .wrap{padding:22px 14px 60px}
+    .hero{padding:1.9rem 1.4rem}
+    .qcard{padding:1.4rem 1.3rem}
+    .qtext{font-size:1.06rem}
+    .results{padding:1.7rem 1.3rem}
+    .btn{padding:0.75rem 1.5rem}
+    .score-head{gap:1.2rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 </style>
 </head>
 <body>
+<div class="backdrop" aria-hidden="true"><div class="grid"></div><div class="glow"></div></div>
 
-<div class="quiz-wrap">
-
-  <div class="quiz-topbar">
-    <a href="index.html" class="nav-logo">KLOUDY<span>.</span>DEV</a>
-    <a href="index.html" class="back-link">&larr; Back to Portfolio</a>
+<div class="wrap">
+  <div class="masthead">
+    <div class="glyph" aria-hidden="true"></div>
+    <div>
+      <div class="logo">AZ&#8209;900<span>.PREP</span></div>
+      <div class="tagline">AZURE FUNDAMENTALS // PRACTICE ASSESSMENT</div>
+    </div>
   </div>
 
-  <p class="section-label">// study tool</p>
-  <h2 class="section-title">Azure Fundamentals (AZ-900) Quiz</h2>
-  <div class="section-line" style="margin-bottom: 2rem;"></div>
+  <!-- ============ START ============ -->
+  <section id="start" class="card hero">
+    <div class="eyebrow">Original practice set // 30 questions</div>
+    <h2>Run the drill across the three <span class="hl">Azure Fundamentals</span> domains.</h2>
+    <p class="lead">A brand-new question bank modeled on Microsoft's official AZ-900 practice assessment — same domains, same weightings, all-new questions. Every answer ships with an explanation so you learn as you go.</p>
 
-  <div id="quiz-setup" class="comments-panel">
-    <h3 style="margin-bottom: 0.4rem;">Practice Quiz</h3>
-    <p id="quiz-mode-desc" style="color: var(--white-dim); margin-bottom: 1.25rem;"></p>
-
-    <div class="quiz-mode-toggle">
-      <button type="button" class="quiz-mode-btn active" id="mode-def-btn">Definitions &amp; Terms</button>
-      <button type="button" class="quiz-mode-btn" id="mode-exam-btn">Exam-Style Scenarios</button>
-    </div>
-
-    <div class="quiz-select-row">
-      <label for="quiz-section-select">Section</label>
-      <select id="quiz-section-select"></select>
-    </div>
-    <div class="quiz-select-row">
-      <label for="quiz-count-select">Number of questions</label>
-      <select id="quiz-count-select"></select>
-    </div>
-    <button class="btn-submit" id="quiz-start-btn">Start Quiz</button>
-  </div>
-
-  <div id="quiz-active" style="display:none;">
-    <div class="quiz-progress-row">
-      <span id="quiz-progress-text"></span>
-      <span id="quiz-score-text"></span>
-    </div>
-    <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
-
-    <div class="quiz-question-card">
-      <p class="quiz-question-label" id="quiz-question-label"></p>
-      <p class="quiz-question-text" id="quiz-question-text"></p>
-      <p class="quiz-question-suffix" id="quiz-question-suffix" style="display:none;"></p>
-    </div>
-
-    <div class="quiz-options" id="quiz-options"></div>
-    <div class="quiz-feedback" id="quiz-feedback"></div>
-    <div class="quiz-definition" id="quiz-definition"></div>
-    <button class="btn-submit" id="quiz-next-btn">Next Question &rarr;</button>
-  </div>
-
-  <div id="quiz-results" style="display:none;">
-    <div class="quiz-results-stats">
-      <div class="stat-box">
-        <div class="stat-number" id="quiz-final-score">0/0</div>
-        <div class="stat-label">Score</div>
+    <div class="domains">
+      <div class="domain-row">
+        <div class="idx">01</div>
+        <div class="nm">Cloud concepts<span>service &amp; deployment models, benefits</span></div>
+        <div class="wt">25–30%</div>
       </div>
-      <div class="stat-box">
-        <div class="stat-number" id="quiz-final-pct">0%</div>
-        <div class="stat-label">Accuracy</div>
+      <div class="domain-row">
+        <div class="idx">02</div>
+        <div class="nm">Azure architecture &amp; services<span>compute, network, storage, identity</span></div>
+        <div class="wt">35–40%</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">03</div>
+        <div class="nm">Management &amp; governance<span>cost, policy, monitoring</span></div>
+        <div class="wt">30–35%</div>
       </div>
     </div>
 
-    <p class="quiz-review-title">// review missed questions</p>
-    <div id="quiz-review-list"></div>
+    <div class="startbar">
+      <button class="btn btn-primary" id="startBtn">Initialize quiz</button>
+      <label class="toggle">
+        <input type="checkbox" id="shuffleToggle" checked>
+        <span class="switch" aria-hidden="true"></span>
+        Shuffle questions
+      </label>
+    </div>
 
-    <button class="btn-submit" id="quiz-review-btn" style="display:none;">Review What You Missed</button>
-    <button class="btn-submit" id="quiz-restart-btn">Try Again</button>
-  </div>
+    <div class="practice-flag"><span class="status-dot" aria-hidden="true"></span>Practice mode active — no data leaves your browser</div>
 
+    <p class="disclaimer">Not affiliated with or endorsed by Microsoft. "AZ-900" and "Azure" are trademarks of Microsoft. Independent study aid with original questions; the real exam has ~50 questions and a passing score of 700/1000. Verify anything important against Microsoft Learn.</p>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz" class="hidden">
+    <div class="quiz-head">
+      <div class="meta">
+        <div class="counter">Q<b id="qNow">1</b> / <span id="qTotal">30</span></div>
+        <div class="chip" id="qDomain">Cloud concepts</div>
+      </div>
+      <div class="track"><div class="fill" id="progFill"></div></div>
+    </div>
+
+    <div class="card qcard">
+      <div class="qtype" id="qType">Choose one answer</div>
+      <p class="qtext" id="qText">—</p>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">
+        <div class="verdict" id="fVerdict"></div>
+        <div class="exp" id="fExp"></div>
+      </div>
+      <div class="qfoot">
+        <span class="hint" id="qHint">Keys 1–4 to pick // Enter to check</span>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" id="checkBtn" disabled>Check answer</button>
+        <button class="btn btn-primary hidden" id="nextBtn">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="hidden">
+    <div class="card results">
+      <div class="score-head">
+        <div class="ring">
+          <svg width="132" height="132" viewBox="0 0 132 132">
+            <circle cx="66" cy="66" r="58" fill="none" stroke="rgba(53,87,125,0.3)" stroke-width="10"/>
+            <circle id="ringArc" cx="66" cy="66" r="58" fill="none" stroke="url(#grad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+            <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#35577D"/><stop offset="1" stop-color="#0FF0FC"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="pct"><b id="scorePct">0%</b><span id="scoreFrac">0 / 30</span></div>
+        </div>
+        <div class="verdict-block">
+          <span class="tag" id="resTag">—</span>
+          <h2 id="resTitle">—</h2>
+          <p id="resMsg">—</p>
+        </div>
+      </div>
+
+      <div class="breakdown">
+        <h3>Signal by domain</h3>
+        <div id="domainBars"></div>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn btn-primary" id="reviewBtn">Review answers</button>
+        <button class="btn btn-ghost" id="retryBtn">Retake quiz</button>
+      </div>
+    </div>
+
+    <div class="review" id="review">
+      <h3>Answer review</h3>
+      <div id="reviewList"></div>
+    </div>
+  </section>
 </div>
 
 <script>
-const CARDS_DEF = [{"s": "Cloud Concepts", "f": "Cloud computing", "b": "Delivering computing services (compute, storage, networking, software) over the internet on a pay-as-you-go basis instead of owning hardware."}, {"s": "Cloud Concepts", "f": "Shared responsibility model", "b": "Framework splitting security and management duties between Microsoft and the customer; data and identities always stay the customer's responsibility."}, {"s": "Cloud Concepts", "f": "Public cloud", "b": "Cloud services delivered over the public internet and shared across many organizations, owned and run by a provider like Azure."}, {"s": "Cloud Concepts", "f": "Private cloud", "b": "A cloud environment used exclusively by a single organization, offering more control at higher cost."}, {"s": "Cloud Concepts", "f": "Hybrid cloud", "b": "Combines public and private cloud (and on-premises), letting workloads and data move between them."}, {"s": "Cloud Concepts", "f": "Cloud model use cases", "b": "Public suits variable demand and low cost; private suits strict compliance and control; hybrid suits gradual migration and mixed needs."}, {"s": "Cloud Concepts", "f": "Consumption-based model", "b": "You pay only for the resources you actually use, with no upfront cost."}, {"s": "Cloud Concepts", "f": "CapEx vs OpEx", "b": "CapEx is upfront spend on owned assets; OpEx is ongoing pay-as-you-go spend. Cloud favors OpEx."}, {"s": "Cloud Concepts", "f": "Cloud pricing models", "b": "Ways Azure charges: pay-as-you-go, reserved (1- or 3-year commitment), spot (spare capacity), and Azure Hybrid Benefit."}, {"s": "Cloud Concepts", "f": "Serverless", "b": "The provider fully manages and auto-scales infrastructure; you deploy only code and pay only while it runs."}, {"s": "Benefits of Cloud", "f": "High availability", "b": "Keeping services operational with minimal downtime through redundancy and SLAs."}, {"s": "Benefits of Cloud", "f": "Scalability", "b": "Adding or removing resources to meet demand; vertical (resize) or horizontal (add instances)."}, {"s": "Benefits of Cloud", "f": "Elasticity", "b": "Automatic scaling up or down in near real time to match changing demand."}, {"s": "Benefits of Cloud", "f": "Reliability", "b": "A system's ability to recover from failures and keep functioning."}, {"s": "Benefits of Cloud", "f": "Predictability", "b": "Confidence in performance and cost through autoscaling, load balancing, and cost tools."}, {"s": "Benefits of Cloud", "f": "Security and governance", "b": "Built-in security controls plus governance tools that enforce standards and compliance across resources."}, {"s": "Benefits of Cloud", "f": "Manageability", "b": "Managing OF the cloud (autoscale, templates, monitoring) and IN the cloud (portal, CLI, APIs)."}, {"s": "Benefits of Cloud", "f": "Service Level Agreement (SLA)", "b": "A Microsoft commitment to a service's uptime, expressed as a percentage like 99.9%."}, {"s": "Cloud Service Types", "f": "Infrastructure as a Service (IaaS)", "b": "Cloud provides compute, storage, and networking; the customer manages the OS and apps. Most control. Example: Azure VMs."}, {"s": "Cloud Service Types", "f": "Platform as a Service (PaaS)", "b": "Cloud manages infrastructure and platform; the customer manages only apps and data. Example: Azure App Service."}, {"s": "Cloud Service Types", "f": "Software as a Service (SaaS)", "b": "Fully managed ready-to-use software over the internet; provider manages all but your data and identities. Example: Microsoft 365."}, {"s": "Cloud Service Types", "f": "IaaS / PaaS / SaaS use cases", "b": "IaaS: lift-and-shift and full OS control. PaaS: building apps without managing servers. SaaS: ready-to-use software."}, {"s": "Azure Architecture", "f": "Azure region", "b": "A geographic area containing one or more networked datacenters where you deploy resources."}, {"s": "Azure Architecture", "f": "Region pairs", "b": "Two regions 300+ miles apart in the same geography, paired for disaster recovery and staged updates."}, {"s": "Azure Architecture", "f": "Sovereign regions", "b": "Isolated, physically and logically separate Azure instances for compliance, such as Azure Government."}, {"s": "Azure Architecture", "f": "Availability zones", "b": "Physically separate datacenters within a region, each with independent power, cooling, and networking."}, {"s": "Azure Architecture", "f": "Azure datacenters", "b": "The physical facilities housing the servers and infrastructure that run Azure services."}, {"s": "Azure Architecture", "f": "Azure resource", "b": "Any manageable item in Azure, such as a VM, storage account, or database."}, {"s": "Azure Architecture", "f": "Resource group", "b": "A logical container holding related resources; deleting it deletes its contents."}, {"s": "Azure Architecture", "f": "Subscription", "b": "A logical unit of Azure services that provides a billing and access-control boundary."}, {"s": "Azure Architecture", "f": "Management group", "b": "A container above subscriptions used to apply governance to many subscriptions at once."}, {"s": "Azure Architecture", "f": "Resource hierarchy", "b": "Top-down: Management groups > Subscriptions > Resource groups > Resources, with inheritance downward."}, {"s": "Compute & Networking", "f": "Compute types comparison", "b": "VMs give full OS control; containers are lightweight and portable; functions are serverless and event-driven."}, {"s": "Compute & Networking", "f": "Azure Virtual Machines (VMs)", "b": "IaaS on-demand, scalable Windows or Linux virtual servers with full OS control."}, {"s": "Compute & Networking", "f": "Azure Virtual Machine Scale Sets", "b": "A group of identical, load-balanced VMs that automatically scale in number based on demand."}, {"s": "Compute & Networking", "f": "Availability sets", "b": "Grouping VMs across fault and update domains in one datacenter to protect from hardware failures and maintenance."}, {"s": "Compute & Networking", "f": "Azure Virtual Desktop", "b": "Cloud desktop and app virtualization (DaaS) delivering Windows desktops to any device."}, {"s": "Compute & Networking", "f": "Resources required for a VM", "b": "A VM typically needs a size, OS image, disks, virtual network and subnet, a NIC, an IP, and a network security group."}, {"s": "Compute & Networking", "f": "Azure Container Instances (ACI)", "b": "A serverless way to run a single container quickly without managing VMs or orchestration."}, {"s": "Compute & Networking", "f": "Azure Container Apps", "b": "A serverless managed service for microservices and containers at scale with autoscaling, no Kubernetes to manage."}, {"s": "Compute & Networking", "f": "Azure Kubernetes Service (AKS)", "b": "A managed Kubernetes service for deploying, managing, and scaling containerized apps."}, {"s": "Compute & Networking", "f": "Azure Functions", "b": "Serverless, event-driven compute that runs small code snippets on triggers, billed per execution."}, {"s": "Compute & Networking", "f": "Azure App Service (Web Apps)", "b": "PaaS for hosting web apps and APIs without managing servers, with autoscaling and CI/CD."}, {"s": "Compute & Networking", "f": "Application hosting options", "b": "Web Apps for standard PaaS apps, containers for portable microservices, and VMs for full control."}, {"s": "Compute & Networking", "f": "Azure Virtual Network (VNet)", "b": "The fundamental building block for private networking, letting Azure resources communicate securely."}, {"s": "Compute & Networking", "f": "Subnet", "b": "A segmented IP range within a virtual network used to organize and isolate resources."}, {"s": "Compute & Networking", "f": "VNet peering", "b": "Connects two virtual networks so resources communicate privately over the Microsoft backbone."}, {"s": "Compute & Networking", "f": "Azure DNS", "b": "A hosting service for DNS domains providing name resolution on Azure infrastructure."}, {"s": "Compute & Networking", "f": "Azure VPN Gateway", "b": "Sends encrypted traffic between a VNet and on-premises (or devices) over the public internet."}, {"s": "Compute & Networking", "f": "Azure ExpressRoute", "b": "A private, dedicated connection from a provider into Azure, bypassing the public internet."}, {"s": "Compute & Networking", "f": "Public endpoint", "b": "An endpoint with a public IP address that is reachable over the internet."}, {"s": "Compute & Networking", "f": "Private endpoint", "b": "A network interface using a private IP from your VNet to reach a service without the public internet."}, {"s": "Storage", "f": "Azure Storage services comparison", "b": "Blob for objects, Files for file shares, Queue for messages, Table for NoSQL, Disk for VM block storage."}, {"s": "Storage", "f": "Azure Blob Storage", "b": "Massively scalable object storage for unstructured data like files, media, and backups."}, {"s": "Storage", "f": "Azure Files", "b": "Fully managed cloud file shares accessible via SMB and NFS."}, {"s": "Storage", "f": "Azure Queue Storage", "b": "Stores large numbers of messages for asynchronous communication between app components."}, {"s": "Storage", "f": "Azure Table Storage", "b": "A NoSQL key/attribute store for large amounts of structured, non-relational data."}, {"s": "Storage", "f": "Azure Disk Storage", "b": "Block-level managed disks attached to Azure VMs."}, {"s": "Storage", "f": "Storage tiers (access tiers)", "b": "Blob access tiers—Hot, Cool, Cold, Archive—priced by how often data is accessed."}, {"s": "Storage", "f": "Redundancy options", "b": "How many copies of data are kept and where: LRS, ZRS, GRS, GZRS (and read-access variants)."}, {"s": "Storage", "f": "Storage account", "b": "A container grouping blob, file, queue, and table services under one namespace with redundancy and tier settings."}, {"s": "Storage", "f": "AzCopy", "b": "A command-line tool for copying large amounts of data to, from, and between storage accounts."}, {"s": "Storage", "f": "Azure Storage Explorer", "b": "A free GUI app to browse and manage Azure Storage data visually."}, {"s": "Storage", "f": "Azure File Sync", "b": "Centralizes on-premises Windows file shares in Azure Files with local caching."}, {"s": "Storage", "f": "Azure Migrate", "b": "A hub of tools to discover, assess, and migrate on-premises servers, databases, and apps to Azure."}, {"s": "Storage", "f": "Azure Data Box", "b": "A physical appliance for transferring very large data volumes offline."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra ID", "b": "Microsoft's cloud identity and access management service (formerly Azure Active Directory)."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Domain Services", "b": "Managed domain services (domain join, group policy, LDAP) without managing domain controllers."}, {"s": "Identity, Access & Security", "f": "Single sign-on (SSO)", "b": "Signing in once to access many apps without re-authenticating each time."}, {"s": "Identity, Access & Security", "f": "Multifactor authentication (MFA)", "b": "Requires two or more verification factors from different categories to sign in."}, {"s": "Identity, Access & Security", "f": "Passwordless authentication", "b": "Sign-in without a password using Windows Hello, an authenticator app, or FIDO2 keys."}, {"s": "Identity, Access & Security", "f": "External identities (B2B / B2C)", "b": "Features letting people outside your org access resources: B2B guests and B2C customer identities."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Conditional Access", "b": "Policies that evaluate sign-in signals and grant, block, or require extra checks like MFA."}, {"s": "Identity, Access & Security", "f": "Role-based access control (RBAC)", "b": "Grants users only the permissions they need by assigning roles at a scope (least privilege)."}, {"s": "Identity, Access & Security", "f": "Zero Trust", "b": "A security model that assumes breach: verify explicitly, use least privilege, verify every request."}, {"s": "Identity, Access & Security", "f": "Defense in depth", "b": "A layered security strategy so that if one control fails, others still protect the data."}, {"s": "Identity, Access & Security", "f": "Microsoft Defender for Cloud", "b": "A CNAPP providing security posture management and threat protection across Azure and multicloud."}, {"s": "Cost Management", "f": "Factors affecting cost", "b": "Cost drivers include resource type, service, region, outbound data transfer, and subscription/pricing type."}, {"s": "Cost Management", "f": "Pricing calculator", "b": "A free tool to estimate the cost of Azure services before deploying."}, {"s": "Cost Management", "f": "TCO (Total Cost of Ownership) calculator", "b": "A tool to estimate the savings from moving on-premises workloads to Azure."}, {"s": "Cost Management", "f": "Microsoft Cost Management", "b": "Tools to monitor, allocate, and optimize Azure spend, including budgets and alerts."}, {"s": "Cost Management", "f": "Tags", "b": "Name/value metadata on resources used to organize them and report on cost."}, {"s": "Governance & Compliance", "f": "Microsoft Purview", "b": "Unified data governance and compliance to discover, classify, and protect data across sources."}, {"s": "Governance & Compliance", "f": "Azure Policy", "b": "Creates and enforces rules to keep resources compliant, and reports on compliance."}, {"s": "Governance & Compliance", "f": "Resource locks", "b": "Locks preventing accidental deletion (CanNotDelete) or changes (ReadOnly) to resources."}, {"s": "Managing & Deploying", "f": "Azure portal", "b": "A web-based graphical console to build, manage, and monitor Azure resources."}, {"s": "Managing & Deploying", "f": "Azure Cloud Shell", "b": "A browser-based authenticated shell offering Bash and PowerShell with tools preinstalled."}, {"s": "Managing & Deploying", "f": "Azure CLI", "b": "A cross-platform command-line tool for managing Azure via commands and scripts."}, {"s": "Managing & Deploying", "f": "Azure PowerShell", "b": "PowerShell cmdlets (the Az module) for managing Azure from the command line and scripts."}, {"s": "Managing & Deploying", "f": "Azure Arc", "b": "Extends Azure management and governance to on-premises servers, other clouds, and Kubernetes."}, {"s": "Managing & Deploying", "f": "Infrastructure as Code (IaC)", "b": "Defining and provisioning infrastructure through config files for repeatable, version-controlled deployments."}, {"s": "Managing & Deploying", "f": "Azure Resource Manager (ARM)", "b": "Azure's deployment and management layer that handles every create, update, and delete request."}, {"s": "Managing & Deploying", "f": "ARM templates", "b": "JSON files that declaratively define Azure resources to deploy (IaC); Bicep is a simpler alternative."}, {"s": "Monitoring", "f": "Azure Advisor", "b": "Free, personalized recommendations across reliability, security, performance, operations, and cost."}, {"s": "Monitoring", "f": "Azure Service Health", "b": "A personalized view of the health of the Azure services and regions you use, with alerts."}, {"s": "Monitoring", "f": "Azure Monitor", "b": "A platform to collect, analyze, and act on metrics and logs across Azure and beyond."}, {"s": "Monitoring", "f": "Log Analytics", "b": "The Azure Monitor tool to write and run KQL queries against collected log data."}, {"s": "Monitoring", "f": "Azure Monitor alerts", "b": "Proactive notifications and actions triggered when monitoring data crosses defined thresholds."}, {"s": "Monitoring", "f": "Application Insights", "b": "An Azure Monitor feature for application performance monitoring: availability, performance, usage, and failures."}];
+/* ============================================================
+   AZ-900 Prep — original practice question bank
+   Domains: 1 Cloud concepts · 2 Architecture & services · 3 Management & governance
+   ============================================================ */
+const DOMAINS = {
+  1:"Cloud concepts",
+  2:"Azure architecture & services",
+  3:"Management & governance"
+};
 
-const CARDS_EXAM = [{"s": "Cloud Concepts", "f": "Cloud computing", "b": "Delivering computing services (compute, storage, networking, software) over the internet on a pay-as-you-go basis instead of owning hardware.", "q": "An organization rents servers, storage, and software over the internet and pays only for what it uses instead of buying its own datacenter."}, {"s": "Cloud Concepts", "f": "Shared responsibility model", "b": "Framework splitting security and management duties between Microsoft and the customer; data and identities always stay the customer's responsibility.", "q": "A team needs to know who secures their data and user identities versus who secures the physical datacenter in Azure."}, {"s": "Cloud Concepts", "f": "Public cloud", "b": "Cloud services delivered over the public internet and shared across many organizations, owned and run by a provider like Azure.", "q": "A startup wants to run its app on shared, provider-owned infrastructure with no hardware to buy and the ability to scale instantly."}, {"s": "Cloud Concepts", "f": "Private cloud", "b": "A cloud environment used exclusively by a single organization, offering more control at higher cost.", "q": "A bank must keep all workloads on infrastructure dedicated solely to itself for strict control and compliance."}, {"s": "Cloud Concepts", "f": "Hybrid cloud", "b": "Combines public and private cloud (and on-premises), letting workloads and data move between them.", "q": "A company keeps sensitive records in its own datacenter but bursts to Azure during seasonal peak demand."}, {"s": "Cloud Concepts", "f": "Consumption-based model", "b": "You pay only for the resources you actually use, with no upfront cost.", "q": "A finance team wants to eliminate upfront capital spending and be billed only for the compute they actually consume each month."}, {"s": "Cloud Concepts", "f": "Serverless", "b": "The provider fully manages and auto-scales infrastructure; you deploy only code and pay only while it runs.", "q": "Developers want to run event-driven code without provisioning or managing any servers, paying only during execution."}, {"s": "Benefits of Cloud", "f": "High availability", "b": "Keeping services operational with minimal downtime through redundancy and SLAs.", "q": "A company wants its application to stay online with minimal downtime by spreading it across redundant infrastructure."}, {"s": "Benefits of Cloud", "f": "Scalability", "b": "Adding or removing resources to meet demand; vertical (resize) or horizontal (add instances).", "q": "An app needs to handle more load by adding identical servers during busy periods and removing them afterward."}, {"s": "Benefits of Cloud", "f": "Elasticity", "b": "Automatic scaling up or down in near real time to match changing demand.", "q": "Resources automatically expand and contract in near real time as traffic rises and falls, with no manual action."}, {"s": "Benefits of Cloud", "f": "Reliability", "b": "A system's ability to recover from failures and keep functioning.", "q": "A workload is designed to recover automatically from component failures and continue operating."}, {"s": "Benefits of Cloud", "f": "Predictability", "b": "Confidence in performance and cost through autoscaling, load balancing, and cost tools.", "q": "Leadership wants confidence that both performance and monthly spend will stay consistent and forecastable."}, {"s": "Benefits of Cloud", "f": "Security and governance", "b": "Built-in security controls plus governance tools that enforce standards and compliance across resources.", "q": "A company values built-in encryption and patching plus policy tools that enforce organizational standards across resources."}, {"s": "Benefits of Cloud", "f": "Manageability", "b": "Managing OF the cloud (autoscale, templates, monitoring) and IN the cloud (portal, CLI, APIs).", "q": "Admins value deploying from templates, autoscaling, and managing resources through a portal, CLI, and APIs."}, {"s": "Benefits of Cloud", "f": "Service Level Agreement (SLA)", "b": "A Microsoft commitment to a service's uptime, expressed as a percentage like 99.9%.", "q": "A team needs to reference Microsoft's formal guarantee that a service will be available 99.9% of the time."}, {"s": "Cloud Service Types", "f": "Infrastructure as a Service (IaaS)", "b": "Cloud provides compute, storage, and networking; the customer manages the OS and apps. Most control. Example: Azure VMs.", "q": "A team wants full control of the operating system and installed software, managing everything except the physical hardware."}, {"s": "Cloud Service Types", "f": "Platform as a Service (PaaS)", "b": "Cloud manages infrastructure and platform; the customer manages only apps and data. Example: Azure App Service.", "q": "Developers want to deploy web apps without managing the OS, patching, or servers—just their code and data."}, {"s": "Cloud Service Types", "f": "Software as a Service (SaaS)", "b": "Fully managed ready-to-use software over the internet; provider manages all but your data and identities. Example: Microsoft 365.", "q": "An organization wants ready-to-use email and collaboration software with nothing to install or maintain."}, {"s": "Azure Architecture", "f": "Azure region", "b": "A geographic area containing one or more networked datacenters where you deploy resources.", "q": "To reduce latency, an admin deploys resources in a geographic area close to users, made up of networked datacenters."}, {"s": "Azure Architecture", "f": "Region pairs", "b": "Two regions 300+ miles apart in the same geography, paired for disaster recovery and staged updates.", "q": "For disaster recovery, data replicates to a second region at least 300 miles away within the same geography."}, {"s": "Azure Architecture", "f": "Sovereign regions", "b": "Isolated, physically and logically separate Azure instances for compliance, such as Azure Government.", "q": "A US federal agency needs an isolated Azure instance that meets government compliance requirements."}, {"s": "Azure Architecture", "f": "Availability zones", "b": "Physically separate datacenters within a region, each with independent power, cooling, and networking.", "q": "To survive a single datacenter failure, an app is deployed across physically separate facilities within the same region."}, {"s": "Azure Architecture", "f": "Azure datacenters", "b": "The physical facilities housing the servers and infrastructure that run Azure services.", "q": "A candidate is asked what the physical facilities are called that house Azure's servers and networking hardware."}, {"s": "Azure Architecture", "f": "Azure resource", "b": "Any manageable item in Azure, such as a VM, storage account, or database.", "q": "A VM, a storage account, and a database are each examples of which fundamental manageable item in Azure?"}, {"s": "Azure Architecture", "f": "Resource group", "b": "A logical container holding related resources; deleting it deletes its contents.", "q": "An admin wants to manage all resources for one application together and delete them in a single action."}, {"s": "Azure Architecture", "f": "Subscription", "b": "A logical unit of Azure services that provides a billing and access-control boundary.", "q": "A company wants to separate billing and access for two departments at a level above resource groups."}, {"s": "Azure Architecture", "f": "Management group", "b": "A container above subscriptions used to apply governance to many subscriptions at once.", "q": "An enterprise needs to apply the same policy and access rules across dozens of subscriptions at once."}, {"s": "Compute & Networking", "f": "Azure Virtual Machines (VMs)", "b": "IaaS on-demand, scalable Windows or Linux virtual servers with full OS control.", "q": "A team needs to lift-and-shift a legacy Windows Server app and requires full control of the operating system."}, {"s": "Compute & Networking", "f": "Azure Virtual Machine Scale Sets", "b": "A group of identical, load-balanced VMs that automatically scale in number based on demand.", "q": "An app needs a set of identical VMs that automatically grow and shrink in count behind a load balancer."}, {"s": "Compute & Networking", "f": "Availability sets", "b": "Grouping VMs across fault and update domains in one datacenter to protect from hardware failures and maintenance.", "q": "To protect VMs from rack-level hardware failure and host maintenance within a single datacenter, they're grouped across fault and update domains."}, {"s": "Compute & Networking", "f": "Azure Virtual Desktop", "b": "Cloud desktop and app virtualization (DaaS) delivering Windows desktops to any device.", "q": "A company wants employees to access a Windows desktop and apps from any device via a cloud-hosted virtual desktop."}, {"s": "Compute & Networking", "f": "Azure Container Instances (ACI)", "b": "A serverless way to run a single container quickly without managing VMs or orchestration.", "q": "A developer wants to run a single short-lived container quickly without managing servers or an orchestrator."}, {"s": "Compute & Networking", "f": "Azure Container Apps", "b": "A serverless managed service for microservices and containers at scale with autoscaling, no Kubernetes to manage.", "q": "A team wants to run scalable containerized microservices serverlessly without managing Kubernetes infrastructure."}, {"s": "Compute & Networking", "f": "Azure Kubernetes Service (AKS)", "b": "A managed Kubernetes service for deploying, managing, and scaling containerized apps.", "q": "An organization already uses Kubernetes and wants a managed cluster in Azure to orchestrate its containers."}, {"s": "Compute & Networking", "f": "Azure Functions", "b": "Serverless, event-driven compute that runs small code snippets on triggers, billed per execution.", "q": "A developer wants a small piece of code to run automatically whenever a file is uploaded, paying only for execution time."}, {"s": "Compute & Networking", "f": "Azure App Service (Web Apps)", "b": "PaaS for hosting web apps and APIs without managing servers, with autoscaling and CI/CD.", "q": "A team wants to host a web app and REST API with built-in scaling and deployment, without managing any servers."}, {"s": "Compute & Networking", "f": "Azure Virtual Network (VNet)", "b": "The fundamental building block for private networking, letting Azure resources communicate securely.", "q": "Resources need to communicate privately and securely with each other and with on-premises networks."}, {"s": "Compute & Networking", "f": "Subnet", "b": "A segmented IP range within a virtual network used to organize and isolate resources.", "q": "An admin wants to divide a virtual network's address space to isolate groups of resources."}, {"s": "Compute & Networking", "f": "VNet peering", "b": "Connects two virtual networks so resources communicate privately over the Microsoft backbone.", "q": "Two virtual networks must communicate privately as if one network, over Microsoft's backbone."}, {"s": "Compute & Networking", "f": "Azure DNS", "b": "A hosting service for DNS domains providing name resolution on Azure infrastructure.", "q": "A company wants to host and manage its domain's DNS records using Azure infrastructure."}, {"s": "Compute & Networking", "f": "Azure VPN Gateway", "b": "Sends encrypted traffic between a VNet and on-premises (or devices) over the public internet.", "q": "A business needs an encrypted site-to-site connection between its office and Azure over the public internet."}, {"s": "Compute & Networking", "f": "Azure ExpressRoute", "b": "A private, dedicated connection from a provider into Azure, bypassing the public internet.", "q": "An enterprise needs a private, high-throughput, dedicated connection to Azure that does not traverse the public internet."}, {"s": "Compute & Networking", "f": "Public endpoint", "b": "An endpoint with a public IP address that is reachable over the internet.", "q": "A service is exposed via a public IP address that clients reach over the internet."}, {"s": "Compute & Networking", "f": "Private endpoint", "b": "A network interface using a private IP from your VNet to reach a service without the public internet.", "q": "A company wants to reach Azure Storage using a private IP inside its VNet, keeping traffic off the public internet."}, {"s": "Storage", "f": "Azure Blob Storage", "b": "Massively scalable object storage for unstructured data like files, media, and backups.", "q": "A company needs to store millions of images and video files as scalable object data."}, {"s": "Storage", "f": "Azure Files", "b": "Fully managed cloud file shares accessible via SMB and NFS.", "q": "Teams need a managed cloud file share they can mount over SMB from multiple machines at once."}, {"s": "Storage", "f": "Azure Queue Storage", "b": "Stores large numbers of messages for asynchronous communication between app components.", "q": "An app needs to decouple its components by passing large numbers of messages asynchronously."}, {"s": "Storage", "f": "Azure Table Storage", "b": "A NoSQL key/attribute store for large amounts of structured, non-relational data.", "q": "A developer needs a cheap, schemaless NoSQL store for large amounts of structured key/value data."}, {"s": "Storage", "f": "Azure Disk Storage", "b": "Block-level managed disks attached to Azure VMs.", "q": "A VM needs a persistent block-level disk for its operating system and data."}, {"s": "Storage", "f": "Storage tiers (access tiers)", "b": "Blob access tiers—Hot, Cool, Cold, Archive—priced by how often data is accessed.", "q": "Choosing between Hot, Cool, Cold, and Archive for blob data based on how often it is accessed describes which set of options?"}, {"s": "Storage", "f": "Redundancy options", "b": "How many copies of data are kept and where: LRS, ZRS, GRS, GZRS (and read-access variants).", "q": "Deciding whether data is copied within one datacenter, across zones, or to a paired region describes which set of options?"}, {"s": "Storage", "f": "Storage account", "b": "A container grouping blob, file, queue, and table services under one namespace with redundancy and tier settings.", "q": "Before creating blobs or file shares, an admin must first create a container that provides a unique namespace and redundancy settings."}, {"s": "Storage", "f": "AzCopy", "b": "A command-line tool for copying large amounts of data to, from, and between storage accounts.", "q": "An admin wants to script the transfer of large volumes of data between two storage accounts from the command line."}, {"s": "Storage", "f": "Azure Storage Explorer", "b": "A free GUI app to browse and manage Azure Storage data visually.", "q": "A user wants a free desktop app to visually browse blobs, files, and tables in their storage account."}, {"s": "Storage", "f": "Azure File Sync", "b": "Centralizes on-premises Windows file shares in Azure Files with local caching.", "q": "A company wants its on-premises Windows file server to cache locally while centralizing files in Azure Files."}, {"s": "Storage", "f": "Azure Migrate", "b": "A hub of tools to discover, assess, and migrate on-premises servers, databases, and apps to Azure.", "q": "An IT team wants to discover, assess, and migrate its on-premises servers and databases to Azure from one central hub."}, {"s": "Storage", "f": "Azure Data Box", "b": "A physical appliance for transferring very large data volumes offline.", "q": "A company must move petabytes of data to Azure, but network transfer would be far too slow."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra ID", "b": "Microsoft's cloud identity and access management service (formerly Azure Active Directory).", "q": "A company needs a cloud service to manage user sign-ins and access to Azure and Microsoft 365."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Domain Services", "b": "Managed domain services (domain join, group policy, LDAP) without managing domain controllers.", "q": "A team needs domain join and group policy in the cloud without deploying and managing their own domain controllers."}, {"s": "Identity, Access & Security", "f": "Single sign-on (SSO)", "b": "Signing in once to access many apps without re-authenticating each time.", "q": "Employees want to sign in once and access many applications without re-entering their credentials."}, {"s": "Identity, Access & Security", "f": "Multifactor authentication (MFA)", "b": "Requires two or more verification factors from different categories to sign in.", "q": "To reduce account compromise, sign-in requires a password plus a code from a phone app."}, {"s": "Identity, Access & Security", "f": "Passwordless authentication", "b": "Sign-in without a password using Windows Hello, an authenticator app, or FIDO2 keys.", "q": "A company wants users to sign in with Windows Hello or a FIDO2 security key instead of a password."}, {"s": "Identity, Access & Security", "f": "External identities (B2B / B2C)", "b": "Features letting people outside your org access resources: B2B guests and B2C customer identities.", "q": "A business wants to invite partner vendors as guests and manage customer sign-ins to its public app."}, {"s": "Identity, Access & Security", "f": "Microsoft Entra Conditional Access", "b": "Policies that evaluate sign-in signals and grant, block, or require extra checks like MFA.", "q": "An admin wants to require MFA only when users sign in from an unfamiliar location or a risky device."}, {"s": "Identity, Access & Security", "f": "Role-based access control (RBAC)", "b": "Grants users only the permissions they need by assigning roles at a scope (least privilege).", "q": "An admin wants to let a user manage only the VMs in one resource group and nothing else."}, {"s": "Identity, Access & Security", "f": "Zero Trust", "b": "A security model that assumes breach: verify explicitly, use least privilege, verify every request.", "q": "A security strategy trusts no user or device by default and verifies every request regardless of network location."}, {"s": "Identity, Access & Security", "f": "Defense in depth", "b": "A layered security strategy so that if one control fails, others still protect the data.", "q": "Security is applied in multiple independent layers—physical, identity, network, app, and data—so one failure doesn't expose data."}, {"s": "Identity, Access & Security", "f": "Microsoft Defender for Cloud", "b": "A CNAPP providing security posture management and threat protection across Azure and multicloud.", "q": "A company wants a secure score, security recommendations, and threat protection across its Azure and multicloud resources."}, {"s": "Cost Management", "f": "Pricing calculator", "b": "A free tool to estimate the cost of Azure services before deploying.", "q": "Before deploying, a team wants an itemized cost estimate for a proposed set of Azure services."}, {"s": "Cost Management", "f": "TCO (Total Cost of Ownership) calculator", "b": "A tool to estimate the savings from moving on-premises workloads to Azure.", "q": "Leadership wants to compare current on-premises costs against projected Azure costs to justify a migration."}, {"s": "Cost Management", "f": "Microsoft Cost Management", "b": "Tools to monitor, allocate, and optimize Azure spend, including budgets and alerts.", "q": "A finance team wants to track actual Azure spend, set budgets, and get alerts when nearing limits."}, {"s": "Cost Management", "f": "Tags", "b": "Name/value metadata on resources used to organize them and report on cost.", "q": "An org wants to label resources with 'Department: Finance' to organize them and break down costs."}, {"s": "Governance & Compliance", "f": "Microsoft Purview", "b": "Unified data governance and compliance to discover, classify, and protect data across sources.", "q": "A company wants to discover, classify, and map sensitive data across on-premises, multicloud, and SaaS sources."}, {"s": "Governance & Compliance", "f": "Azure Policy", "b": "Creates and enforces rules to keep resources compliant, and reports on compliance.", "q": "An admin wants to enforce that resources can only be created in approved regions and flag any that aren't compliant."}, {"s": "Governance & Compliance", "f": "Resource locks", "b": "Locks preventing accidental deletion (CanNotDelete) or changes (ReadOnly) to resources.", "q": "To prevent accidental deletion of a critical production database, an admin applies a control that blocks deletion."}, {"s": "Managing & Deploying", "f": "Azure portal", "b": "A web-based graphical console to build, manage, and monitor Azure resources.", "q": "A new admin prefers a graphical, browser-based console to create and manage resources by pointing and clicking."}, {"s": "Managing & Deploying", "f": "Azure Cloud Shell", "b": "A browser-based authenticated shell offering Bash and PowerShell with tools preinstalled.", "q": "An admin wants to run CLI commands from the browser with no local install, choosing either Bash or PowerShell."}, {"s": "Managing & Deploying", "f": "Azure CLI", "b": "A cross-platform command-line tool for managing Azure via commands and scripts.", "q": "A Linux admin wants to manage Azure resources with cross-platform, Bash-friendly commands."}, {"s": "Managing & Deploying", "f": "Azure PowerShell", "b": "PowerShell cmdlets (the Az module) for managing Azure from the command line and scripts.", "q": "A Windows admin wants to automate Azure resource management using PowerShell cmdlets."}, {"s": "Managing & Deploying", "f": "Azure Arc", "b": "Extends Azure management and governance to on-premises servers, other clouds, and Kubernetes.", "q": "A company wants to manage its on-premises servers and another cloud's resources as if they were native Azure resources."}, {"s": "Managing & Deploying", "f": "Infrastructure as Code (IaC)", "b": "Defining and provisioning infrastructure through config files for repeatable, version-controlled deployments.", "q": "A team wants to define its entire environment in version-controlled files for consistent, repeatable deployments."}, {"s": "Managing & Deploying", "f": "Azure Resource Manager (ARM)", "b": "Azure's deployment and management layer that handles every create, update, and delete request.", "q": "Every request to create or modify an Azure resource passes through which management layer that handles auth and access control?"}, {"s": "Managing & Deploying", "f": "ARM templates", "b": "JSON files that declaratively define Azure resources to deploy (IaC); Bicep is a simpler alternative.", "q": "A team wants to deploy the same set of Azure resources repeatedly using declarative JSON definition files."}, {"s": "Monitoring", "f": "Azure Advisor", "b": "Free, personalized recommendations across reliability, security, performance, operations, and cost.", "q": "A team wants free, personalized recommendations to improve reliability, security, performance, and cost."}, {"s": "Monitoring", "f": "Azure Service Health", "b": "A personalized view of the health of the Azure services and regions you use, with alerts.", "q": "An admin wants alerts about Azure outages and planned maintenance that affect the specific services they use."}, {"s": "Monitoring", "f": "Azure Monitor", "b": "A platform to collect, analyze, and act on metrics and logs across Azure and beyond.", "q": "A company wants one platform to collect metrics and logs from all its resources and act on that telemetry."}, {"s": "Monitoring", "f": "Log Analytics", "b": "The Azure Monitor tool to write and run KQL queries against collected log data.", "q": "An engineer wants to run KQL queries against collected logs to troubleshoot an issue."}, {"s": "Monitoring", "f": "Azure Monitor alerts", "b": "Proactive notifications and actions triggered when monitoring data crosses defined thresholds.", "q": "A team wants to be automatically notified when a VM's CPU usage crosses a set threshold."}, {"s": "Monitoring", "f": "Application Insights", "b": "An Azure Monitor feature for application performance monitoring: availability, performance, usage, and failures.", "q": "Developers want to monitor a live web app's performance, failures, and usage, and detect anomalies."}];
+const BANK = [
+  // ---------- Domain 1: Cloud concepts ----------
+  {d:1,type:"single",
+   q:"A company wants to stop paying large upfront costs for its own hardware and instead pay only for the compute it uses each month. Which cloud characteristic does this describe?",
+   opts:["Capital expenditure (CapEx)","Consumption-based model (OpEx)","Fault tolerance","Vertical scaling"],
+   correct:[1],
+   exp:"The <b>consumption-based (pay-as-you-go)</b> model turns big upfront capital costs into ongoing operational expenses — you're billed only for the resources you actually use."},
 
-const SECTION_SUFFIX = {"Cloud Concepts": "Which cloud concept does this describe?", "Benefits of Cloud": "Which cloud benefit does this describe?", "Cloud Service Types": "Which cloud service type does this describe?", "Azure Architecture": "Which Azure architectural component does this describe?", "Compute & Networking": "Which Azure compute or networking service should they use?", "Storage": "Which Azure storage service or option should they use?", "Identity, Access & Security": "Which identity, access, or security capability does this describe?", "Cost Management": "Which Azure cost management tool or concept does this describe?", "Governance & Compliance": "Which governance or compliance tool does this describe?", "Managing & Deploying": "Which Azure management or deployment tool should they use?", "Monitoring": "Which Azure monitoring tool should they use?"};
+  {d:1,type:"single",
+   q:"Which cloud service model gives you the most control over the operating system while the provider still manages the physical servers?",
+   opts:["Software as a service (SaaS)","Platform as a service (PaaS)","Infrastructure as a service (IaaS)","On-premises"],
+   correct:[2],
+   exp:"<b>IaaS</b> hands you virtualized infrastructure — VMs, storage, networking. You manage the OS and everything above it; the provider owns the physical hardware."},
 
-const sectionSelect = document.getElementById('quiz-section-select');
-const countSelect = document.getElementById('quiz-count-select');
-const modeDefBtn = document.getElementById('mode-def-btn');
-const modeExamBtn = document.getElementById('mode-exam-btn');
-const modeDesc = document.getElementById('quiz-mode-desc');
+  {d:1,type:"single",
+   q:"In the cloud shared responsibility model, which item is ALWAYS the customer's responsibility, no matter which service model is used?",
+   opts:["Physical security of the datacenters","The data and information stored in the cloud","The physical host servers","The physical network cabling"],
+   correct:[1],
+   exp:"You always own your <b>data</b>, plus your identities/accounts and access management. Physical hosts, network, and datacenter security are always the provider's responsibility."},
 
-let currentMode = 'def';
+  {d:1,type:"multi",
+   q:"A hybrid cloud is formed by combining which two deployment models? (Select two.)",
+   opts:["Public cloud","Community cloud","Private cloud","Multi-tenant cloud"],
+   correct:[0,2],
+   exp:"A <b>hybrid cloud</b> connects a <b>public</b> cloud with a <b>private</b> cloud (or on-premises), letting workloads and data move between them."},
 
-function activeCards() {
-  return currentMode === 'exam' ? CARDS_EXAM : CARDS_DEF;
+  {d:1,type:"single",
+   q:"An online store gets huge traffic spikes on sale days. It wants to automatically add more identical web servers during the spike and remove them afterward. This is an example of…",
+   opts:["Vertical scaling","Horizontal scaling","Disaster recovery","Manageability"],
+   correct:[1],
+   exp:"<b>Horizontal scaling</b> (scaling out/in) adds or removes instances. Vertical scaling instead changes the size — CPU/RAM — of a single existing resource."},
+
+  {d:1,type:"single",
+   q:"Which cloud benefit describes a system's ability to stay operational with minimal downtime, often backed by a service-level agreement?",
+   opts:["Elasticity","High availability","Agility","Governance"],
+   correct:[1],
+   exp:"<b>High availability</b> keeps applications running with as little downtime as possible; the guaranteed uptime is expressed in an SLA."},
+
+  {d:1,type:"single",
+   q:"An organization wants a ready-to-use email and productivity suite over the internet with no infrastructure or application maintenance on their side. Which model fits?",
+   opts:["IaaS","PaaS","SaaS","Private cloud"],
+   correct:[2],
+   exp:"<b>SaaS</b> delivers complete, ready-to-run software (for example Microsoft 365). The provider manages everything from hardware up to the application."},
+
+  // ---------- Domain 2: Architecture & services ----------
+  {d:2,type:"single",
+   q:"You want to manage a VM, its disk, and its network interface together as one unit — deploying and deleting them as a set. Which container do you place them in?",
+   opts:["Subscription","Management group","Resource group","Region"],
+   correct:[2],
+   exp:"A <b>resource group</b> is a logical container for related resources, letting you deploy, update, and delete them together."},
+
+  {d:2,type:"single",
+   q:"Which Azure feature is made of one or more datacenters with independent power, cooling, and networking, protecting apps from a datacenter-level failure within a single region?",
+   opts:["Region pair","Availability zone","Resource group","Management group"],
+   correct:[1],
+   exp:"<b>Availability zones</b> are physically separate locations inside a region, each with independent utilities — so one datacenter failing doesn't take your app down."},
+
+  {d:2,type:"single",
+   q:"You need to run a containerized app on a fully managed Kubernetes cluster in Azure. Which service should you choose?",
+   opts:["Azure Container Instances","Azure Kubernetes Service (AKS)","Azure App Service","Azure Functions"],
+   correct:[1],
+   exp:"<b>AKS</b> is Azure's managed Kubernetes service for orchestrating containers at scale. Azure Container Instances runs individual containers without full orchestration."},
+
+  {d:2,type:"single",
+   q:"Which compute service lets you run small pieces of event-triggered code 'serverless', billing you only while the code actually runs?",
+   opts:["Azure Virtual Machines","Azure Functions","Azure App Service","Virtual machine scale sets"],
+   correct:[1],
+   exp:"<b>Azure Functions</b> is serverless compute: code runs in response to events (triggers) and you're billed based on execution rather than reserved capacity."},
+
+  {d:2,type:"single",
+   q:"A business needs a private, dedicated connection between its on-premises datacenter and Azure that does NOT travel over the public internet. Which service provides it?",
+   opts:["VPN Gateway","Azure ExpressRoute","Virtual network peering","Azure DNS"],
+   correct:[1],
+   exp:"<b>ExpressRoute</b> creates a private, dedicated link to Azure through a connectivity provider, bypassing the public internet. A VPN Gateway is encrypted but still rides the public internet."},
+
+  {d:2,type:"multi",
+   q:"Which two storage redundancy options copy your data to a second, geographically distant Azure region? (Select two.)",
+   opts:["Locally redundant storage (LRS)","Zone-redundant storage (ZRS)","Geo-redundant storage (GRS)","Geo-zone-redundant storage (GZRS)"],
+   correct:[2,3],
+   exp:"<b>GRS</b> and <b>GZRS</b> both replicate data to a secondary region for protection against a regional outage. LRS and ZRS keep every copy within a single region."},
+
+  {d:2,type:"single",
+   q:"Which Azure storage service is built for storing large amounts of unstructured object data such as images, video, and backups?",
+   opts:["Azure Files","Azure Queue Storage","Azure Blob Storage","Azure Table Storage"],
+   correct:[2],
+   exp:"<b>Blob storage</b> is designed for unstructured object data. Files provides SMB shares, Queue handles messaging, and Table stores NoSQL key/value data."},
+
+  {d:2,type:"single",
+   q:"Which Microsoft Entra ID capability lets a user sign in once and then reach multiple applications without re-entering credentials?",
+   opts:["Multifactor authentication","Single sign-on (SSO)","Conditional Access","Role-based access control"],
+   correct:[1],
+   exp:"<b>Single sign-on</b> lets a user authenticate once and gain access to many connected apps without repeated logins."},
+
+  {d:2,type:"single",
+   q:"What is the difference between authentication and authorization?",
+   opts:[
+     "Authentication grants permissions; authorization proves identity",
+     "Authentication verifies who you are; authorization decides what you may access",
+     "They are two names for the same process",
+     "Authentication applies to devices; authorization applies only to users"],
+   correct:[1],
+   exp:"<b>Authentication</b> (AuthN) confirms identity. <b>Authorization</b> (AuthZ) determines what a verified identity is allowed to do."},
+
+  {d:2,type:"single",
+   q:"Which service extends Azure management and governance to servers and Kubernetes clusters running on-premises or in other clouds, through a single control plane?",
+   opts:["Azure Resource Manager","Azure Arc","Azure Advisor","Azure Monitor"],
+   correct:[1],
+   exp:"<b>Azure Arc</b> projects non-Azure resources into Azure so you can govern and manage on-premises and multi-cloud assets alongside your Azure ones."},
+
+  {d:2,type:"single",
+   q:"Which service deploys and manages a group of identical, load-balanced VMs that automatically scale the instance count up or down with demand?",
+   opts:["Availability sets","Virtual machine scale sets","Azure Container Instances","Azure Dedicated Host"],
+   correct:[1],
+   exp:"<b>Virtual machine scale sets</b> manage a fleet of identical, autoscaling VMs behind a load balancer."},
+
+  {d:2,type:"single",
+   q:"You need to give staff a full Windows desktop hosted in Azure that they can reach from any device, anywhere. Which service fits?",
+   opts:["Azure Virtual Desktop","Azure App Service","Azure Functions","Azure Batch"],
+   correct:[0],
+   exp:"<b>Azure Virtual Desktop</b> delivers cloud-hosted desktops and apps that users access remotely from many kinds of devices."},
+
+  // ---------- Domain 3: Management & governance ----------
+  {d:3,type:"single",
+   q:"Which free Azure service analyzes your setup and gives personalized recommendations across cost, security, reliability, performance, and operational excellence?",
+   opts:["Azure Monitor","Azure Advisor","Azure Service Health","Azure Policy"],
+   correct:[1],
+   exp:"<b>Azure Advisor</b> reviews your resource configuration and usage, then suggests best-practice improvements in those five categories."},
+
+  {d:3,type:"single",
+   q:"You want to estimate the monthly cost of a set of Azure services BEFORE deploying them. Which tool should you use?",
+   opts:["Azure Cost Management","Total Cost of Ownership (TCO) Calculator","Azure Pricing Calculator","Azure Advisor"],
+   correct:[2],
+   exp:"The <b>Pricing Calculator</b> estimates the cost of specific services pre-deployment. The TCO Calculator compares on-premises vs Azure; Cost Management analyzes actual spend after deployment."},
+
+  {d:3,type:"single",
+   q:"Which service lets you author rules that enforce standards — for example, blocking resource creation in unapproved regions?",
+   opts:["Resource locks","Azure Policy","Azure Blueprints","Microsoft Purview"],
+   correct:[1],
+   exp:"<b>Azure Policy</b> defines and enforces rules (effects) on resources to keep them compliant with your organization's standards."},
+
+  {d:3,type:"single",
+   q:"You must prevent a critical resource from being accidentally deleted, even by an administrator with full permissions. What do you apply?",
+   opts:["An Azure Policy","A resource lock set to CanNotDelete","A cost tag","A management group"],
+   correct:[1],
+   exp:"A <b>resource lock</b> set to CanNotDelete blocks deletion regardless of a user's RBAC role. A ReadOnly lock blocks both changes and deletion."},
+
+  {d:3,type:"single",
+   q:"Which feature attaches metadata name/value pairs (like 'Department: Finance') to resources so you can organize them and break down billing by category?",
+   opts:["Resource locks","Tags","Management groups","Policies"],
+   correct:[1],
+   exp:"<b>Tags</b> apply name/value metadata to resources, which is very useful for grouping resources and reporting costs by department, environment, and so on."},
+
+  {d:3,type:"single",
+   q:"Which service gives you personalized alerts about Azure outages, planned maintenance, and health advisories affecting the specific resources you use?",
+   opts:["Azure Advisor","Azure Service Health","Microsoft Purview","Azure Blueprints"],
+   correct:[1],
+   exp:"<b>Azure Service Health</b> provides tailored notifications and guidance about incidents and maintenance that impact your resources."},
+
+  {d:3,type:"multi",
+   q:"Which two command-line experiences can you use inside Azure Cloud Shell to manage resources? (Select two.)",
+   opts:["Azure CLI","Azure PowerShell","Windows Group Policy Editor","Azure Blueprints"],
+   correct:[0,1],
+   exp:"<b>Azure Cloud Shell</b> offers both the <b>Azure CLI</b> (Bash) and <b>Azure PowerShell</b> for scripting and managing resources from a browser — no local install needed."},
+
+  {d:3,type:"single",
+   q:"You need to apply the same policies and access controls consistently across many subscriptions at once. Which component sits above subscriptions to let you do this?",
+   opts:["Resource group","Management group","Availability zone","Region pair"],
+   correct:[1],
+   exp:"<b>Management groups</b> sit above subscriptions in the hierarchy, so governance settings applied there cascade to all subscriptions beneath them."},
+
+  {d:3,type:"single",
+   q:"Which Azure Monitor feature collects telemetry to help you detect and diagnose performance problems in live web applications?",
+   opts:["Log Analytics","Application Insights","Service Health","Azure Advisor"],
+   correct:[1],
+   exp:"<b>Application Insights</b> is the application performance monitoring (APM) feature of Azure Monitor, aimed at diagnosing live apps."},
+
+  {d:3,type:"single",
+   q:"Where can you obtain Microsoft's audit reports and compliance documentation describing how it protects data in its cloud services?",
+   opts:["Azure portal","Service Trust Portal","Azure Advisor","Microsoft Entra admin center"],
+   correct:[1],
+   exp:"The <b>Service Trust Portal</b> publishes Microsoft's security, privacy, and compliance reports, audit documents, and related resources."},
+
+  {d:3,type:"single",
+   q:"A company wants users to confirm their identity with a second factor — like approving a phone prompt — in addition to their password. Which feature enforces that?",
+   opts:["Single sign-on","Multifactor authentication (MFA)","Azure Policy","Resource locks"],
+   correct:[1],
+   exp:"<b>Multifactor authentication</b> requires two or more verification factors (something you know, have, or are), sharply reducing the risk from a stolen password."}
+];
+
+/* ---------- state ---------- */
+let questions=[], idx=0, answers=[], checked=false;
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const sameSet=(x,y)=>x.length===y.length&&x.every(v=>y.includes(v));
+const LETTERS=["A","B","C","D","E"];
+
+/* ---------- start ---------- */
+$("startBtn").addEventListener("click",begin);
+$("retryBtn").addEventListener("click",begin);
+function begin(){
+  const shf=$("shuffleToggle").checked;
+  questions=(shf?shuffle(BANK):BANK.slice());
+  idx=0; answers=questions.map(()=>({picked:[],correct:null}));
+  $("qTotal").textContent=questions.length;
+  $("start").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("review").classList.remove("show");
+  $("quiz").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"instant"in window?"instant":"auto"});
+  render();
 }
 
-function updateModeDesc() {
-  if (currentMode === 'exam') {
-    modeDesc.textContent = CARDS_EXAM.length + ' scenario-based questions written in the style of the real AZ-900 exam. Pick a section and question count, then go.';
-  } else {
-    const domainCount = new Set(CARDS_DEF.map(c => c.s)).size;
-    modeDesc.textContent = CARDS_DEF.length + ' flashcards across ' + domainCount + ' domains. Pick a section and question count, then go.';
-  }
+/* ---------- render a question ---------- */
+function render(){
+  checked=false;
+  const q=questions[idx];
+  $("qNow").textContent=idx+1;
+  $("qDomain").textContent=DOMAINS[q.d];
+  $("progFill").style.width=((idx)/questions.length*100)+"%";
+  $("qType").textContent=q.type==="multi"?"Select all that apply":"Choose one answer";
+  $("qHint").textContent=q.type==="multi"?"Keys 1–4 toggle // Enter to check":"Keys 1–4 to pick // Enter to check";
+  $("qText").textContent=q.q;
+
+  const box=$("options"); box.innerHTML="";
+  q.opts.forEach((text,i)=>{
+    const b=document.createElement("button");
+    b.className="opt"; b.type="button";
+    b.dataset.i=i;
+    b.dataset.shape=q.type==="multi"?"square":"round";
+    b.innerHTML=`<span class="mark">${LETTERS[i]}</span><span class="lbl">${text}</span>`;
+    b.addEventListener("click",()=>pick(i));
+    box.appendChild(b);
+  });
+
+  const fb=$("feedback"); fb.className="feedback"; $("fVerdict").innerHTML=""; $("fExp").innerHTML="";
+  $("checkBtn").classList.remove("hidden"); $("checkBtn").disabled=true;
+  $("nextBtn").classList.add("hidden");
+  $("nextBtn").textContent = idx===questions.length-1 ? "See results →" : "Next →";
 }
 
-function populateSections() {
-  const cards = activeCards();
-  const sections = [...new Set(cards.map(c => c.s))];
-  sectionSelect.innerHTML = '<option value="all">All sections (' + cards.length + ' cards)</option>' +
-    sections.map(s => {
-      const n = cards.filter(c => c.s === s).length;
-      return '<option value="' + s + '">' + s + ' (' + n + ')</option>';
-    }).join('');
+/* ---------- pick an option ---------- */
+function pick(i){
+  if(checked) return;
+  const q=questions[idx], a=answers[idx];
+  if(q.type==="single"){ a.picked=[i]; }
+  else { const p=a.picked.indexOf(i); p>-1?a.picked.splice(p,1):a.picked.push(i); }
+  [...$("options").children].forEach(el=>{
+    el.classList.toggle("selected", a.picked.includes(+el.dataset.i));
+  });
+  $("checkBtn").disabled = a.picked.length===0;
 }
 
-function refreshCounts() {
-  const pool = getPool();
-  const opts = [5, 10, 15, 20, 30, 50].filter(n => n <= pool.length);
-  opts.push(pool.length);
-  const uniq = [...new Set(opts)];
-  countSelect.innerHTML = uniq.map(n => '<option value="' + n + '">' + n + (n === pool.length ? ' (all)' : '') + '</option>').join('');
-}
+/* ---------- check ---------- */
+$("checkBtn").addEventListener("click",()=>{
+  const a=answers[idx]; if(a.picked.length===0) return;
+  const q=questions[idx];
+  checked=true;
+  const right=sameSet(a.picked,q.correct);
+  a.correct=right;
 
-function getPool() {
-  const sec = sectionSelect.value || 'all';
-  const cards = activeCards();
-  return sec === 'all' ? cards : cards.filter(c => c.s === sec);
-}
+  [...$("options").children].forEach(el=>{
+    const i=+el.dataset.i;
+    el.disabled=true; el.classList.remove("selected");
+    if(q.correct.includes(i)) el.classList.add("correct");
+    else if(a.picked.includes(i)) el.classList.add("wrong");
+  });
 
-function setMode(mode) {
-  currentMode = mode;
-  modeDefBtn.classList.toggle('active', mode === 'def');
-  modeExamBtn.classList.toggle('active', mode === 'exam');
-  updateModeDesc();
-  populateSections();
-  refreshCounts();
-}
+  const fb=$("feedback");
+  fb.classList.add("show", right?"ok":"no");
+  $("fVerdict").innerHTML = right
+    ? "Correct"
+    : (q.correct.length>1?"Not quite":"Incorrect");
+  const pre = right ? "" :
+    `<b>Correct answer:</b> ${q.correct.map(c=>LETTERS[c]).join(", ")} — `;
+  $("fExp").innerHTML = pre + q.exp;
 
-modeDefBtn.addEventListener('click', () => setMode('def'));
-modeExamBtn.addEventListener('click', () => setMode('exam'));
-sectionSelect.addEventListener('change', refreshCounts);
-
-setMode('def');
-
-let quizCards = [];
-let idx = 0;
-let score = 0;
-let missed = [];
-let locked = false;
-let quizMode = 'def';   // mode the current run was started in (def or exam)
-let forcedDirs = [];    // per-question forced direction for review runs; empty otherwise
-
-function shuffle(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function buildQuestion(card, forceAskFront) {
-  if (currentMode === 'exam') {
-    // Prefer distractors from the same section first (plausible, exam-like
-    // wrong answers); top up from the full pool if the section is too small.
-    const sameSection = shuffle(activeCards().filter(c => c !== card && c.s === card.s));
-    const distractors = sameSection.slice(0, 3).map(c => c.f);
-    if (distractors.length < 3) {
-      const rest = shuffle(activeCards().filter(c => c !== card && !distractors.includes(c.f)));
-      for (const c of rest) {
-        if (distractors.length === 3) break;
-        distractors.push(c.f);
-      }
-    }
-    const options = shuffle([card.f, ...distractors]);
-    return { mode: 'exam', correct: card.f, options };
-  }
-
-  const askFront = (forceAskFront === undefined) ? (Math.random() < 0.5) : forceAskFront;
-  const prompt = askFront ? card.f : card.b;
-  const label = askFront ? 'Which service or concept is this?' : 'What does this do?';
-  const correct = askFront ? card.b : card.f;
-  const others = shuffle(activeCards().filter(c => c !== card));
-  const distractors = [];
-  for (const c of others) {
-    const val = askFront ? c.b : c.f;
-    if (val !== correct && !distractors.includes(val)) distractors.push(val);
-    if (distractors.length === 3) break;
-  }
-  const options = shuffle([correct, ...distractors]);
-  return { mode: 'def', label, prompt, correct, options, askFront };
-}
-
-document.getElementById('quiz-start-btn').addEventListener('click', () => {
-  const pool = getPool();
-  const n = parseInt(countSelect.value, 10);
-  quizCards = shuffle(pool).slice(0, n);
-  forcedDirs = [];
-  quizMode = currentMode;
-  idx = 0;
-  score = 0;
-  missed = [];
-  document.getElementById('quiz-setup').style.display = 'none';
-  document.getElementById('quiz-results').style.display = 'none';
-  document.getElementById('quiz-active').style.display = 'block';
-  renderQuestion();
+  $("checkBtn").classList.add("hidden");
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").focus();
 });
 
-function renderQuestion() {
-  locked = false;
-  const card = quizCards[idx];
-  const forced = forcedDirs.length ? forcedDirs[idx] : undefined;
-  const q = buildQuestion(card, forced);
-  document.getElementById('quiz-progress-text').textContent = 'Question ' + (idx + 1) + ' of ' + quizCards.length;
-  document.getElementById('quiz-score-text').textContent = 'Score: ' + score;
-  document.getElementById('quiz-progress-fill').style.width = Math.round((idx / quizCards.length) * 100) + '%';
+/* ---------- next ---------- */
+$("nextBtn").addEventListener("click",()=>{
+  if(idx<questions.length-1){ idx++; render(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else finish();
+});
 
-  const suffixEl = document.getElementById('quiz-question-suffix');
-  if (q.mode === 'exam') {
-    document.getElementById('quiz-question-label').textContent = card.s;
-    document.getElementById('quiz-question-text').textContent = card.q;
-    suffixEl.textContent = SECTION_SUFFIX[card.s] || 'Which Azure service or concept best fits this?';
-    suffixEl.style.display = 'block';
-  } else {
-    document.getElementById('quiz-question-label').textContent = q.label + '  ·  ' + card.s;
-    document.getElementById('quiz-question-text').textContent = q.prompt;
-    suffixEl.textContent = '';
-    suffixEl.style.display = 'none';
+/* ---------- keyboard ---------- */
+document.addEventListener("keydown",e=>{
+  if($("quiz").classList.contains("hidden")) return;
+  if(e.key>="1"&&e.key<="5"){
+    const i=+e.key-1; if(i<questions[idx].opts.length && !checked) pick(i);
+  } else if(e.key==="Enter"){
+    if(!checked && !$("checkBtn").disabled){ e.preventDefault(); $("checkBtn").click(); }
+    else if(checked){ e.preventDefault(); $("nextBtn").click(); }
   }
+});
 
-  const feedback = document.getElementById('quiz-feedback');
-  feedback.textContent = '';
-  feedback.className = 'quiz-feedback';
-  const defBox = document.getElementById('quiz-definition');
-  defBox.style.display = 'none';
-  defBox.textContent = '';
-  document.getElementById('quiz-next-btn').style.display = 'none';
+/* ---------- results ---------- */
+function finish(){
+  $("progFill").style.width="100%";
+  const total=questions.length;
+  const got=answers.filter(a=>a.correct).length;
+  const pct=Math.round(got/total*100);
 
-  const optWrap = document.getElementById('quiz-options');
-  optWrap.innerHTML = '';
-  q.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'quiz-option';
-    btn.textContent = opt;
-    btn.addEventListener('click', () => selectOption(opt, q, card, btn));
-    optWrap.appendChild(btn);
+  $("quiz").classList.add("hidden");
+  $("results").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  $("scorePct").textContent=pct+"%";
+  $("scoreFrac").textContent=`${got} / ${total}`;
+
+  const C=2*Math.PI*58;
+  const arc=$("ringArc"); arc.style.strokeDasharray=C.toFixed(1);
+  requestAnimationFrame(()=>{ arc.style.transition="stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"; arc.style.strokeDashoffset=(C*(1-got/total)).toFixed(1); });
+
+  const pass=pct>=70;
+  const tag=$("resTag");
+  tag.className="tag "+(pass?"pass":"fail");
+  tag.textContent=pass?"Signal locked":"Recalibrate";
+  $("resTitle").textContent = pass ? "Nicely done." : "Solid effort.";
+  $("resMsg").textContent = pass
+    ? "You cleared the 70% practice mark. Keep drilling the domains where you slipped and you'll be ready."
+    : "You're below the 70% practice mark. Review the explanations below, focus on the weakest domain, then retake.";
+
+  const stat={1:[0,0],2:[0,0],3:[0,0]};
+  questions.forEach((q,i)=>{ stat[q.d][1]++; if(answers[i].correct) stat[q.d][0]++; });
+  const bars=$("domainBars"); bars.innerHTML="";
+  [1,2,3].forEach(d=>{
+    const [c,t]=stat[d], p=t?Math.round(c/t*100):0;
+    const row=document.createElement("div");
+    row.className="bar-row";
+    row.innerHTML=`<div class="name">${DOMAINS[d]}</div><div class="frac">${c}/${t} · ${p}%</div><div class="bar"><div class="in"></div></div>`;
+    bars.appendChild(row);
+    requestAnimationFrame(()=>{ row.querySelector(".in").style.width=p+"%"; });
   });
+
+  buildReview();
 }
 
-function selectOption(opt, q, card, btn) {
-  if (locked) return;
-  locked = true;
-  const isCorrect = opt === q.correct;
-  const feedback = document.getElementById('quiz-feedback');
-  const promptText = q.mode === 'exam' ? card.q : q.prompt;
-
-  if (isCorrect) {
-    score++;
-    btn.classList.add('correct');
-    feedback.textContent = 'Correct.';
-    feedback.className = 'quiz-feedback correct';
-  } else {
-    btn.classList.add('incorrect');
-    feedback.textContent = 'Not quite. Correct answer: ' + q.correct;
-    feedback.className = 'quiz-feedback incorrect';
-    missed.push({
-      prompt: promptText,
-      correct: q.correct,
-      given: opt,
-      section: card.s,
-      definition: q.mode === 'exam' ? card.b : '',
-      card: card,
-      askFront: q.mode === 'exam' ? undefined : q.askFront
+/* ---------- review ---------- */
+$("reviewBtn").addEventListener("click",()=>{
+  const r=$("review"); r.classList.toggle("show");
+  $("reviewBtn").textContent = r.classList.contains("show") ? "Hide review" : "Review answers";
+  if(r.classList.contains("show")) r.scrollIntoView({behavior:"smooth"});
+});
+function buildReview(){
+  const list=$("reviewList"); list.innerHTML="";
+  questions.forEach((q,i)=>{
+    const a=answers[i], ok=a.correct;
+    const item=document.createElement("div"); item.className="rev-item"+(ok?"":" missed");
+    let lis="";
+    q.opts.forEach((t,j)=>{
+      const isC=q.correct.includes(j), isP=a.picked.includes(j);
+      if(isC) lis+=`<li class="c"><span class="tick">✓</span>${LETTERS[j]}. ${t}</li>`;
+      else if(isP) lis+=`<li class="w"><span class="tick">✕</span>${LETTERS[j]}. ${t}</li>`;
     });
-  }
-
-  [...document.getElementById('quiz-options').children].forEach(b => {
-    b.disabled = true;
-    if (b.textContent === q.correct) b.classList.add('correct');
+    if(a.picked.length===0) lis+=`<li class="w"><span class="tick">–</span>No answer selected</li>`;
+    item.innerHTML=
+      `<div class="top">
+         <span class="num">${String(i+1).padStart(2,"0")}</span>
+         <span class="qq">${q.q}</span>
+         <span class="status ${ok?"ok":"no"}">${ok?"Correct":"Missed"}</span>
+       </div>
+       <ul>${lis}</ul>
+       <div class="why">${q.exp}</div>`;
+    list.appendChild(item);
   });
-
-  if (q.mode === 'exam') {
-    const defBox = document.getElementById('quiz-definition');
-    defBox.textContent = card.f + ' — ' + card.b;
-    defBox.style.display = 'block';
-  }
-
-  document.getElementById('quiz-score-text').textContent = 'Score: ' + score;
-  document.getElementById('quiz-next-btn').style.display = 'block';
 }
-
-document.getElementById('quiz-next-btn').addEventListener('click', () => {
-  idx++;
-  if (idx >= quizCards.length) {
-    showResults();
-  } else {
-    renderQuestion();
-  }
-});
-
-function showResults() {
-  document.getElementById('quiz-progress-fill').style.width = '100%';
-  document.getElementById('quiz-active').style.display = 'none';
-  document.getElementById('quiz-results').style.display = 'block';
-
-  const pct = Math.round((score / quizCards.length) * 100);
-  document.getElementById('quiz-final-score').textContent = score + '/' + quizCards.length;
-  document.getElementById('quiz-final-pct').textContent = pct + '%';
-
-  const reviewBtn = document.getElementById('quiz-review-btn');
-  if (missed.length > 0) {
-    reviewBtn.style.display = 'block';
-    reviewBtn.textContent = 'Review What You Missed (' + missed.length + ')';
-  } else {
-    reviewBtn.style.display = 'none';
-  }
-
-  const reviewList = document.getElementById('quiz-review-list');
-  if (missed.length === 0) {
-    reviewList.innerHTML = '<p style="color: var(--white-dim); font-family: var(--font-mono); font-size: 0.85rem;">No misses. Clean sweep.</p>';
-  } else {
-    reviewList.innerHTML = missed.map(m => `
-      <div class="quiz-review-item">
-        <span class="quiz-review-section">${m.section}</span>
-        <p class="quiz-review-prompt">${m.prompt}</p>
-        <p class="quiz-review-given">Your answer: ${m.given}</p>
-        <p class="quiz-review-correct">Correct: ${m.correct}</p>
-        ${m.definition ? `<p style="font-size:0.78rem;color:var(--white-ghost);margin:0.4rem 0 0;">${m.definition}</p>` : ''}
-      </div>
-    `).join('');
-  }
-}
-
-document.getElementById('quiz-review-btn').addEventListener('click', () => {
-  if (!missed.length) return;
-  // Re-quiz ONLY the cards missed in the run that just finished. Pair each missed
-  // card with the direction it was asked in (def mode), then shuffle the pairs so
-  // order varies while keeping card and direction aligned. All state is in-memory,
-  // so this is scoped to this user, this tab, this session.
-  const pairs = shuffle(missed.map(m => ({ card: m.card, dir: m.askFront })));
-  quizCards = pairs.map(p => p.card);
-  forcedDirs = pairs.map(p => p.dir);
-  currentMode = quizMode;   // review in the same mode the quiz was taken in
-  idx = 0;
-  score = 0;
-  missed = [];
-  document.getElementById('quiz-setup').style.display = 'none';
-  document.getElementById('quiz-results').style.display = 'none';
-  document.getElementById('quiz-active').style.display = 'block';
-  renderQuestion();
-});
-
-document.getElementById('quiz-restart-btn').addEventListener('click', () => {
-  document.getElementById('quiz-results').style.display = 'none';
-  document.getElementById('quiz-setup').style.display = 'block';
-});
 </script>
-<script src="cursor.js"></script>
 </body>
 </html>
