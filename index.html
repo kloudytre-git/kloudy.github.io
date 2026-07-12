@@ -1528,6 +1528,7 @@ function showToast(msg, color) {
       printLine('  exit          - close this terminal');
       printLine('  status        - check the site status');
       printLine('  az-900        - Microsoft Azure Fundamentals practice quiz');
+      printLine('  terraform-associate - HashiCorp Terraform Associate practice quiz');
     },
     whoami() {
       printLine('guest');
@@ -1604,6 +1605,10 @@ function showToast(msg, color) {
     'aws-ccp'() {
       printLine('Launching AWS Cloud Practitioner practice quiz...', 'info');
       setTimeout(() => { window.location.href = 'aws-ccp.html'; }, 700);
+    },
+    'terraform-associate'() {
+      printLine('Launching HashiCorp Terraform Associate practice quiz...', 'info');
+      setTimeout(() => { window.location.href = 'terraform-associate.html'; }, 700);
     },
     ls() {
       printLine('about.md   skills.json   certs.log   projects/   blog/   contact.sh   resume.pdf');

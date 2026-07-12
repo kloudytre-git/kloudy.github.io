@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraform Associate (004) Prep — Practice Exam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════ TOKENS — Navy Mirage ═══════════════ */
+  :root{
+    --navy-deep:#141E30;
+    --navy-mid:#1a2a4a;
+    --navy-steel:#35577D;
+    --navy-light:#4a6d96;
+    --cyan-glow:#0FF0FC;
+    --cyan-soft:#7EC8E3;
+    --cyan-dim:#3a8faa;
+    --white-pure:#E8F4F8;
+    --white-dim:#9bbdd4;
+    --white-ghost:#4d6e87;
+    --glass-bg:rgba(20,30,48,0.72);
+    --glass-border:rgba(14,240,252,0.18);
+    --card-bg:rgba(26,42,74,0.7);
+    --card-border:rgba(53,87,125,0.5);
+    --green:#22c55e;
+    --red:#FF5E6C;
+    --font-display:'Orbitron',monospace;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--navy-deep);
+    color:var(--white-pure);
+    font-family:var(--font-body);
+    font-size:16px;line-height:1.6;
+    min-height:100vh;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* fixed atmosphere: grid + radial cyan glow */
+  .backdrop{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .backdrop .grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(15,240,252,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(15,240,252,0.04) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+  .backdrop .glow{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(680px 420px at 82% -6%,rgba(15,240,252,0.10),transparent 60%),
+      radial-gradient(560px 360px at 6% 2%,rgba(53,87,125,0.28),transparent 55%);
+  }
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:var(--navy-deep)}
+  ::-webkit-scrollbar-thumb{background:var(--navy-steel);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--cyan-dim)}
+
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:30px 20px 80px}
+
+  /* ═══════════════ shared ═══════════════ */
+  .eyebrow{
+    font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.25em;
+    text-transform:uppercase;color:var(--cyan-glow);
+  }
+  .eyebrow::before{content:'> ';opacity:0.5}
+  .section-line{width:60px;height:2px;background:linear-gradient(90deg,var(--cyan-glow),transparent);margin:0.9rem 0 0}
+  .card{
+    background:var(--card-bg);border:1px solid var(--card-border);
+    border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  }
+  button{font-family:var(--font-body);cursor:pointer}
+  .btn{
+    font-family:var(--font-mono);font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;
+    padding:0.8rem 2rem;border-radius:4px;border:none;transition:transform 0.2s,box-shadow 0.2s,background 0.2s;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--navy-steel),var(--cyan-dim));
+    color:var(--white-pure);
+    box-shadow:0 0 0 1px rgba(15,240,252,0.3),0 4px 24px rgba(0,0,0,0.4);
+  }
+  .btn-primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 24px rgba(15,240,252,0.3),0 8px 32px rgba(0,0,0,0.5)}
+  .btn-primary:disabled{background:rgba(53,87,125,0.35);color:var(--white-ghost);box-shadow:none;cursor:not-allowed}
+  .btn-ghost{
+    background:transparent;color:var(--cyan-glow);border:1px solid rgba(15,240,252,0.4);
+  }
+  .btn-ghost:hover{transform:translateY(-2px);background:rgba(15,240,252,0.08);box-shadow:0 0 20px rgba(15,240,252,0.2)}
+  :focus-visible{outline:2px solid var(--cyan-glow);outline-offset:3px;border-radius:4px}
+
+  /* ═══════════════ masthead ═══════════════ */
+  .masthead{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+  .glyph{
+    width:44px;height:44px;flex:none;border-radius:8px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,var(--navy-steel),var(--navy-mid));
+    border:1px solid var(--glass-border);box-shadow:0 0 18px rgba(15,240,252,0.18);
+  }
+  .glyph::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(15,240,252,0.22) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(15,240,252,0.22) 1px,transparent 1px);
+    background-size:9px 9px;
+  }
+  .glyph::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 120%,rgba(15,240,252,0.55),transparent 55%);
+  }
+  .logo{font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:0.15em;color:var(--cyan-glow);text-shadow:0 0 18px rgba(15,240,252,0.5)}
+  .logo span{color:var(--white-pure)}
+  .masthead .tagline{font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);letter-spacing:0.12em;margin-top:2px}
+
+  /* ═══════════════ start ═══════════════ */
+  .hero{padding:2.6rem 2.2rem 2.2rem}
+  .hero .eyebrow{margin-bottom:1.1rem;display:inline-block}
+  .hero h2{
+    font-family:var(--font-display);font-weight:700;font-size:clamp(1.7rem,4.5vw,2.5rem);
+    line-height:1.15;color:var(--white-pure);margin-bottom:1.1rem;
+  }
+  .hero h2 .hl{
+    background:linear-gradient(135deg,var(--cyan-glow),var(--cyan-soft));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 20px rgba(15,240,252,0.4));
+  }
+  .hero p.lead{color:var(--white-dim);font-size:1rem;line-height:1.75;margin-bottom:1.8rem;max-width:58ch}
+  .domains{display:grid;gap:0.7rem;margin-bottom:1.9rem}
+  .domain-row{
+    display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;
+    background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;backdrop-filter:blur(8px);
+    transition:border-color 0.3s,transform 0.3s;
+  }
+  .domain-row:hover{border-color:rgba(15,240,252,0.3);transform:translateY(-2px)}
+  .domain-row .idx{font-family:var(--font-display);font-size:0.9rem;font-weight:700;color:var(--cyan-glow);width:2rem;flex:none}
+  .domain-row .nm{font-weight:500;font-size:0.9rem;color:var(--white-pure)}
+  .domain-row .nm span{display:block;font-weight:400;color:var(--white-ghost);font-size:0.72rem;font-family:var(--font-mono);letter-spacing:0.02em;margin-top:2px}
+  .domain-row .wt{margin-left:auto;font-family:var(--font-mono);font-size:0.75rem;color:var(--cyan-soft)}
+  .startbar{display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
+  .toggle{display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--white-dim);cursor:pointer;user-select:none;letter-spacing:0.05em}
+  .toggle input{position:absolute;opacity:0;width:0;height:0}
+  .switch{width:38px;height:22px;border-radius:12px;background:rgba(53,87,125,0.5);position:relative;transition:background 0.2s,box-shadow 0.2s;flex:none;border:1px solid var(--card-border)}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--white-dim);transition:transform 0.2s,background 0.2s}
+  .toggle input:checked + .switch{background:rgba(15,240,252,0.18);box-shadow:0 0 12px rgba(15,240,252,0.3);border-color:rgba(15,240,252,0.5)}
+  .toggle input:checked + .switch::after{transform:translateX(16px);background:var(--cyan-glow)}
+  .lenpick{display:flex;flex-direction:column;gap:0.5rem;margin-top:1.5rem}
+  .lenpick .lp-label{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--white-dim)}
+  .lenpick .lp-opts{display:inline-flex;flex-wrap:wrap;gap:0.4rem}
+  .lenopt{
+    font-family:var(--font-mono);font-size:0.78rem;letter-spacing:0.05em;color:var(--white-dim);
+    padding:0.5rem 1rem;border-radius:6px;border:1px solid var(--card-border);
+    background:rgba(20,30,48,0.55);transition:border-color 0.2s,background 0.2s,color 0.2s,box-shadow 0.2s;
+  }
+  .lenopt:hover{border-color:rgba(15,240,252,0.4);color:var(--white-pure)}
+  .lenopt.active{border-color:var(--cyan-glow);background:rgba(15,240,252,0.1);color:var(--cyan-glow);box-shadow:0 0 14px rgba(15,240,252,0.15)}
+  .practice-flag{display:flex;align-items:center;gap:0.5rem;font-family:var(--font-mono);font-size:0.7rem;color:var(--white-dim);letter-spacing:0.05em;margin-top:1.6rem}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse-green 2s infinite}
+  .disclaimer{margin-top:1.4rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);line-height:1.7;border-top:1px solid rgba(53,87,125,0.3);padding-top:1rem}
+
+  /* ═══════════════ progress header ═══════════════ */
+  .quiz-head{margin-bottom:1.1rem}
+  .quiz-head .meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;gap:0.8rem}
+  .counter{font-family:var(--font-mono);font-size:0.78rem;color:var(--white-dim);letter-spacing:0.05em}
+  .counter b{color:var(--cyan-glow)}
+  .chip{
+    font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;
+    padding:0.35rem 0.8rem;border-radius:4px;color:var(--cyan-soft);
+    background:rgba(53,87,125,0.3);border:1px solid rgba(53,87,125,0.5);white-space:nowrap;
+  }
+  .track{height:5px;border-radius:3px;background:rgba(53,87,125,0.3);overflow:hidden}
+  .track .fill{height:100%;border-radius:3px;width:0;background:linear-gradient(90deg,var(--navy-steel),var(--cyan-glow));box-shadow:0 0 8px rgba(15,240,252,0.4);transition:width 0.4s cubic-bezier(0.4,0,0.2,1)}
+
+  /* ═══════════════ question card ═══════════════ */
+  .qcard{padding:1.9rem 1.9rem 1.7rem}
+  .qtype{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan-soft);margin-bottom:0.8rem}
+  .qtype::before{content:'// '}
+  .qtext{font-family:var(--font-body);font-weight:500;font-size:1.18rem;line-height:1.5;color:var(--white-pure);margin-bottom:1.5rem}
+  .options{display:grid;gap:0.7rem}
+  .opt{
+    display:flex;align-items:flex-start;gap:0.85rem;width:100%;text-align:left;
+    padding:0.9rem 1rem;border:1px solid var(--card-border);border-radius:10px;
+    background:rgba(20,30,48,0.55);color:var(--white-pure);font-family:var(--font-body);font-size:0.95rem;line-height:1.45;
+    transition:border-color 0.2s,background 0.2s,box-shadow 0.2s;
+  }
+  .opt:hover:not(:disabled){border-color:rgba(15,240,252,0.4);background:rgba(15,240,252,0.05)}
+  .opt:disabled{cursor:default}
+  .opt .mark{
+    flex:none;width:24px;height:24px;border-radius:5px;border:1px solid var(--card-border);
+    display:grid;place-items:center;font-family:var(--font-mono);font-size:0.72rem;font-weight:500;
+    color:var(--white-dim);background:rgba(53,87,125,0.25);transition:0.2s;margin-top:1px;
+  }
+  .opt[data-shape="round"] .mark{border-radius:50%}
+  .opt.selected{border-color:var(--cyan-glow);background:rgba(15,240,252,0.08);box-shadow:0 0 16px rgba(15,240,252,0.12)}
+  .opt.selected .mark{background:var(--cyan-glow);border-color:var(--cyan-glow);color:var(--navy-deep)}
+  .opt.correct{border-color:rgba(34,197,94,0.6);background:rgba(34,197,94,0.1)}
+  .opt.correct .mark{background:var(--green);border-color:var(--green);color:var(--navy-deep)}
+  .opt.wrong{border-color:rgba(255,94,108,0.55);background:rgba(255,94,108,0.09)}
+  .opt.wrong .mark{background:var(--red);border-color:var(--red);color:var(--navy-deep)}
+  .opt .lbl{flex:1}
+
+  .feedback{
+    margin-top:1.3rem;border-radius:10px;padding:1rem 1.1rem;font-size:0.9rem;line-height:1.6;
+    border:1px solid var(--card-border);background:rgba(20,30,48,0.6);display:none;
+  }
+  .feedback.show{display:block;animation:fadeUp 0.3s ease}
+  .feedback .verdict{font-family:var(--font-mono);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;margin-bottom:0.5rem}
+  .feedback .verdict::before{content:'> '}
+  .feedback.ok{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.45)}
+  .feedback.ok .verdict{color:var(--green)}
+  .feedback.no{background:rgba(255,94,108,0.07);border-color:rgba(255,94,108,0.4)}
+  .feedback.no .verdict{color:var(--red)}
+  .feedback .exp{color:var(--white-dim)}
+  .feedback .exp b{color:var(--cyan-soft);font-weight:600}
+
+  .qfoot{display:flex;align-items:center;gap:0.8rem;margin-top:1.5rem}
+  .qfoot .hint{font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);letter-spacing:0.04em}
+  .qfoot .spacer{flex:1}
+
+  /* ═══════════════ results ═══════════════ */
+  .results{padding:2.3rem 2rem 2rem}
+  .score-head{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap}
+  .ring{position:relative;width:132px;height:132px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .pct{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring .pct b{font-family:var(--font-display);font-size:2.1rem;font-weight:700;line-height:1;color:var(--cyan-glow);text-shadow:0 0 18px rgba(15,240,252,0.5)}
+  .ring .pct span{font-family:var(--font-mono);font-size:0.68rem;color:var(--white-ghost);letter-spacing:0.06em;margin-top:4px}
+  .verdict-block{flex:1;min-width:220px}
+  .verdict-block .tag{display:inline-block;font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.8rem;border-radius:4px;margin-bottom:0.7rem}
+  .tag.pass{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.5)}
+  .tag.fail{background:rgba(255,94,108,0.1);color:var(--red);border:1px solid rgba(255,94,108,0.45)}
+  .verdict-block h2{font-family:var(--font-display);font-weight:700;font-size:1.5rem;color:var(--white-pure);margin-bottom:0.4rem}
+  .verdict-block p{margin:0;color:var(--white-dim);font-size:0.9rem;line-height:1.7;max-width:44ch}
+
+  .breakdown{margin-top:2rem;display:grid;gap:1.1rem}
+  .breakdown h3{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan-glow);margin-bottom:0.2rem}
+  .bar-row{display:grid;grid-template-columns:1fr auto;gap:0.4rem 1rem;align-items:center}
+  .bar-row .name{font-size:0.88rem;font-weight:500;color:var(--white-pure)}
+  .bar-row .frac{font-family:var(--font-mono);font-size:0.78rem;color:var(--cyan-soft)}
+  .bar{grid-column:1 / -1;height:5px;border-radius:3px;background:rgba(53,87,125,0.3);overflow:hidden}
+  .bar .in{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy-steel),var(--cyan-glow));box-shadow:0 0 8px rgba(15,240,252,0.4);width:0;transition:width 1.1s cubic-bezier(0.4,0,0.2,1)}
+
+  .results-actions{display:flex;gap:0.9rem;flex-wrap:wrap;margin-top:2rem}
+
+  /* ═══════════════ review ═══════════════ */
+  .review{margin-top:0.5rem;display:none}
+  .review.show{display:block}
+  .review > h3{font-family:var(--font-display);font-weight:700;font-size:1.1rem;color:var(--white-pure);margin:1.8rem 0.2rem 1rem;letter-spacing:0.05em}
+  .rev-item{
+    background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;
+    padding:1.2rem 1.3rem;margin-bottom:0.8rem;backdrop-filter:blur(8px);position:relative;overflow:hidden;
+  }
+  .rev-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--navy-steel),var(--cyan-glow),var(--navy-steel))}
+  .rev-item.missed::before{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+  .rev-item .top{display:flex;gap:0.75rem;align-items:flex-start;margin-bottom:0.8rem}
+  .rev-item .num{font-family:var(--font-mono);font-size:0.78rem;font-weight:500;color:var(--cyan-soft);flex:none;margin-top:2px}
+  .rev-item .qq{font-weight:500;font-size:0.95rem;line-height:1.45;color:var(--white-pure)}
+  .rev-item .status{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.2rem 0.6rem;border-radius:4px;flex:none;margin-top:1px}
+  .status.ok{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.4)}
+  .status.no{background:rgba(255,94,108,0.1);color:var(--red);border:1px solid rgba(255,94,108,0.4)}
+  .rev-item ul{list-style:none;padding:0;margin:0 0 0.7rem}
+  .rev-item li{font-size:0.85rem;padding:0.5rem 0.75rem;border-radius:6px;margin-bottom:0.35rem;border:1px solid transparent;line-height:1.4}
+  .rev-item li.c{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.4);color:#b8f0cf}
+  .rev-item li.w{background:rgba(255,94,108,0.09);border-color:rgba(255,94,108,0.4);color:#ffc4cb}
+  .rev-item li .tick{font-family:var(--font-mono);font-weight:500;margin-right:0.5rem}
+  .rev-item .why{font-size:0.85rem;color:var(--white-dim);line-height:1.65;border-top:1px solid rgba(53,87,125,0.3);padding-top:0.7rem}
+  .rev-item .why b{color:var(--cyan-soft);font-weight:600}
+
+  .hidden{display:none !important}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse-green{0%,100%{box-shadow:0 0 8px var(--green)}50%{box-shadow:0 0 16px var(--green),0 0 24px rgba(34,197,94,0.4)}}
+
+  @media (max-width:560px){
+    .wrap{padding:22px 14px 60px}
+    .hero{padding:1.9rem 1.4rem}
+    .qcard{padding:1.4rem 1.3rem}
+    .qtext{font-size:1.06rem}
+    .results{padding:1.7rem 1.3rem}
+    .btn{padding:0.75rem 1.5rem}
+    .score-head{gap:1.2rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+<style>
+  /* ── additions: HCL / CLI snippets inside questions, options and explanations ── */
+  .qtext code, .opt .lbl code, .exp code, .why code, .rev-item li code, .qq code{
+    font-family:var(--font-mono);font-size:0.86em;
+    background:rgba(15,240,252,0.08);border:1px solid rgba(15,240,252,0.16);
+    border-radius:4px;padding:1px 5px;color:var(--cyan-soft);
+  }
+  .qtext pre{
+    font-family:var(--font-mono);font-size:0.8rem;line-height:1.65;
+    background:rgba(20,30,48,0.9);border:1px solid var(--card-border);
+    border-left:3px solid var(--cyan-dim);border-radius:8px;
+    padding:0.9rem 1rem;margin:1rem 0 0;color:var(--white-dim);
+    overflow-x:auto;white-space:pre;
+  }
+  .qtext pre code{background:none;border:none;padding:0;color:inherit;font-size:1em}
+  .domain-row .wt{white-space:nowrap}
+  .lenopt span{font-variant-numeric:tabular-nums}
+</style>
+</head>
+
+<body>
+<div class="backdrop" aria-hidden="true"><div class="grid"></div><div class="glow"></div></div>
+
+<div class="wrap">
+  <div class="masthead">
+    <div class="glyph" aria-hidden="true"></div>
+    <div>
+      <div class="logo">TERRAFORM<span>.ASSOCIATE</span></div>
+      <div class="tagline">HASHICORP CERTIFIED // PRACTICE ASSESSMENT (004)</div>
+    </div>
+  </div>
+
+  <!-- ============ START ============ -->
+  <section id="start" class="card hero">
+    <div class="eyebrow">Original practice set // <span id="bankCount">0</span> questions</div>
+    <h2>Drill all eight <span class="hl">Terraform Associate</span> exam objectives.</h2>
+    <p class="lead">Scenario-driven questions modeled on the real Terraform Associate (004) exam format &mdash; single-answer, multi-select, and code-reading items covering Terraform 1.12. Every question ships with an explanation, so a miss teaches you something.</p>
+
+    <div class="domains">
+      <div class="domain-row">
+        <div class="idx">01</div>
+        <div class="nm">Infrastructure as Code<span>iac concepts, declarative model, multi-cloud</span></div>
+        <div class="wt" data-count="1">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">02</div>
+        <div class="nm">Terraform fundamentals<span>providers, versioning, lock file, state purpose</span></div>
+        <div class="wt" data-count="2">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">03</div>
+        <div class="nm">Core workflow<span>init &middot; fmt &middot; validate &middot; plan &middot; apply &middot; destroy</span></div>
+        <div class="wt" data-count="3">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">04</div>
+        <div class="nm">Terraform configuration<span>resources, variables, expressions, sensitive data</span></div>
+        <div class="wt" data-count="4">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">05</div>
+        <div class="nm">Terraform modules<span>sources, versions, variable scope</span></div>
+        <div class="wt" data-count="5">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">06</div>
+        <div class="nm">State management<span>backends, locking, drift, refactoring</span></div>
+        <div class="wt" data-count="6">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">07</div>
+        <div class="nm">Maintain infrastructure<span>import, state inspection, logging</span></div>
+        <div class="wt" data-count="7">&mdash;</div>
+      </div>
+      <div class="domain-row">
+        <div class="idx">08</div>
+        <div class="nm">HCP Terraform<span>workspaces, projects, policy, collaboration</span></div>
+        <div class="wt" data-count="8">&mdash;</div>
+      </div>
+    </div>
+
+    <div class="startbar">
+      <button class="btn btn-primary" id="startBtn">Initialize quiz</button>
+      <label class="toggle">
+        <input type="checkbox" id="shuffleToggle" checked>
+        <span class="switch" aria-hidden="true"></span>
+        Shuffle questions
+      </label>
+    </div>
+
+    <div class="lenpick" role="group" aria-label="Number of questions">
+      <span class="lp-label">Session length</span>
+      <div class="lp-opts" id="lenOpts">
+        <button type="button" class="lenopt" data-n="20">20</button>
+        <button type="button" class="lenopt" data-n="40">40</button>
+        <button type="button" class="lenopt" data-n="57">57 (exam length)</button>
+        <button type="button" class="lenopt active" data-n="all">All <span id="allCount">0</span></button>
+      </div>
+    </div>
+
+    <div class="practice-flag"><span class="status-dot" aria-hidden="true"></span>Practice mode active &mdash; no data leaves your browser</div>
+
+    <p class="disclaimer">Not affiliated with or endorsed by HashiCorp or IBM. &quot;Terraform&quot; and &quot;HashiCorp&quot; are trademarks of HashiCorp. Independent study aid with original questions written against the Terraform Associate 004 objectives (Terraform 1.12); the real exam is 57 questions in 60 minutes and HashiCorp does not publish the exact passing score. Verify anything important against developer.hashicorp.com.</p>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz" class="hidden">
+    <div class="quiz-head">
+      <div class="meta">
+        <div class="counter">Q<b id="qNow">1</b> / <span id="qTotal">57</span></div>
+        <div class="chip" id="qDomain">Infrastructure as Code</div>
+      </div>
+      <div class="track"><div class="fill" id="progFill"></div></div>
+    </div>
+
+    <div class="card qcard">
+      <div class="qtype" id="qType">Choose one answer</div>
+      <p class="qtext" id="qText">&mdash;</p>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">
+        <div class="verdict" id="fVerdict"></div>
+        <div class="exp" id="fExp"></div>
+      </div>
+      <div class="qfoot">
+        <span class="hint" id="qHint">Keys 1&ndash;4 to pick // Enter to check</span>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" id="checkBtn" disabled>Check answer</button>
+        <button class="btn btn-primary hidden" id="nextBtn">Next &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="hidden">
+    <div class="card results">
+      <div class="score-head">
+        <div class="ring">
+          <svg width="132" height="132" viewBox="0 0 132 132">
+            <circle cx="66" cy="66" r="58" fill="none" stroke="rgba(53,87,125,0.3)" stroke-width="10"/>
+            <circle id="ringArc" cx="66" cy="66" r="58" fill="none" stroke="url(#grad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="364.4" stroke-dashoffset="364.4"/>
+            <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#35577D"/><stop offset="1" stop-color="#0FF0FC"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="pct"><b id="scorePct">0%</b><span id="scoreFrac">0 / 57</span></div>
+        </div>
+        <div class="verdict-block">
+          <span class="tag" id="resTag">&mdash;</span>
+          <h2 id="resTitle">&mdash;</h2>
+          <p id="resMsg">&mdash;</p>
+        </div>
+      </div>
+
+      <div class="breakdown">
+        <h3>Signal by objective</h3>
+        <div id="domainBars"></div>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn btn-primary" id="reviewBtn">Review answers</button>
+        <button class="btn btn-ghost" id="retryBtn">Retake quiz</button>
+      </div>
+    </div>
+
+    <div class="review" id="review">
+      <h3>Answer review</h3>
+      <div id="reviewList"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ============================================================
+   Terraform Associate (004) Prep — original practice question bank
+   Objectives 1–8, written against Terraform 1.12
+   ============================================================ */
+const DOMAINS = {
+  1:"Infrastructure as Code",
+  2:"Terraform fundamentals",
+  3:"Core Terraform workflow",
+  4:"Terraform configuration",
+  5:"Terraform modules",
+  6:"State management",
+  7:"Maintain infrastructure",
+  8:"HCP Terraform"
+};
+
+const BANK = [
+
+/* ---------- Objective 1: IaC ---------- */
+{d:1,type:"single",
+ q:"A platform team writes configuration that declares <i>what</i> the finished environment should look like and lets the tool work out the order of operations and API calls. Which statement best describes this approach?",
+ opts:["It is an imperative approach, because the files are executed top to bottom",
+       "It is a declarative approach, because the configuration describes the desired end state",
+       "It is a procedural approach, because each resource is created in the order written",
+       "It is a mutable approach, because resources are patched in place"],
+ correct:[1],
+ exp:"Terraform is <b>declarative</b>: you describe the desired end state and Terraform builds a dependency graph to decide the actions and their order. Files are <i>not</i> executed top to bottom — position in the file does not determine order."},
+
+{d:1,type:"multi",
+ q:"Your organization is moving from click-ops in cloud consoles to Terraform. Which two outcomes are direct advantages of the Infrastructure as Code pattern? (Select two.)",
+ opts:["Infrastructure changes can be peer-reviewed and versioned in source control",
+       "Cloud provider API rate limits no longer apply",
+       "Environments can be reliably reproduced and torn down on demand",
+       "Terraform removes the need to understand the underlying cloud services"],
+ correct:[0,2],
+ exp:"IaC makes infrastructure <b>version controlled, reviewable, and reproducible</b>. It does not remove API limits, and you still need to understand the services you are provisioning."},
+
+{d:1,type:"single",
+ q:"A company runs workloads in AWS and Azure and also manages DNS in Cloudflare and secrets in Vault. What makes Terraform well suited to this environment?",
+ opts:["Terraform ships a universal resource type that works on every cloud",
+       "Terraform translates AWS configuration into Azure configuration automatically",
+       "Terraform uses a provider plugin per platform, so one workflow and language covers them all",
+       "Terraform requires a separate binary for each cloud provider"],
+ correct:[2],
+ exp:"Terraform Core is provider-agnostic. Each platform is supported by a <b>provider plugin</b>, so the same HCL and the same write → plan → apply workflow spans every service. There is no universal resource type and no cross-cloud translation."},
+
+{d:1,type:"single",
+ q:"Which task is Terraform NOT designed to do?",
+ opts:["Provision a virtual network and a database instance",
+       "Install and continuously configure application packages inside a running VM's operating system",
+       "Manage DNS records in a SaaS provider",
+       "Create Kubernetes resources through a provider"],
+ correct:[1],
+ exp:"Terraform is a <b>provisioning</b> tool that manages infrastructure objects. Ongoing in-OS software configuration is the job of a configuration management tool (Ansible, Chef, Puppet). The two are complementary."},
+
+{d:1,type:"multi",
+ q:"Which two are commonly cited business benefits of a multi-cloud deployment managed by Terraform? (Select two.)",
+ opts:["Increased fault tolerance, since an outage at one provider does not take everything down",
+       "Guaranteed lower cost than any single-cloud deployment",
+       "Reduced dependence on a single vendor",
+       "Elimination of the need for state management"],
+ correct:[0,2],
+ exp:"Multi-cloud improves <b>fault tolerance</b> and reduces <b>vendor lock-in</b>. It does not guarantee lower cost, and state is still required."},
+
+/* ---------- Objective 2: fundamentals ---------- */
+{d:2,type:"single",
+ q:"You add a new provider to your configuration and run <code>terraform plan</code> without running anything else. Terraform errors out. Why?",
+ opts:["The provider plugin has not been installed — you must run <code>terraform init</code> first",
+       "<code>terraform plan</code> cannot be used with more than one provider",
+       "The provider must be installed globally with a package manager",
+       "You must run <code>terraform validate</code> before <code>terraform plan</code>"],
+ correct:[0],
+ exp:"Provider plugins are downloaded and installed by <b><code>terraform init</code></b>, into <code>.terraform/providers</code>. Adding a new provider (or module) always requires re-running init."},
+
+{d:2,type:"single",
+ q:"Consider this block:<pre><code>terraform {\n  required_providers {\n    aws = {\n      source  = \"hashicorp/aws\"\n      version = \"~&gt; 4.16.0\"\n    }\n  }\n}</code></pre>Which provider version would satisfy this constraint?",
+ opts:["4.17.2","5.0.0","4.16.3","4.15.9"],
+ correct:[2],
+ exp:"<code>~&gt; 4.16.0</code> is the pessimistic constraint operator with a patch-level pin: it allows <b>&gt;= 4.16.0 and &lt; 4.17.0</b>. Only 4.16.3 qualifies. (If it were <code>~&gt; 4.16</code>, any 4.x at or above 4.16 would be allowed.)"},
+
+{d:2,type:"multi",
+ q:"Which two statements about <code>.terraform.lock.hcl</code> are true? (Select two.)",
+ opts:["It should be committed to version control",
+       "It stores the credentials used to authenticate to providers",
+       "It records the exact provider versions and package checksums selected during init",
+       "It is regenerated from scratch on every plan and apply"],
+ correct:[0,2],
+ exp:"The dependency lock file records <b>selected provider versions and their hashes</b> so every run and every teammate uses identical plugins, and it <b>belongs in version control</b>. It holds no credentials and is only updated by <code>terraform init</code> (notably <code>init -upgrade</code>)."},
+
+{d:2,type:"single",
+ q:"Your <code>required_providers</code> block allows <code>~&gt; 5.0</code>, and the lock file currently pins 5.20.0. Provider version 5.31.0 has been released. Which command updates you to it?",
+ opts:["<code>terraform plan -refresh=true</code>",
+       "<code>terraform init -upgrade</code>",
+       "<code>terraform providers</code>",
+       "<code>terraform apply -replace</code>"],
+ correct:[1],
+ exp:"<b><code>terraform init -upgrade</code></b> re-evaluates the version constraints, installs the newest allowed version, and rewrites <code>.terraform.lock.hcl</code>. A plain <code>init</code> would keep the version already recorded in the lock file."},
+
+{d:2,type:"single",
+ q:"You must create resources in <code>us-east-1</code> and <code>eu-west-1</code> with the AWS provider in the same configuration. What is the correct approach?",
+ opts:["Declare two <code>required_providers</code> entries for aws with different versions",
+       "Declare a second <code>provider \"aws\"</code> block with an <code>alias</code>, then set <code>provider = aws.&lt;alias&gt;</code> on the relevant resources",
+       "Run Terraform twice with different <code>-var</code> values; a single configuration cannot target two regions",
+       "Use a <code>region</code> meta-argument on each resource block"],
+ correct:[1],
+ exp:"<b>Provider aliases</b> let you define multiple configurations of the same provider. Resources choose one with the <code>provider</code> meta-argument (<code>provider = aws.eu</code>); modules receive them via the module block's <code>providers = {}</code> argument. There is no <code>region</code> meta-argument."},
+
+{d:2,type:"single",
+ q:"In the source address <code>registry.terraform.io/hashicorp/aws</code>, what does <code>hashicorp</code> represent?",
+ opts:["The provider type","The namespace (the organization that publishes the provider)","The hostname of the registry","The provider's local name in your configuration"],
+ correct:[1],
+ exp:"The format is <code>[&lt;HOSTNAME&gt;/]&lt;NAMESPACE&gt;/&lt;TYPE&gt;</code>. Here the hostname is <code>registry.terraform.io</code> (the default, usually omitted), the <b>namespace</b> is <code>hashicorp</code>, and the type is <code>aws</code>."},
+
+{d:2,type:"multi",
+ q:"Why does Terraform maintain a state file? (Select two.)",
+ opts:["To map resources in your configuration to real objects via their provider IDs",
+       "To store the Terraform binary version required to run the configuration",
+       "To record resource dependencies, which are needed to destroy resources in the correct order",
+       "To encrypt provider credentials for later runs"],
+ correct:[0,2],
+ exp:"State exists for <b>mapping config to real resources</b>, storing <b>metadata such as dependencies</b>, <b>performance</b> (caching attributes), and <b>syncing</b> a team on one view of infrastructure. It does not encrypt credentials — in fact secrets land in state in plain text."},
+
+{d:2,type:"single",
+ q:"How does Terraform Core communicate with a provider such as <code>aws</code>?",
+ opts:["Providers are compiled into the Terraform binary at build time",
+       "Terraform Core calls the cloud REST API directly and the provider only validates schema",
+       "Providers are separate plugin binaries that Terraform Core invokes over RPC",
+       "Providers run as a long-lived daemon on the host"],
+ correct:[2],
+ exp:"Terraform uses a <b>plugin architecture</b>. Provider plugins are separate binaries; Terraform Core communicates with them over RPC, and the plugin makes the actual API calls to the upstream platform."},
+
+/* ---------- Objective 3: core workflow ---------- */
+{d:3,type:"single",
+ q:"Which sequence correctly represents the core Terraform workflow for a new working directory?",
+ opts:["Write → Apply → Plan → Init","Init → Write → Destroy → Apply","Write → Init → Plan → Apply","Plan → Init → Write → Apply"],
+ correct:[2],
+ exp:"The core workflow is <b>Write → Plan → Apply</b>, with <code>terraform init</code> initializing the working directory before the first plan."},
+
+{d:3,type:"multi",
+ q:"Which two things does <code>terraform init</code> do? (Select two.)",
+ opts:["Downloads and installs the provider plugins declared in the configuration",
+       "Applies any pending changes to reach the desired state",
+       "Initializes the configured backend",
+       "Rewrites configuration files into canonical style"],
+ correct:[0,2],
+ exp:"<code>init</code> initializes the <b>backend</b>, installs <b>providers</b>, downloads <b>modules</b>, and writes the lock file. It never changes infrastructure. Rewriting style is <code>terraform fmt</code>."},
+
+{d:3,type:"single",
+ q:"A teammate says <code>terraform validate</code> passed, so the apply is guaranteed to succeed. Why is that wrong?",
+ opts:["<code>validate</code> only checks formatting, not syntax",
+       "<code>validate</code> checks syntax and internal consistency but does not contact any remote API or check state",
+       "<code>validate</code> requires an active plan file to be meaningful",
+       "<code>validate</code> only runs against modules, not the root configuration"],
+ correct:[1],
+ exp:"<b><code>terraform validate</code></b> verifies that the configuration is syntactically valid and internally consistent (references resolve, attribute names and types are correct). It does <b>not</b> talk to providers, read state, or predict whether the API call will succeed."},
+
+{d:3,type:"single",
+ q:"You run <code>terraform plan -out=tfplan</code>, then later run <code>terraform apply tfplan</code>. What happens?",
+ opts:["Terraform re-plans and prompts you for approval",
+       "Terraform applies exactly the saved actions without prompting for approval",
+       "Terraform errors, because a saved plan can only be inspected, not applied",
+       "Terraform prompts for approval but skips the refresh"],
+ correct:[1],
+ exp:"Applying a <b>saved plan file</b> executes exactly those actions and <b>does not prompt</b> for approval — the approval effectively happened when you reviewed the plan. It fails if the state has changed since the plan was saved."},
+
+{d:3,type:"single",
+ q:"A plan shows this line:<pre><code>-/+ resource \"aws_instance\" \"web\" {\n      ~ ami = \"ami-0abc\" -&gt; \"ami-0xyz\" # forces replacement\n</code></pre>What will Terraform do on apply?",
+ opts:["Update the instance in place","Destroy the existing instance and create a new one","Read the instance without changing it","Create a second instance and leave the first one running"],
+ correct:[1],
+ exp:"<b><code>-/+</code></b> means <b>destroy and then create</b> (replacement), because the changed attribute cannot be updated in place. <code>~</code> alone would be an in-place update; <code>&lt;=</code> is a data source read. With <code>create_before_destroy</code> set, Terraform shows <code>+/-</code> instead."},
+
+{d:3,type:"single",
+ q:"Your CI pipeline should fail the build if any <code>.tf</code> file in the repo is not canonically formatted, without modifying the files. Which command do you run?",
+ opts:["<code>terraform fmt -recursive</code>","<code>terraform fmt -check -recursive</code>","<code>terraform validate -json</code>","<code>terraform plan -detailed-exitcode</code>"],
+ correct:[1],
+ exp:"<b><code>terraform fmt -check</code></b> does not rewrite files and exits non-zero if any file needs formatting — ideal for CI. Add <code>-recursive</code> to include subdirectories, and <code>-diff</code> to print the changes it would make."},
+
+{d:3,type:"single",
+ q:"Which statement about <code>terraform destroy</code> is correct?",
+ opts:["It deletes the state file but leaves infrastructure running",
+       "It is an alias for <code>terraform apply -destroy</code> and prompts for approval unless <code>-auto-approve</code> is used",
+       "It requires the <code>-target</code> flag",
+       "It can only be run against a saved plan"],
+ correct:[1],
+ exp:"<code>terraform destroy</code> is a convenience alias for <b><code>terraform apply -destroy</code></b>. It destroys the remote objects Terraform manages and prompts for approval by default. Terraform destroys in reverse dependency order using the graph recorded in state."},
+
+{d:3,type:"single",
+ q:"How many resource operations does Terraform perform concurrently by default?",
+ opts:["1","5","10","Unlimited — one goroutine per resource"],
+ correct:[2],
+ exp:"Terraform walks the dependency graph with a default <b>parallelism of 10</b>. Change it with <code>-parallelism=n</code> on plan, apply, or destroy — though HashiCorp recommends leaving it alone unless you have a reason."},
+
+{d:3,type:"single",
+ q:"A single EC2 instance is misbehaving and you want Terraform to destroy and recreate just that one resource. Which is the current, recommended command?",
+ opts:["<code>terraform taint aws_instance.web</code>","<code>terraform apply -replace=\"aws_instance.web\"</code>","<code>terraform state rm aws_instance.web</code>","<code>terraform destroy -target=aws_instance.web</code>"],
+ correct:[1],
+ exp:"<b><code>terraform apply -replace=ADDRESS</code></b> is the modern replacement for the deprecated <code>terraform taint</code>. <code>state rm</code> would abandon the resource without destroying it, and a targeted destroy would remove it without recreating it in the same run."},
+
+{d:3,type:"single",
+ q:"Someone resized a VM in the cloud console. You want Terraform's state to reflect reality without changing any infrastructure. What do you run?",
+ opts:["<code>terraform apply -refresh-only</code>","<code>terraform apply -auto-approve</code>","<code>terraform state push</code>","<code>terraform import</code>"],
+ correct:[0],
+ exp:"<b><code>terraform apply -refresh-only</code></b> refreshes state against the real API and asks you to approve updating the state file — with no changes to infrastructure. It is the modern replacement for the deprecated <code>terraform refresh</code>, which updated state silently."},
+
+{d:3,type:"single",
+ q:"What does Terraform build in order to determine which resources can be created in parallel and which must wait?",
+ opts:["A directed acyclic graph (DAG) of resources and their dependencies",
+       "An alphabetical index of resource names",
+       "A queue ordered by position in the configuration file",
+       "A hash table of provider endpoints"],
+ correct:[0],
+ exp:"Terraform builds a <b>dependency graph (DAG)</b> from implicit references and explicit <code>depends_on</code>. Independent nodes are walked in parallel; dependent nodes wait. Destroy traverses the graph in reverse."},
+
+/* ---------- Objective 4: configuration ---------- */
+{d:4,type:"single",
+ q:"You need to look up the ID of an AMI that Terraform does not manage, and use it when creating an instance. Which block do you use?",
+ opts:["A <code>resource</code> block, because Terraform must track the AMI",
+       "A <code>data</code> block, because you only need to read existing information",
+       "A <code>locals</code> block with a hardcoded ID",
+       "An <code>import</code> block, because the AMI already exists"],
+ correct:[1],
+ exp:"A <b><code>data</code> block</b> performs a read-only lookup of something Terraform does not manage, referenced as <code>data.&lt;TYPE&gt;.&lt;NAME&gt;.&lt;ATTR&gt;</code>. Terraform never creates, updates, or destroys what a data source reads."},
+
+{d:4,type:"single",
+ q:"Given <pre><code>resource \"aws_subnet\" \"app\" {\n  vpc_id = aws_vpc.main.id\n}</code></pre>which statement is true?",
+ opts:["You must also add <code>depends_on = [aws_vpc.main]</code> or ordering is undefined",
+       "The reference creates an implicit dependency, so Terraform creates the VPC first",
+       "Terraform creates both resources at the same time",
+       "This is invalid; you must use a data source to read the VPC ID"],
+ correct:[1],
+ exp:"Referencing another resource's attribute creates an <b>implicit dependency</b> — the preferred way to express ordering. <code>depends_on</code> is only needed for hidden dependencies Terraform cannot infer from references."},
+
+{d:4,type:"single",
+ q:"An application resource needs an IAM policy to exist before it starts, but nothing in its arguments references that policy. What should you add?",
+ opts:["A <code>lifecycle</code> block with <code>create_before_destroy</code>",
+       "A <code>depends_on</code> meta-argument listing the policy resource",
+       "A <code>provisioner</code> block that sleeps",
+       "A <code>count</code> meta-argument"],
+ correct:[1],
+ exp:"<b><code>depends_on</code></b> declares a dependency Terraform cannot see from references — the classic example being an IAM policy that must exist before an application can use its permissions."},
+
+{d:4,type:"single",
+ q:"You manage five S3 buckets with <code>count</code> and a list. You delete the second name from the middle of the list. What is the likely result?",
+ opts:["Only the second bucket is destroyed; the others are untouched",
+       "Terraform destroys and recreates the buckets after the removed index, because instance addresses shift",
+       "Terraform errors and refuses to plan",
+       "Nothing changes until you run <code>terraform init -upgrade</code>"],
+ correct:[1],
+ exp:"With <code>count</code>, instances are keyed by <b>position</b> (<code>[0]</code>, <code>[1]</code>…), so removing an item shifts everything after it and Terraform plans destroy/recreate. Use <b><code>for_each</code></b> over a map or set so each instance is keyed by a stable string instead."},
+
+{d:4,type:"single",
+ q:"Which meta-argument accepts a map or a set of strings, and exposes <code>each.key</code> and <code>each.value</code> inside the block?",
+ opts:["<code>count</code>","<code>for_each</code>","<code>dynamic</code>","<code>depends_on</code>"],
+ correct:[1],
+ exp:"<b><code>for_each</code></b> takes a map or a set of strings (use <code>toset()</code> to convert a list) and exposes <code>each.key</code> / <code>each.value</code>. <code>count</code> exposes <code>count.index</code> instead."},
+
+{d:4,type:"single",
+ q:"A production database must never be deleted by a Terraform run, even by accident. Which lifecycle argument enforces this?",
+ opts:["<code>ignore_changes = all</code>","<code>create_before_destroy = true</code>","<code>prevent_destroy = true</code>","<code>replace_triggered_by</code>"],
+ correct:[2],
+ exp:"<b><code>prevent_destroy = true</code></b> makes Terraform reject any plan that would destroy the resource, erroring out instead. It is a guardrail, not a permanent lock — someone can still remove the argument."},
+
+{d:4,type:"single",
+ q:"A monitoring agent constantly rewrites the <code>tags</code> on your instances, so every plan shows a diff you do not want. What is the cleanest fix?",
+ opts:["Add <code>lifecycle { ignore_changes = [tags] }</code>",
+       "Set <code>prevent_destroy = true</code>",
+       "Run <code>terraform plan -refresh=false</code> forever",
+       "Move the resource into a module"],
+ correct:[0],
+ exp:"<b><code>ignore_changes</code></b> tells Terraform to disregard drift on the listed attributes when comparing configuration to state — designed exactly for attributes another system manages."},
+
+{d:4,type:"single",
+ q:"A variable <code>region</code> is set in <code>terraform.tfvars</code>, by the environment variable <code>TF_VAR_region</code>, and by <code>-var=\"region=eu-west-1\"</code> on the command line. Which value wins?",
+ opts:["The environment variable","The value in terraform.tfvars","The <code>-var</code> flag on the command line","Terraform errors because of the conflict"],
+ correct:[2],
+ exp:"Precedence, lowest to highest: <b>environment variables (TF_VAR_) → terraform.tfvars → terraform.tfvars.json → *.auto.tfvars (lexical order) → -var / -var-file on the CLI</b>. The command line wins, and among CLI flags the last one specified wins."},
+
+{d:4,type:"single",
+ q:"Which environment variable sets the Terraform input variable named <code>instance_count</code>?",
+ opts:["<code>TERRAFORM_instance_count</code>","<code>TF_VAR_instance_count</code>","<code>TF_instance_count</code>","<code>TFVAR_instance_count</code>"],
+ correct:[1],
+ exp:"Terraform reads input variables from environment variables prefixed with <b><code>TF_VAR_</code></b> — e.g. <code>export TF_VAR_instance_count=3</code>."},
+
+{d:4,type:"multi",
+ q:"You mark an input variable with <code>sensitive = true</code>. Which two statements are true? (Select two.)",
+ opts:["Its value is redacted in <code>terraform plan</code> and <code>apply</code> output",
+       "Its value is encrypted inside the state file",
+       "Its value is still written to state in plain text",
+       "Any output that uses it must also be marked sensitive"],
+ correct:[0,3],
+ exp:"<code>sensitive = true</code> <b>redacts CLI output</b> and forces any output exposing the value to be marked sensitive as well — but it provides <b>no encryption</b>. The value lands in state in plain text, which is why the state file itself must be protected."},
+
+{d:4,type:"single",
+ q:"Which is the safest way to supply a database password to Terraform?",
+ opts:["Hardcode it in <code>main.tf</code> so it is version controlled with the config",
+       "Put it in <code>terraform.tfvars</code> and commit the file",
+       "Read it at runtime from a secrets manager (e.g. the Vault provider) or pass it via <code>TF_VAR_</code>, and protect the state backend",
+       "Store it in a local value so it is not an input variable"],
+ correct:[2],
+ exp:"Never commit secrets. Source them from a <b>secrets manager</b> (Vault provider), environment variables, or the backend's variable store — and remember that whatever Terraform reads still ends up in <b>state in plain text</b>, so the state backend must be encrypted and access-controlled."},
+
+{d:4,type:"single",
+ q:"You want to expose an instance's public IP for use by a CI script with <code>terraform output</code>, unquoted. Which command gives you the bare string?",
+ opts:["<code>terraform output public_ip</code>","<code>terraform output -raw public_ip</code>","<code>terraform show public_ip</code>","<code>terraform state show public_ip</code>"],
+ correct:[1],
+ exp:"<b><code>terraform output -raw &lt;NAME&gt;</code></b> prints the string without quotes, which is what a shell script wants. <code>-json</code> gives machine-readable output for all outputs."},
+
+{d:4,type:"single",
+ q:"Which type constraint would you use for an unordered collection of unique strings suitable for <code>for_each</code>?",
+ opts:["<code>list(string)</code>","<code>set(string)</code>","<code>tuple([string])</code>","<code>map(any)</code>"],
+ correct:[1],
+ exp:"A <b>set</b> is unordered with no duplicates — exactly what <code>for_each</code> accepts (along with a map). Convert a list with <code>toset(var.names)</code>."},
+
+{d:4,type:"single",
+ q:"Which statement about Terraform functions is correct?",
+ opts:["You can define custom functions in a <code>function</code> block",
+       "Terraform provides a fixed set of built-in functions; you cannot write your own in configuration",
+       "Functions can only be used inside <code>locals</code>",
+       "Functions require the <code>hashicorp/functions</code> provider"],
+ correct:[1],
+ exp:"Terraform exposes only its <b>built-in functions</b> (<code>length</code>, <code>lookup</code>, <code>merge</code>, <code>templatefile</code>, <code>cidrsubnet</code>, …). Use <b><code>terraform console</code></b> to experiment with them interactively."},
+
+{d:4,type:"single",
+ q:"A security group needs a variable number of ingress rules generated from a list. Which construct produces repeated nested blocks?",
+ opts:["<code>count</code> on the security group","A <code>dynamic</code> block with <code>for_each</code> and a <code>content</code> block","A <code>for</code> expression assigned to the block name","<code>depends_on</code> with a list"],
+ correct:[1],
+ exp:"A <b><code>dynamic</code> block</b> generates repeatable <i>nested</i> blocks:<br><code>dynamic \"ingress\" { for_each = var.rules  content { ... } }</code>. It cannot generate top-level blocks such as <code>resource</code> or <code>variable</code>."},
+
+{d:4,type:"single",
+ q:"Which expression sets <code>instance_type</code> to <code>m5.large</code> in production and <code>t3.micro</code> elsewhere?",
+ opts:["<code>var.env == \"prod\" ? \"m5.large\" : \"t3.micro\"</code>",
+       "<code>if var.env == \"prod\" then \"m5.large\" else \"t3.micro\"</code>",
+       "<code>lookup(var.env, \"m5.large\", \"t3.micro\")</code>",
+       "<code>coalesce(\"m5.large\", \"t3.micro\")</code>"],
+ correct:[0],
+ exp:"HCL uses the ternary <b>conditional expression</b> <code>condition ? true_val : false_val</code>. Both result values must be convertible to the same type."},
+
+{d:4,type:"single",
+ q:"You want the run to FAIL if an AMI passed into a module is not owned by your organization. Which mechanism is appropriate?",
+ opts:["A <code>check</code> block with an <code>assert</code>",
+       "A <code>precondition</code> in the resource's <code>lifecycle</code> block",
+       "A <code>terraform validate</code> rule file",
+       "An <code>output</code> with <code>sensitive = true</code>"],
+ correct:[1],
+ exp:"<b>Preconditions</b> (and variable <code>validation</code> blocks) <b>fail the run</b> when their condition is false. A <b><code>check</code> block</b>, by contrast, only emits a <b>warning</b> — it never blocks an apply, which makes it right for continuous validation but wrong for a hard guardrail."},
+
+{d:4,type:"single",
+ q:"What is the difference between a <code>precondition</code> and a <code>postcondition</code>?",
+ opts:["Preconditions run at plan time only; postconditions run at apply time only",
+       "A precondition validates assumptions before the object is evaluated; a postcondition validates guarantees after it is created",
+       "Postconditions can only be used on data sources",
+       "There is no difference; they are aliases"],
+ correct:[1],
+ exp:"A <b>precondition</b> checks an assumption <i>before</i> the resource or data source is handled; a <b>postcondition</b> checks a guarantee about the result <i>after</i>. Both live in a <code>lifecycle</code> block (outputs also support <code>precondition</code>) and both fail the run when false."},
+
+{d:4,type:"single",
+ q:"Which reference correctly reads an attribute from a data source named <code>ubuntu</code> of type <code>aws_ami</code>?",
+ opts:["<code>aws_ami.ubuntu.id</code>","<code>data.aws_ami.ubuntu.id</code>","<code>data.ubuntu.aws_ami.id</code>","<code>var.data.aws_ami.ubuntu</code>"],
+ correct:[1],
+ exp:"Data sources are referenced as <b><code>data.&lt;TYPE&gt;.&lt;NAME&gt;.&lt;ATTRIBUTE&gt;</code></b>. Managed resources drop the <code>data.</code> prefix."},
+
+{d:4,type:"single",
+ q:"Which of these is a <i>local value</i> and not an input variable?",
+ opts:["<code>var.name</code>","<code>local.name</code>","<code>each.value</code>","<code>terraform.workspace</code>"],
+ correct:[1],
+ exp:"<b><code>local.name</code></b> refers to a value declared in a <code>locals</code> block. Unlike input variables, locals cannot be set from outside the module — they name an expression for reuse inside it."},
+
+/* ---------- Objective 5: modules ---------- */
+{d:5,type:"single",
+ q:"Which argument is REQUIRED in every <code>module</code> block?",
+ opts:["<code>version</code>","<code>source</code>","<code>providers</code>","<code>depends_on</code>"],
+ correct:[1],
+ exp:"<b><code>source</code></b> is the only required argument. Everything else — <code>version</code>, <code>providers</code>, <code>count</code>, <code>for_each</code>, <code>depends_on</code>, and the module's own input variables — is optional."},
+
+{d:5,type:"single",
+ q:"You pin a module from a Git repository with <code>version = \"2.1.0\"</code> and <code>terraform init</code> fails. Why?",
+ opts:["Git modules must use a <code>ref</code> in the source URL; the <code>version</code> argument only works with registry modules",
+       "Git modules cannot be versioned at all",
+       "The version must be prefixed with <code>v</code>",
+       "You must run <code>terraform get -update</code> first"],
+ correct:[0],
+ exp:"The <b><code>version</code> argument is only supported for modules from a module registry</b> (public Terraform Registry or a private/HCP Terraform registry). For Git sources, pin with a ref instead: <code>source = \"git::https://.../vpc.git?ref=v2.1.0\"</code>."},
+
+{d:5,type:"single",
+ q:"Which module source correctly references a local module in a sibling directory?",
+ opts:["<code>source = \"modules/vpc\"</code>","<code>source = \"./modules/vpc\"</code>","<code>source = \"local::modules/vpc\"</code>","<code>source = \"file://modules/vpc\"</code>"],
+ correct:[1],
+ exp:"Local paths must begin with <b><code>./</code> or <code>../</code></b> so Terraform can distinguish them from a registry address. Local modules are not downloaded or cached — Terraform reads the files in place."},
+
+{d:5,type:"single",
+ q:"A child module creates a VPC. The root module needs the VPC ID. How does it get it?",
+ opts:["Reference <code>module.vpc.aws_vpc.main.id</code> directly",
+       "The child module must declare an <code>output</code>; the root references <code>module.vpc.&lt;OUTPUT_NAME&gt;</code>",
+       "Read the child's state file with a data source",
+       "Modules automatically export every resource attribute"],
+ correct:[1],
+ exp:"Module internals are encapsulated. The only values a child module exposes are its <b>declared outputs</b>, referenced as <code>module.&lt;NAME&gt;.&lt;OUTPUT&gt;</code>. You cannot reach into a module's resources."},
+
+{d:5,type:"single",
+ q:"A child module declares <code>variable \"region\"</code>. The root module also has a variable named <code>region</code>. What happens?",
+ opts:["The child inherits the root's value automatically",
+       "The child's value must be passed explicitly as an argument in the <code>module</code> block",
+       "Terraform errors because the names collide",
+       "The child reads it from <code>TF_VAR_region</code> only"],
+ correct:[1],
+ exp:"Variables are <b>scoped to the module</b>. Child modules do <b>not</b> inherit values from their caller — you must pass them explicitly: <code>module \"x\" { source = \"...\"  region = var.region }</code>."},
+
+{d:5,type:"single",
+ q:"Which files make up the standard module structure?",
+ opts:["<code>main.tf</code>, <code>variables.tf</code>, <code>outputs.tf</code>, plus README and LICENSE",
+       "<code>module.tf</code> and <code>terraform.tfstate</code>",
+       "<code>index.tf</code> and <code>config.tf</code>",
+       "A single <code>main.tf</code> only — any other file is ignored"],
+ correct:[0],
+ exp:"The standard module structure is <b><code>main.tf</code>, <code>variables.tf</code>, <code>outputs.tf</code></b>, with <code>README.md</code> and <code>LICENSE</code>, and optional <code>modules/</code> and <code>examples/</code> directories. Terraform actually loads <i>all</i> <code>.tf</code> files in a directory; the split is convention."},
+
+{d:5,type:"single",
+ q:"A reusable child module needs to create resources in a non-default AWS region using an aliased provider defined in the root. How do you pass it in?",
+ opts:["Define a <code>provider</code> block inside the child module",
+       "Use the module block's <code>providers = { aws = aws.west }</code> argument",
+       "Set <code>provider = aws.west</code> on the module block",
+       "Modules cannot use aliased providers"],
+ correct:[1],
+ exp:"Child modules <b>inherit the default provider configurations</b> automatically; to hand them an aliased one, use the module block's <b><code>providers</code></b> map. Best practice is to keep <code>provider</code> blocks out of reusable child modules entirely."},
+
+{d:5,type:"single",
+ q:"What does <code>source = \"terraform-aws-modules/vpc/aws\"</code> tell Terraform?",
+ opts:["Download from GitHub user terraform-aws-modules",
+       "Download the <code>vpc</code> module for the <code>aws</code> provider from the public Terraform Registry namespace <code>terraform-aws-modules</code>",
+       "Look for a local directory of that name",
+       "Use the AWS provider's built-in VPC module"],
+ correct:[1],
+ exp:"A public registry module source is <b><code>&lt;NAMESPACE&gt;/&lt;NAME&gt;/&lt;PROVIDER&gt;</code></b>. A private registry module adds a hostname: <code>app.terraform.io/&lt;ORG&gt;/&lt;NAME&gt;/&lt;PROVIDER&gt;</code>."},
+
+/* ---------- Objective 6: state ---------- */
+{d:6,type:"single",
+ q:"A configuration has no <code>backend</code> and no <code>cloud</code> block. Where is state stored?",
+ opts:["Nowhere — Terraform runs stateless","In <code>terraform.tfstate</code> in the working directory (the local backend)","In HCP Terraform by default","In <code>.terraform/state.json</code>"],
+ correct:[1],
+ exp:"With no backend configured, Terraform uses the <b>local backend</b>: state is written to <code>terraform.tfstate</code> in the working directory, with the previous version kept as <code>terraform.tfstate.backup</code>."},
+
+{d:6,type:"multi",
+ q:"Your team of six is sharing state via a Git repository containing <code>terraform.tfstate</code>. Which two risks does moving to a remote backend address? (Select two.)",
+ opts:["Two engineers can apply at the same time and corrupt state",
+       "Terraform will run out of provider versions",
+       "Secrets stored in state in plain text are committed to the repo",
+       "The dependency lock file cannot be shared"],
+ correct:[0,2],
+ exp:"A remote backend provides <b>state locking</b> (preventing concurrent writes) and keeps state — which contains <b>secrets in plain text</b> — out of your repo, encrypted at rest with access controls. The lock file is meant to be committed and is unaffected."},
+
+{d:6,type:"single",
+ q:"An apply crashed and now every command reports that the state is locked. Which command releases it?",
+ opts:["<code>terraform state rm</code>","<code>terraform force-unlock &lt;LOCK_ID&gt;</code>","<code>terraform init -reconfigure</code>","<code>terraform apply -lock=false</code>"],
+ correct:[1],
+ exp:"<b><code>terraform force-unlock &lt;LOCK_ID&gt;</code></b> manually releases a stuck lock — use it only when you are certain no operation is actually running. <code>-lock=false</code> merely skips locking for that command and is not a fix."},
+
+{d:6,type:"single",
+ q:"You try this and <code>terraform init</code> fails:<pre><code>terraform {\n  backend \"s3\" {\n    bucket = var.state_bucket\n    key    = \"prod/terraform.tfstate\"\n  }\n}</code></pre>Why?",
+ opts:["The S3 backend requires DynamoDB in all cases",
+       "The backend block cannot use variables, locals, or any expression",
+       "<code>key</code> must be named <code>path</code> for S3",
+       "Backends can only be declared in a file called <code>backend.tf</code>"],
+ correct:[1],
+ exp:"The backend is initialized <b>before</b> the rest of the configuration is evaluated, so it <b>cannot reference variables or expressions</b>. Use <b>partial configuration</b> instead: omit the values and pass them at init with <code>-backend-config=key=value</code> or <code>-backend-config=backend.hcl</code>."},
+
+{d:6,type:"single",
+ q:"You change your backend from <code>local</code> to <code>s3</code> and want to keep the resources Terraform already manages. What must you run?",
+ opts:["<code>terraform init -migrate-state</code>","<code>terraform init -reconfigure</code>","<code>terraform state push</code>","<code>terraform import</code> for every resource"],
+ correct:[0],
+ exp:"<b><code>terraform init -migrate-state</code></b> copies the existing state into the newly configured backend. <b><code>-reconfigure</code></b> does the opposite — it ignores the existing state and configures the backend from scratch, which would lose your tracking."},
+
+{d:6,type:"single",
+ q:"You rename <code>aws_instance.web</code> to <code>aws_instance.frontend</code> in your configuration. Without any other change, what does the plan show?",
+ opts:["No changes — Terraform matches resources by their cloud ID",
+       "Destroy <code>aws_instance.web</code> and create <code>aws_instance.frontend</code>",
+       "An in-place update of the name attribute",
+       "An error, because renaming resources is not allowed"],
+ correct:[1],
+ exp:"Terraform tracks resources by their <b>address</b>, so a rename looks like a delete plus a create. Add a <b><code>moved</code> block</b> (<code>moved { from = aws_instance.web  to = aws_instance.frontend }</code>) — or use <code>terraform state mv</code> — so the existing object is carried over instead."},
+
+{d:6,type:"single",
+ q:"You want Terraform to stop managing a resource but leave the real infrastructure running, and you want the change to be code-reviewed. What is the modern approach?",
+ opts:["<code>terraform destroy -target</code> the resource",
+       "Delete the resource block and add a <code>removed</code> block with <code>lifecycle { destroy = false }</code>",
+       "<code>terraform state push</code> an edited state file",
+       "Add <code>prevent_destroy = true</code> and delete the block"],
+ correct:[1],
+ exp:"The <b><code>removed</code> block</b> takes a resource out of state declaratively (optionally without destroying it), so the intent is version controlled and reviewable — the config-driven counterpart to the imperative <code>terraform state rm</code>."},
+
+{d:6,type:"single",
+ q:"Which command removes a resource from state <i>without</i> destroying the real infrastructure?",
+ opts:["<code>terraform destroy -target=ADDRESS</code>","<code>terraform state rm ADDRESS</code>","<code>terraform apply -replace=ADDRESS</code>","<code>terraform taint ADDRESS</code>"],
+ correct:[1],
+ exp:"<b><code>terraform state rm</code></b> forgets the resource — Terraform stops managing it, but the real object survives. If the resource block is still in your configuration, the next plan will try to <i>create</i> it again."},
+
+{d:6,type:"single",
+ q:"Team A's networking workspace outputs <code>vpc_id</code>. Team B needs it in a separate configuration. What is the correct mechanism?",
+ opts:["Read Team A's <code>.tfstate</code> file with the <code>file()</code> function",
+       "The <code>terraform_remote_state</code> data source, reading <code>outputs.vpc_id</code>",
+       "Copy the state file into Team B's backend",
+       "A <code>moved</code> block pointing at Team A's resource"],
+ correct:[1],
+ exp:"The <b><code>terraform_remote_state</code> data source</b> reads another configuration's state and exposes <b>only its root outputs</b> — <code>data.terraform_remote_state.net.outputs.vpc_id</code>. Anything you want to share must be declared as an output."},
+
+{d:6,type:"multi",
+ q:"Which two statements about CLI workspaces (<code>terraform workspace new/select</code>) are true? (Select two.)",
+ opts:["Each workspace has its own state file within the same backend",
+       "Each workspace has its own configuration files",
+       "The current workspace name is available as <code>terraform.workspace</code>",
+       "Workspaces provide strong isolation and are the recommended way to separate production"],
+ correct:[0,2],
+ exp:"CLI workspaces are <b>alternate state files</b> within one backend and one working directory, exposed as <code>terraform.workspace</code>. They share the same configuration, and HashiCorp warns they are <b>not</b> a strong isolation boundary for production — use separate configurations/backends or HCP Terraform workspaces for that."},
+
+{d:6,type:"single",
+ q:"Which statement about drift is correct?",
+ opts:["Drift is any difference between two Terraform configurations",
+       "Drift occurs when real infrastructure no longer matches what is recorded in state, usually due to an out-of-band change",
+       "Drift only happens when the state file is deleted",
+       "Terraform automatically reverts drift without a plan"],
+ correct:[1],
+ exp:"<b>Drift</b> is when the real world diverges from state — typically because someone changed something in the console or with another tool. <code>terraform plan</code> surfaces it (it refreshes by default); <code>apply -refresh-only</code> lets you accept it into state without touching infrastructure."},
+
+/* ---------- Objective 7: maintain ---------- */
+{d:7,type:"single",
+ q:"You run <code>terraform import aws_instance.web i-0abc123</code>, then immediately run <code>terraform plan</code>. The plan proposes to destroy and recreate the instance. Why?",
+ opts:["<code>import</code> corrupted the state file",
+       "The CLI <code>import</code> command writes state but does NOT generate configuration — your resource block does not match the real resource yet",
+       "Imported resources always require replacement on the first apply",
+       "You must run <code>terraform refresh</code> before planning"],
+ correct:[1],
+ exp:"<b><code>terraform import</code> only writes to state.</b> You must author the matching <code>resource</code> block yourself. Until the configuration matches reality, the plan will show changes — a clean &quot;No changes&quot; plan is how you know the import is complete."},
+
+{d:7,type:"single",
+ q:"Which approach lets you review an import in a plan before it happens AND generate the resource configuration for you?",
+ opts:["An <code>import</code> block plus <code>terraform plan -generate-config-out=generated.tf</code>",
+       "<code>terraform import -auto-config</code>",
+       "<code>terraform state push</code>",
+       "<code>terraform show -json</code> piped to a template"],
+ correct:[0],
+ exp:"The config-driven <b><code>import</code> block</b> (<code>import { to = aws_instance.web  id = \"i-0abc\" }</code>) is planned before it is applied, is version controlled, and supports <b><code>-generate-config-out</code></b> to scaffold the resource block."},
+
+{d:7,type:"single",
+ q:"You need the private IP of a resource that Terraform manages, straight from state. Which command shows every attribute of that one instance?",
+ opts:["<code>terraform state list</code>","<code>terraform state show aws_instance.web</code>","<code>terraform providers</code>","<code>terraform graph</code>"],
+ correct:[1],
+ exp:"<b><code>terraform state show &lt;ADDRESS&gt;</code></b> prints the full attribute set for one resource instance. <code>terraform state list</code> only lists the addresses Terraform is tracking."},
+
+{d:7,type:"single",
+ q:"Which command renders the CURRENT state (or a saved plan file) in human-readable form, and can emit JSON for tooling?",
+ opts:["<code>terraform output</code>","<code>terraform show</code>","<code>terraform state pull</code>","<code>terraform console</code>"],
+ correct:[1],
+ exp:"<b><code>terraform show</code></b> with no arguments renders current state; given a plan file it renders that plan. <code>terraform show -json</code> produces machine-readable output used by policy engines and CI tooling."},
+
+{d:7,type:"multi",
+ q:"A provider is failing intermittently and HashiCorp support asks for a trace log written to a file. Which two environment variables do you set? (Select two.)",
+ opts:["<code>TF_LOG=TRACE</code>","<code>TF_DEBUG=1</code>","<code>TF_LOG_PATH=./terraform.log</code>","<code>TF_TRACE=on</code>"],
+ correct:[0,2],
+ exp:"<b><code>TF_LOG</code></b> enables logging (TRACE &gt; DEBUG &gt; INFO &gt; WARN &gt; ERROR; TRACE is the most verbose and what bug reports ask for) and <b><code>TF_LOG_PATH</code></b> persists it to a file. <code>TF_LOG_CORE</code> and <code>TF_LOG_PROVIDER</code> can be set separately."},
+
+{d:7,type:"single",
+ q:"Which log level is the most verbose?",
+ opts:["<code>DEBUG</code>","<code>INFO</code>","<code>TRACE</code>","<code>ERROR</code>"],
+ correct:[2],
+ exp:"From most to least verbose: <b>TRACE → DEBUG → INFO → WARN → ERROR</b>. <code>TF_LOG=TRACE</code> is the level HashiCorp asks for in bug reports."},
+
+{d:7,type:"single",
+ q:"A configuration fails with an unhelpful error. Which troubleshooting order is recommended?",
+ opts:["Enable TRACE logs first, then fmt, then validate",
+       "<code>terraform fmt</code> → <code>terraform validate</code> → <code>terraform plan</code> → enable <code>TF_LOG</code> if it is still unclear",
+       "Delete the state file and re-import everything",
+       "Run <code>terraform apply -auto-approve</code> to see the real error"],
+ correct:[1],
+ exp:"Work outward from the cheapest checks: <b>fmt</b> (style/syntax) → <b>validate</b> (internal consistency) → <b>plan</b> (state and provider/API errors) → <b>TF_LOG</b> for core or provider defects."},
+
+/* ---------- Objective 8: HCP Terraform ---------- */
+{d:8,type:"single",
+ q:"Which statement best distinguishes an HCP Terraform workspace from a CLI workspace?",
+ opts:["They are the same feature with different names",
+       "An HCP Terraform workspace is a managed object with its own state, variables, run history, and permissions; a CLI workspace is just an alternate state file in one backend",
+       "CLI workspaces store state remotely; HCP Terraform workspaces store it locally",
+       "HCP Terraform workspaces cannot store state"],
+ correct:[1],
+ exp:"An <b>HCP Terraform workspace</b> is a first-class managed object: its own state, variables, run history, settings, and permissions. A <b>CLI workspace</b> is just a separate state file inside the same backend and working directory, sharing one configuration."},
+
+{d:8,type:"single",
+ q:"Which block connects a local configuration to HCP Terraform?",
+ opts:["<code>backend \"remote\"</code> only — the <code>cloud</code> block is for Terraform Enterprise",
+       "A <code>cloud</code> block inside <code>terraform {}</code> specifying <code>organization</code> and <code>workspaces</code>",
+       "A <code>provider \"tfe\"</code> block",
+       "An <code>hcp</code> block at the top level of the configuration"],
+ correct:[1],
+ exp:"Add a <b><code>cloud</code> block</b> inside the <code>terraform</code> block with <code>organization</code> and a <code>workspaces { name = ... }</code> (or <code>tags</code>/<code>project</code>), then run <code>terraform login</code> and <code>terraform init</code>."},
+
+{d:8,type:"single",
+ q:"What does <code>terraform login</code> do?",
+ opts:["Authenticates you to your cloud provider",
+       "Obtains an HCP Terraform API token via the browser and stores it in <code>~/.terraform.d/credentials.tfrc.json</code>",
+       "Logs into the state backend's S3 bucket",
+       "Creates a new organization"],
+ correct:[1],
+ exp:"<b><code>terraform login</code></b> retrieves an API token for HCP Terraform (or another configured host) through a browser flow and saves it to <code>credentials.tfrc.json</code>. <code>terraform logout</code> removes it."},
+
+{d:8,type:"single",
+ q:"Your networking workspace and your application workspace are separate. When networking applies successfully, the application workspace should automatically queue a run. What do you configure?",
+ opts:["A run trigger on the application workspace, with networking as the source",
+       "A variable set shared between them",
+       "A <code>moved</code> block",
+       "A remote state data source alone"],
+ correct:[0],
+ exp:"A <b>run trigger</b> queues a run in the destination workspace whenever a source workspace completes a successful apply. Pair it with <code>terraform_remote_state</code> (or <code>tfe_outputs</code>) so the downstream workspace actually consumes the new values."},
+
+{d:8,type:"single",
+ q:"You store the same AWS credentials as environment variables in 14 workspaces. What feature removes that duplication?",
+ opts:["A variable set applied globally or to a project",
+       "A run trigger","A policy set","A workspace tag"],
+ correct:[0],
+ exp:"A <b>variable set</b> is a reusable collection of Terraform and/or environment variables that can be applied globally, to a project, or to selected workspaces — define credentials once instead of per workspace."},
+
+{d:8,type:"single",
+ q:"A variable named <code>region</code> exists in a global variable set AND is defined directly on the workspace. Which value is used?",
+ opts:["The variable set value, because it is broader",
+       "The workspace value, because workspace-level variables take precedence",
+       "Terraform errors on the conflict",
+       "Whichever was created most recently"],
+ correct:[1],
+ exp:"<b>Workspace-level variables override variable set values</b> of the same name. Among variable sets, a workspace-scoped set beats a project-scoped set, which beats a global set."},
+
+{d:8,type:"single",
+ q:"What is an HCP Terraform project?",
+ opts:["A saved plan file","A container that groups related workspaces so you can organize them and grant permissions at the group level","A Sentinel policy bundle","A synonym for an organization"],
+ correct:[1],
+ exp:"A <b>project</b> groups related workspaces (by team or application) and lets you manage <b>permissions at the project level</b> instead of workspace by workspace."},
+
+{d:8,type:"multi",
+ q:"Which two are true about policy enforcement in HCP Terraform? (Select two.)",
+ opts:["Policies are evaluated between the plan and the apply",
+       "Sentinel and Open Policy Agent (OPA) are both supported",
+       "Policies run only after the apply completes",
+       "Policies replace the need for a plan"],
+ correct:[0,1],
+ exp:"HCP Terraform supports <b>Sentinel</b> and <b>OPA</b>, and evaluates policies <b>between plan and apply</b> — so a non-compliant plan can be stopped before any infrastructure changes."},
+
+{d:8,type:"single",
+ q:"A Sentinel policy is set to <code>soft-mandatory</code>. A run violates it. What happens?",
+ opts:["The run continues with a warning logged",
+       "The run fails, but a user with the right permission can override it and continue",
+       "The run fails and cannot be overridden by anyone",
+       "The policy is skipped because the run already passed plan"],
+ correct:[1],
+ exp:"Sentinel enforcement levels: <b>advisory</b> (warn, run continues), <b>soft-mandatory</b> (fails, but can be overridden by an authorized user), and <b>hard-mandatory</b> (fails, no override). OPA uses advisory and mandatory."},
+
+{d:8,type:"single",
+ q:"Which HCP Terraform feature periodically checks — on a schedule and without changing infrastructure — whether real resources still match state?",
+ opts:["Cost estimation","Health assessments (drift detection)","Run triggers","The private registry"],
+ correct:[1],
+ exp:"<b>Health assessments</b> run <b>drift detection</b> and <b>continuous validation</b> (re-evaluating <code>check</code> block assertions) automatically on a schedule, surfacing results in the UI. They require remote execution and a paid tier."},
+
+{d:8,type:"single",
+ q:"Your security team forbids storing long-lived cloud access keys as workspace variables. Which HCP Terraform feature satisfies them?",
+ opts:["Marking the variables sensitive",
+       "Dynamic provider credentials, which use OIDC to generate short-lived credentials per run",
+       "Storing the keys in a global variable set",
+       "Enabling state encryption"],
+ correct:[1],
+ exp:"<b>Dynamic provider credentials</b> let HCP Terraform authenticate to AWS/Azure/GCP/Vault using OIDC-based, <b>short-lived credentials generated for each run</b> — no static secrets to store or rotate. Marking a variable sensitive only hides it; the key still exists."},
+
+{d:8,type:"single",
+ q:"In a VCS-driven workflow, a developer opens a pull request. What does HCP Terraform do?",
+ opts:["Immediately applies the change to production",
+       "Runs a speculative plan and posts the result back to the pull request; nothing is applied until the branch is merged",
+       "Nothing — VCS integration only works on merge",
+       "Locks the workspace until the PR is closed"],
+ correct:[1],
+ exp:"A pull request triggers a <b>speculative plan</b> — plan only, never applied — whose result is posted to the PR so reviewers can see the effect. Merging to the tracked branch triggers a real plan and apply (subject to approval settings)."},
+
+{d:8,type:"single",
+ q:"A workspace is set to <code>Local</code> execution mode. What does that mean?",
+ opts:["HCP Terraform runs the plan and apply on its own infrastructure",
+       "HCP Terraform stores state and variables, but plans and applies run on your machine or CI runner",
+       "The workspace cannot store state",
+       "Runs execute on a self-hosted agent inside your network"],
+ correct:[1],
+ exp:"Execution modes: <b>Remote</b> (runs on HCP Terraform's infrastructure — the default), <b>Local</b> (HCP Terraform is used for state/variables only; runs happen on your machine), and <b>Agent</b> (runs execute on a self-hosted agent, e.g. inside a private network)."},
+
+{d:8,type:"single",
+ q:"Which HCP Terraform feature lets you query across every workspace in an organization to find, for example, all workspaces running an outdated Terraform version?",
+ opts:["Explorer","Run triggers","The private registry","Change requests"],
+ correct:[0],
+ exp:"<b>Explorer</b> gives cross-workspace visibility — query and report on Terraform versions, drift, providers, and modules across the whole organization. <b>Change requests</b> are the companion feature for asking the responsible teams to act on what you find."},
+
+{d:8,type:"multi",
+ q:"Which two are collaboration/governance features of HCP Terraform (as opposed to Terraform Community Edition)? (Select two.)",
+ opts:["Team-based permissions on workspaces and projects",
+       "The <code>terraform plan</code> command",
+       "A private module registry",
+       "The <code>for_each</code> meta-argument"],
+ correct:[0,2],
+ exp:"<b>Team permissions</b> and the <b>private registry</b> are HCP Terraform features. <code>plan</code> and <code>for_each</code> are core Terraform, available in Community Edition."}
+
+];
+
+/* ---------- state ---------- */
+let questions=[], idx=0, answers=[], checked=false, selectedLen="all";
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const sameSet=(x,y)=>x.length===y.length&&x.every(v=>y.includes(v));
+const LETTERS=["A","B","C","D","E"];
+const OBJ_KEYS=Object.keys(DOMAINS).map(Number);
+
+/* ---------- populate counts on the landing card ---------- */
+(function(){
+  $("bankCount").textContent=BANK.length;
+  $("allCount").textContent=BANK.length;
+  document.querySelectorAll(".wt[data-count]").forEach(el=>{
+    const d=+el.dataset.count;
+    el.textContent=BANK.filter(q=>q.d===d).length+" Q";
+  });
+})();
+
+/* ---------- start ---------- */
+$("startBtn").addEventListener("click",begin);
+$("retryBtn").addEventListener("click",begin);
+
+/* ---------- length picker ---------- */
+$("lenOpts").addEventListener("click",e=>{
+  const b=e.target.closest(".lenopt"); if(!b) return;
+  selectedLen=b.dataset.n;
+  [...$("lenOpts").children].forEach(el=>el.classList.toggle("active",el===b));
+});
+
+function begin(){
+  const shf=$("shuffleToggle").checked;
+  let pool=BANK.slice();
+  if(selectedLen==="all"){
+    if(shf) pool=shuffle(pool);
+  } else {
+    pool=shuffle(pool).slice(0, Math.min(+selectedLen, pool.length));
+  }
+  questions=pool;
+  idx=0; answers=questions.map(()=>({picked:[],correct:null}));
+  $("qTotal").textContent=questions.length;
+  $("start").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("review").classList.remove("show");
+  $("reviewBtn").textContent="Review answers";
+  $("quiz").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"instant"in window?"instant":"auto"});
+  render();
+}
+
+/* ---------- render a question ---------- */
+function render(){
+  checked=false;
+  const q=questions[idx];
+  $("qNow").textContent=idx+1;
+  $("qDomain").textContent=DOMAINS[q.d];
+  $("progFill").style.width=((idx)/questions.length*100)+"%";
+  $("qType").textContent=q.type==="multi"?"Select all that apply":"Choose one answer";
+  $("qHint").textContent=q.type==="multi"?"Keys 1–4 toggle // Enter to check":"Keys 1–4 to pick // Enter to check";
+  $("qText").innerHTML=q.q;
+
+  const box=$("options"); box.innerHTML="";
+  q.opts.forEach((text,i)=>{
+    const b=document.createElement("button");
+    b.className="opt"; b.type="button";
+    b.dataset.i=i;
+    b.dataset.shape=q.type==="multi"?"square":"round";
+    b.innerHTML=`<span class="mark">${LETTERS[i]}</span><span class="lbl">${text}</span>`;
+    b.addEventListener("click",()=>pick(i));
+    box.appendChild(b);
+  });
+
+  const fb=$("feedback"); fb.className="feedback"; $("fVerdict").innerHTML=""; $("fExp").innerHTML="";
+  $("checkBtn").classList.remove("hidden"); $("checkBtn").disabled=true;
+  $("nextBtn").classList.add("hidden");
+  $("nextBtn").textContent = idx===questions.length-1 ? "See results →" : "Next →";
+}
+
+/* ---------- pick an option ---------- */
+function pick(i){
+  if(checked) return;
+  const q=questions[idx], a=answers[idx];
+  if(q.type==="single"){ a.picked=[i]; }
+  else { const p=a.picked.indexOf(i); p>-1?a.picked.splice(p,1):a.picked.push(i); }
+  [...$("options").children].forEach(el=>{
+    el.classList.toggle("selected", a.picked.includes(+el.dataset.i));
+  });
+  $("checkBtn").disabled = a.picked.length===0;
+}
+
+/* ---------- check ---------- */
+$("checkBtn").addEventListener("click",()=>{
+  const a=answers[idx]; if(a.picked.length===0) return;
+  const q=questions[idx];
+  checked=true;
+  const right=sameSet(a.picked,q.correct);
+  a.correct=right;
+
+  [...$("options").children].forEach(el=>{
+    const i=+el.dataset.i;
+    el.disabled=true; el.classList.remove("selected");
+    if(q.correct.includes(i)) el.classList.add("correct");
+    else if(a.picked.includes(i)) el.classList.add("wrong");
+  });
+
+  const fb=$("feedback");
+  fb.classList.add("show", right?"ok":"no");
+  $("fVerdict").innerHTML = right ? "Correct" : (q.correct.length>1?"Not quite":"Incorrect");
+  const pre = right ? "" :
+    `<b>Correct answer:</b> ${q.correct.map(c=>LETTERS[c]).join(", ")} — `;
+  $("fExp").innerHTML = pre + q.exp;
+
+  $("checkBtn").classList.add("hidden");
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").focus();
+});
+
+/* ---------- next ---------- */
+$("nextBtn").addEventListener("click",()=>{
+  if(idx<questions.length-1){ idx++; render(); window.scrollTo({top:0,behavior:"smooth"}); }
+  else finish();
+});
+
+/* ---------- keyboard ---------- */
+document.addEventListener("keydown",e=>{
+  if($("quiz").classList.contains("hidden")) return;
+  if(e.key>="1"&&e.key<="5"){
+    const i=+e.key-1; if(i<questions[idx].opts.length && !checked) pick(i);
+  } else if(e.key==="Enter"){
+    if(!checked && !$("checkBtn").disabled){ e.preventDefault(); $("checkBtn").click(); }
+    else if(checked){ e.preventDefault(); $("nextBtn").click(); }
+  }
+});
+
+/* ---------- results ---------- */
+function finish(){
+  $("progFill").style.width="100%";
+  const total=questions.length;
+  const got=answers.filter(a=>a.correct).length;
+  const pct=Math.round(got/total*100);
+
+  $("quiz").classList.add("hidden");
+  $("results").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
+  $("scorePct").textContent=pct+"%";
+  $("scoreFrac").textContent=`${got} / ${total}`;
+
+  const C=2*Math.PI*58;
+  const arc=$("ringArc"); arc.style.strokeDasharray=C.toFixed(1);
+  arc.style.transition="none"; arc.style.strokeDashoffset=C.toFixed(1);
+  requestAnimationFrame(()=>{ arc.style.transition="stroke-dashoffset 1s cubic-bezier(.4,0,.2,1)"; arc.style.strokeDashoffset=(C*(1-got/total)).toFixed(1); });
+
+  const pass=pct>=70;
+  const tag=$("resTag");
+  tag.className="tag "+(pass?"pass":"fail");
+  tag.textContent=pass?"Signal locked":"Recalibrate";
+  $("resTitle").textContent = pass ? "Nicely done." : "Solid effort.";
+  $("resMsg").textContent = pass
+    ? "You cleared the 70% practice mark. Keep drilling the objectives where you slipped and you'll be ready."
+    : "You're below the 70% practice mark. Review the explanations below, focus on the weakest objective, then retake.";
+
+  const stat={}; OBJ_KEYS.forEach(d=>stat[d]=[0,0]);
+  questions.forEach((q,i)=>{ stat[q.d][1]++; if(answers[i].correct) stat[q.d][0]++; });
+  const bars=$("domainBars"); bars.innerHTML="";
+  OBJ_KEYS.forEach(d=>{
+    const [c,t]=stat[d]; if(!t) return;
+    const p=Math.round(c/t*100);
+    const row=document.createElement("div");
+    row.className="bar-row";
+    row.innerHTML=`<div class="name">${DOMAINS[d]}</div><div class="frac">${c}/${t} · ${p}%</div><div class="bar"><div class="in"></div></div>`;
+    bars.appendChild(row);
+    requestAnimationFrame(()=>{ row.querySelector(".in").style.width=p+"%"; });
+  });
+
+  buildReview();
+}
+
+/* ---------- review ---------- */
+$("reviewBtn").addEventListener("click",()=>{
+  const r=$("review"); r.classList.toggle("show");
+  $("reviewBtn").textContent = r.classList.contains("show") ? "Hide review" : "Review answers";
+  if(r.classList.contains("show")) r.scrollIntoView({behavior:"smooth"});
+});
+function buildReview(){
+  const list=$("reviewList"); list.innerHTML="";
+  questions.forEach((q,i)=>{
+    const a=answers[i], ok=a.correct;
+    const item=document.createElement("div"); item.className="rev-item"+(ok?"":" missed");
+    let lis="";
+    q.opts.forEach((t,j)=>{
+      const isC=q.correct.includes(j), isP=a.picked.includes(j);
+      if(isC) lis+=`<li class="c"><span class="tick">✓</span>${LETTERS[j]}. ${t}</li>`;
+      else if(isP) lis+=`<li class="w"><span class="tick">✕</span>${LETTERS[j]}. ${t}</li>`;
+    });
+    if(a.picked.length===0) lis+=`<li class="w"><span class="tick">–</span>No answer selected</li>`;
+    item.innerHTML=
+      `<div class="top">
+         <span class="num">${String(i+1).padStart(2,"0")}</span>
+         <span class="qq">${q.q}</span>
+         <span class="status ${ok?"ok":"no"}">${ok?"Correct":"Missed"}</span>
+       </div>
+       <ul>${lis}</ul>
+       <div class="why">${q.exp}</div>`;
+    list.appendChild(item);
+  });
+}
+
+</script>
+</body>
+</html>
