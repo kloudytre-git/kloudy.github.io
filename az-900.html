@@ -281,6 +281,38 @@
     .score-head{gap:1.2rem}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+
+  /* ═══════════════ study-mode toggle (definitions vs exam) ═══════════════ */
+  .mode-toggle{display:flex;gap:0.6rem;margin:0 0 0.9rem}
+  .mode-btn{
+    flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--card-border);
+    color:var(--white-dim);font-family:var(--font-mono);font-size:0.72rem;
+    letter-spacing:0.06em;text-transform:uppercase;padding:0.8rem 0.6rem;
+    border-radius:8px;cursor:pointer;
+    transition:border-color .15s,background .15s,color .15s,box-shadow .15s;
+  }
+  .mode-btn:hover{border-color:rgba(15,240,252,0.4);color:var(--white-pure)}
+  .mode-btn.active{
+    background:rgba(15,240,252,0.10);border-color:var(--cyan-glow);
+    color:var(--white-pure);box-shadow:0 0 14px rgba(15,240,252,0.18);
+  }
+  .mode-desc{
+    font-family:var(--font-mono);font-size:0.72rem;color:var(--white-ghost);
+    line-height:1.7;margin:0 0 1.6rem;
+  }
+  /* flashcard prompts in definitions mode */
+  .qtext .term{
+    display:block;font-family:var(--font-display);font-size:1.35rem;font-weight:700;
+    color:var(--cyan-glow);margin-top:0.8rem;letter-spacing:0.01em;
+    text-shadow:0 0 18px rgba(15,240,252,0.35);
+  }
+  .qtext .defn{
+    display:block;margin-top:0.8rem;padding:0.85rem 1rem;
+    background:rgba(20,30,48,0.85);border:1px solid var(--card-border);
+    border-left:3px solid var(--cyan-dim);border-radius:8px;
+    font-size:0.95rem;font-weight:400;color:var(--white-dim);line-height:1.55;
+  }
+  @media(max-width:560px){ .mode-toggle{flex-direction:column} .qtext .term{font-size:1.15rem} }
 </style>
 </head>
 <body>
@@ -297,11 +329,17 @@
 
   <!-- ============ START ============ -->
   <section id="start" class="card hero">
-    <div class="eyebrow">Original practice set // 108 questions</div>
+    <div class="eyebrow" id="eyebrow">Original practice set // 108 questions</div>
     <h2>Run the drill across the three <span class="hl">Azure Fundamentals</span> domains.</h2>
     <p class="lead">A brand-new question bank modeled on Microsoft's official AZ-900 practice assessment — same domains, same weightings, all-new questions. Every answer ships with an explanation so you learn as you go.</p>
 
-    <div class="domains">
+    <div class="mode-toggle" role="group" aria-label="Study mode">
+      <button type="button" class="mode-btn active" id="modeExamBtn">Exam-Style Questions</button>
+      <button type="button" class="mode-btn" id="modeDefBtn">Definitions &amp; Terms</button>
+    </div>
+    <p class="mode-desc" id="modeDesc"></p>
+
+    <div class="domains" id="examDomains">
       <div class="domain-row">
         <div class="idx">01</div>
         <div class="nm">Cloud concepts<span>service &amp; deployment models, benefits</span></div>
@@ -318,6 +356,8 @@
         <div class="wt">30–35%</div>
       </div>
     </div>
+
+    <div class="domains" id="termDomains" style="display:none"></div>
 
     <div class="startbar">
       <button class="btn btn-primary" id="startBtn">Initialize quiz</button>
@@ -392,7 +432,7 @@
       </div>
 
       <div class="breakdown">
-        <h3>Signal by domain</h3>
+        <h3 id="breakdownTitle">Signal by domain</h3>
         <div id="domainBars"></div>
       </div>
 
@@ -1164,8 +1204,142 @@ const BANK = [
    exp:"The scope hierarchy, broadest to narrowest, is <b>management group → subscription → resource group → resource</b>. Settings applied higher up are inherited by everything beneath."}
 ];
 
+/* ================= DEFINITIONS & TERMS BANK ================= */
+const TERM_SECTIONS = {
+  1:"Cloud concepts",
+  2:"Architecture & compute",
+  3:"Networking",
+  4:"Storage & databases",
+  5:"Identity & security",
+  6:"Management & governance",
+  7:"Cost, SLA & support"
+};
+
+const TERMS = [
+/* 1 — cloud concepts */
+{s:1,f:"Cloud computing",b:"Delivering computing services — servers, storage, networking, software — over the internet, on demand."},
+{s:1,f:"CapEx",b:"Capital expenditure: a large upfront purchase of physical infrastructure that is depreciated as an asset over time."},
+{s:1,f:"OpEx",b:"Operational expenditure: an ongoing, usage-based charge for services, with no large upfront purchase."},
+{s:1,f:"Consumption-based model",b:"Paying only for the resources you actually use, with no upfront cost and no charge for unused capacity."},
+{s:1,f:"Scalability",b:"The ability to add or remove resources to meet changing demand, whether manually or automatically."},
+{s:1,f:"Vertical scaling",b:"Scaling up: increasing the CPU or memory of a single existing instance."},
+{s:1,f:"Horizontal scaling",b:"Scaling out: adding more instances of the same resource rather than making one instance bigger."},
+{s:1,f:"Elasticity",b:"Automatically adding resources during a spike and releasing them afterward, without human intervention."},
+{s:1,f:"Agility",b:"The ability to deploy and change resources in minutes rather than waiting weeks to procure hardware."},
+{s:1,f:"High availability",b:"Designing with redundancy so a service keeps running with minimal downtime, usually backed by an SLA."},
+{s:1,f:"Fault tolerance",b:"The ability of a system to keep operating without loss of service even when a component fails."},
+{s:1,f:"Disaster recovery",b:"The plan and capability to restore systems and data in another location after a major outage."},
+{s:1,f:"Reliability",b:"The ability of a system to recover from failures and continue functioning as designed."},
+{s:1,f:"Economies of scale",b:"The reason a large provider can offer resources more cheaply per unit than a single organization buying its own hardware."},
+{s:1,f:"Shared responsibility model",b:"The division of security duties between the provider and the customer, which shifts depending on the service model."},
+{s:1,f:"IaaS",b:"Infrastructure as a Service: you rent virtualized compute, storage and networking and still manage the OS and applications."},
+{s:1,f:"PaaS",b:"Platform as a Service: the provider manages the OS and runtime, and you deploy and manage only your application and data."},
+{s:1,f:"SaaS",b:"Software as a Service: a finished application delivered over the internet, where you manage little beyond your data and access."},
+{s:1,f:"Public cloud",b:"A deployment model where resources are owned and operated by a third-party provider and shared among many customers."},
+{s:1,f:"Private cloud",b:"A deployment model where cloud infrastructure is dedicated to a single organization, offering the most control."},
+{s:1,f:"Hybrid cloud",b:"A deployment model that combines a public cloud with a private cloud or on-premises datacenter, with connectivity between them."},
+{s:1,f:"Multi-cloud",b:"Deliberately using services from more than one public cloud provider."},
+{s:1,f:"Serverless",b:"An execution model where the provider manages all infrastructure and you are billed only while your code actually runs."},
+
+/* 2 — architecture & compute */
+{s:2,f:"Azure region",b:"A geographic area containing one or more datacenters that are near each other and networked together."},
+{s:2,f:"Region pair",b:"Two regions at least 300 miles apart within the same geography, used for replication and staged platform updates."},
+{s:2,f:"Availability zone",b:"A physically separate location within a region, with independent power, cooling and networking."},
+{s:2,f:"Availability set",b:"A grouping that spreads VMs across fault domains and update domains inside a single datacenter."},
+{s:2,f:"Resource group",b:"A logical container that holds related resources so they can be deployed, managed and deleted as one unit."},
+{s:2,f:"Azure Resource Manager (ARM)",b:"The deployment and management service that handles every request to create, update or delete Azure resources."},
+{s:2,f:"ARM template",b:"A declarative JSON file that defines Azure infrastructure so it can be deployed repeatably as code."},
+{s:2,f:"Subscription",b:"A billing and access-management boundary that contains resource groups and their resources."},
+{s:2,f:"Management group",b:"A container above subscriptions used to apply policy and access control consistently across many subscriptions."},
+{s:2,f:"Azure Virtual Machine",b:"An IaaS compute offering giving full administrative control over a guest operating system."},
+{s:2,f:"Virtual Machine Scale Sets",b:"A service that deploys and manages a group of identical, load-balanced VMs that can autoscale."},
+{s:2,f:"Azure App Service",b:"A fully managed platform for hosting web apps, REST APIs and mobile back ends without managing servers."},
+{s:2,f:"Azure Functions",b:"A serverless service that runs small pieces of event-triggered code, billing only for execution time."},
+{s:2,f:"Azure Container Instances",b:"The fastest way to run a single container in Azure without provisioning or orchestrating a cluster."},
+{s:2,f:"Azure Kubernetes Service (AKS)",b:"A managed Kubernetes service where Azure operates the control plane for your container clusters."},
+{s:2,f:"Azure Virtual Desktop",b:"A service that delivers a full virtualized Windows desktop and applications to users from Azure."},
+{s:2,f:"Azure Arc",b:"A service that extends Azure management and governance to servers, Kubernetes clusters and databases running outside Azure."},
+
+/* 3 — networking */
+{s:3,f:"Virtual network (VNet)",b:"A logically isolated private network in Azure into which you deploy and connect resources."},
+{s:3,f:"Subnet",b:"A segment of a virtual network's address space used to group and isolate resources within that network."},
+{s:3,f:"VNet peering",b:"A connection that links two virtual networks so their resources communicate privately over the Microsoft backbone."},
+{s:3,f:"VPN Gateway",b:"A gateway that connects an on-premises network to Azure with an encrypted tunnel over the public internet."},
+{s:3,f:"ExpressRoute",b:"A private, dedicated connection between an on-premises datacenter and Azure that does not traverse the public internet."},
+{s:3,f:"Azure Load Balancer",b:"A service that distributes inbound network traffic across a pool of back-end instances at the transport layer."},
+{s:3,f:"Application Gateway",b:"A web traffic load balancer that routes based on HTTP attributes such as URL path and can include a web application firewall."},
+{s:3,f:"Azure DNS",b:"A hosting service for DNS domains that resolves names using Microsoft's global name server infrastructure."},
+{s:3,f:"Network Security Group (NSG)",b:"A set of inbound and outbound rules that allow or deny traffic to resources in a virtual network."},
+{s:3,f:"Azure Front Door / CDN",b:"A service that caches and accelerates content from points of presence close to end users to reduce latency."},
+
+/* 4 — storage & databases */
+{s:4,f:"Azure Blob Storage",b:"Object storage built for massive amounts of unstructured data such as images, video, logs and backups."},
+{s:4,f:"Azure Files",b:"Fully managed file shares accessible over SMB and NFS that can be mounted by cloud and on-premises machines."},
+{s:4,f:"Azure Queue Storage",b:"A service for storing large numbers of messages to decouple application components."},
+{s:4,f:"Azure Table Storage",b:"A NoSQL key-attribute store for large amounts of semi-structured, schemaless data."},
+{s:4,f:"Azure Disk Storage",b:"Block-level storage volumes attached to virtual machines, behaving like a physical disk."},
+{s:4,f:"Hot access tier",b:"The blob storage tier optimized for data that is accessed frequently, with the highest storage cost and lowest access cost."},
+{s:4,f:"Cool access tier",b:"The blob storage tier for infrequently accessed data stored for at least 30 days, with lower storage cost and higher access cost."},
+{s:4,f:"Archive access tier",b:"The lowest-cost blob tier for rarely accessed data, which must be rehydrated before it can be read."},
+{s:4,f:"Locally redundant storage (LRS)",b:"Redundancy that keeps three copies of data within a single datacenter — the cheapest and least durable option."},
+{s:4,f:"Zone-redundant storage (ZRS)",b:"Redundancy that copies data synchronously across three availability zones in the same region."},
+{s:4,f:"Geo-redundant storage (GRS)",b:"Redundancy that replicates data to a secondary region hundreds of miles away, protecting against a regional outage."},
+{s:4,f:"AzCopy",b:"A command-line utility for copying blobs and files to, from and between storage accounts."},
+{s:4,f:"Azure Storage Explorer",b:"A graphical desktop application for browsing and managing the contents of storage accounts."},
+{s:4,f:"Azure Migrate",b:"A hub of tools for discovering, assessing and migrating on-premises servers, databases and apps to Azure."},
+{s:4,f:"Azure Data Box",b:"A physical appliance shipped to you for transferring very large volumes of data into Azure when the network would be too slow."},
+{s:4,f:"Azure SQL Database",b:"A fully managed relational database service based on the SQL Server engine."},
+{s:4,f:"Azure Cosmos DB",b:"A globally distributed, multi-model NoSQL database offering low-latency access and multiple consistency levels."},
+
+/* 5 — identity & security */
+{s:5,f:"Microsoft Entra ID",b:"Azure's cloud-based identity and access management service, formerly called Azure Active Directory."},
+{s:5,f:"Authentication",b:"Proving who you are — verifying an identity's credentials."},
+{s:5,f:"Authorization",b:"Determining what an already-verified identity is allowed to do."},
+{s:5,f:"Single sign-on (SSO)",b:"Signing in once and then reaching multiple applications without re-entering credentials."},
+{s:5,f:"Multifactor authentication (MFA)",b:"Requiring two or more different kinds of proof of identity, such as a password plus an app notification."},
+{s:5,f:"Conditional Access",b:"A policy engine that evaluates signals such as user, location, device and risk to allow, block or challenge a sign-in."},
+{s:5,f:"Azure RBAC",b:"Role-based access control: assigning roles at a scope to grant identities only the permissions they need."},
+{s:5,f:"Zero Trust",b:"A security model that assumes breach and verifies every request explicitly, rather than trusting anything inside a network perimeter."},
+{s:5,f:"Defense in depth",b:"A layered security strategy in which each successive layer slows an attack, so no single control is a lone point of failure."},
+{s:5,f:"Microsoft Defender for Cloud",b:"A service that monitors security posture, provides a secure score, and protects workloads against threats."},
+{s:5,f:"Azure Key Vault",b:"A managed service for securely storing and controlling access to secrets, keys and certificates."},
+
+/* 6 — management & governance */
+{s:6,f:"Azure Policy",b:"A service for authoring rules that enforce organizational standards, such as blocking resources in disallowed regions."},
+{s:6,f:"Resource lock",b:"A control that prevents a resource from being accidentally deleted or modified, even by an owner."},
+{s:6,f:"Tags",b:"Name/value metadata attached to resources to organize them for reporting, cost allocation and automation."},
+{s:6,f:"Microsoft Purview",b:"A family of data governance and compliance solutions for discovering, classifying and protecting data across an estate."},
+{s:6,f:"Azure portal",b:"The web-based graphical interface for creating and managing Azure resources."},
+{s:6,f:"Azure Cloud Shell",b:"A browser-based shell, pre-authenticated and pre-installed, offering both Bash and PowerShell experiences."},
+{s:6,f:"Azure CLI",b:"A cross-platform command-line tool for managing Azure resources with commands beginning 'az'."},
+{s:6,f:"Azure PowerShell",b:"A set of PowerShell cmdlets for managing Azure resources from a scriptable command line."},
+{s:6,f:"Azure Monitor",b:"The platform service that collects, analyzes and acts on telemetry — metrics and logs — from Azure and other environments."},
+{s:6,f:"Application Insights",b:"The Azure Monitor feature that collects application telemetry to detect and diagnose performance problems."},
+{s:6,f:"Log Analytics workspace",b:"The store and query environment where Azure Monitor log data is collected and analyzed."},
+{s:6,f:"Azure Service Health",b:"A personalized view of Azure outages, planned maintenance and health advisories affecting your resources."},
+{s:6,f:"Azure Advisor",b:"A free service that analyzes your configuration and gives personalized recommendations for cost, security, reliability and performance."},
+{s:6,f:"Service Trust Portal",b:"Where Microsoft publishes audit reports, compliance documentation and security assessments for its cloud services."},
+{s:6,f:"Infrastructure as Code",b:"Defining and provisioning infrastructure through version-controlled configuration files rather than manual portal clicks."},
+
+/* 7 — cost, SLA & support */
+{s:7,f:"Pricing calculator",b:"A tool for estimating the monthly cost of a proposed set of Azure services before deploying anything."},
+{s:7,f:"TCO calculator",b:"A tool for comparing the total cost of running workloads on-premises against the cost of running them in Azure."},
+{s:7,f:"Microsoft Cost Management",b:"The service used to monitor, allocate and analyze actual Azure spend after resources are deployed."},
+{s:7,f:"Budget",b:"A spending threshold you define so that alerts fire as costs approach or exceed the amount."},
+{s:7,f:"Azure Reservations",b:"A one- or three-year commitment to a resource in exchange for a significant discount over pay-as-you-go pricing."},
+{s:7,f:"Azure Spot Virtual Machines",b:"Deeply discounted VMs that use spare capacity and can be evicted when Azure needs it back."},
+{s:7,f:"Azure Hybrid Benefit",b:"A licensing benefit that lets you apply existing on-premises Windows Server or SQL Server licenses to reduce Azure cost."},
+{s:7,f:"Service Level Agreement (SLA)",b:"Microsoft's formal commitment to the uptime and connectivity of a service."},
+{s:7,f:"Composite SLA",b:"The combined, usually lower, availability commitment that results when an application depends on several services."},
+{s:7,f:"Service credit",b:"The compensation applied to your bill when a service fails to meet its published uptime commitment."},
+{s:7,f:"Preview features",b:"Services released for early evaluation that are not covered by a service level agreement."}
+];
+
 /* ---------- state ---------- */
 let questions=[], idx=0, answers=[], checked=false, selectedLen="all";
+let MODE="exam";
+let LABELS=DOMAINS;
+const EXAM_BREAKDOWN_TITLE="Signal by domain";
 
 /* ---------- helpers ---------- */
 const $=id=>document.getElementById(id);
@@ -1186,7 +1360,7 @@ $("lenOpts").addEventListener("click",e=>{
 
 function begin(){
   const shf=$("shuffleToggle").checked;
-  let pool=BANK.slice();
+  let pool = MODE==="def" ? buildDefBank() : BANK.slice();
   if(selectedLen==="all"){
     if(shf) pool=shuffle(pool);
   } else {
@@ -1209,7 +1383,7 @@ function render(){
   checked=false;
   const q=questions[idx];
   $("qNow").textContent=idx+1;
-  $("qDomain").textContent=DOMAINS[q.d];
+  $("qDomain").textContent=LABELS[q.d];
   $("progFill").style.width=((idx)/questions.length*100)+"%";
   $("qType").textContent=q.type==="multi"?"Select all that apply":"Choose one answer";
   $("qHint").textContent=q.type==="multi"?"Keys 1–4 toggle // Enter to check":"Keys 1–4 to pick // Enter to check";
@@ -1317,14 +1491,15 @@ function finish(){
     ? "You cleared the 70% practice mark. Keep drilling the domains where you slipped and you'll be ready."
     : "You're below the 70% practice mark. Review the explanations below, focus on the weakest domain, then retake.";
 
-  const stat={1:[0,0],2:[0,0],3:[0,0]};
+  const stat={}; Object.keys(LABELS).forEach(d=>stat[d]=[0,0]);
   questions.forEach((q,i)=>{ stat[q.d][1]++; if(answers[i].correct) stat[q.d][0]++; });
   const bars=$("domainBars"); bars.innerHTML="";
-  [1,2,3].forEach(d=>{
-    const [c,t]=stat[d], p=t?Math.round(c/t*100):0;
+  Object.keys(LABELS).forEach(d=>{
+    const [c,t]=stat[d]; if(!t) return;
+    const p=Math.round(c/t*100);
     const row=document.createElement("div");
     row.className="bar-row";
-    row.innerHTML=`<div class="name">${DOMAINS[d]}</div><div class="frac">${c}/${t} · ${p}%</div><div class="bar"><div class="in"></div></div>`;
+    row.innerHTML=`<div class="name">${LABELS[d]}</div><div class="frac">${c}/${t} · ${p}%</div><div class="bar"><div class="in"></div></div>`;
     bars.appendChild(row);
     requestAnimationFrame(()=>{ row.querySelector(".in").style.width=p+"%"; });
   });
@@ -1361,6 +1536,90 @@ function buildReview(){
     list.appendChild(item);
   });
 }
+
+/* ============================================================
+   STUDY MODE — exam bank vs. generated definitions/terms drill
+   ============================================================ */
+const EXAM_LEN_HTML = $("lenOpts").innerHTML;
+const TERM_KEYS = Object.keys(TERM_SECTIONS).map(Number);
+
+function defDistractors(card, askTerm){
+  const val = c => askTerm ? c.b : c.f;
+  const correct = val(card);
+  const same = shuffle(TERMS.filter(c => c !== card && c.s === card.s));
+  const rest = shuffle(TERMS.filter(c => c !== card && c.s !== card.s));
+  const out = [];
+  for(const c of same.concat(rest)){
+    const v = val(c);
+    if(v !== correct && !out.includes(v)) out.push(v);
+    if(out.length === 3) break;
+  }
+  return out;
+}
+
+/* every term becomes a 4-option question; direction is random each run */
+function buildDefBank(){
+  return shuffle(TERMS).map(card => {
+    const askTerm = Math.random() < 0.5;          // true: term → definition
+    const correct = askTerm ? card.b : card.f;
+    const opts = shuffle([correct, ...defDistractors(card, askTerm)]);
+    const q = askTerm
+      ? `Which description best matches this term?<span class="term">${card.f}</span>`
+      : `Which term does this describe?<span class="defn">${card.b}</span>`;
+    return {
+      d: card.s, type: "single", q, opts,
+      correct: [opts.indexOf(correct)],
+      exp: `<b>${card.f}</b> — ${card.b}`
+    };
+  });
+}
+
+function renderTermDomains(){
+  const box = $("termDomains"); box.innerHTML = "";
+  TERM_KEYS.forEach((k,i) => {
+    const n = TERMS.filter(t => t.s === k).length;
+    const row = document.createElement("div");
+    row.className = "domain-row";
+    row.innerHTML = `<div class="idx">${String(i+1).padStart(2,"0")}</div>`
+      + `<div class="nm">${TERM_SECTIONS[k]}<span>${n} terms</span></div>`
+      + `<div class="wt">${n}</div>`;
+    box.appendChild(row);
+  });
+}
+
+function setMode(m){
+  MODE = m;
+  const def = m === "def";
+  LABELS = def ? TERM_SECTIONS : DOMAINS;
+  $("modeDefBtn").classList.toggle("active", def);
+  $("modeExamBtn").classList.toggle("active", !def);
+  $("examDomains").style.display = def ? "none" : "";
+  $("termDomains").style.display = def ? "" : "none";
+  $("breakdownTitle").textContent = def ? "Signal by section" : EXAM_BREAKDOWN_TITLE;
+
+  if(def){
+    $("eyebrow").textContent = `Glossary drill // ${TERMS.length} terms`;
+    $("modeDesc").textContent =
+      `${TERMS.length} terms across ${TERM_KEYS.length} sections. Each card is asked in a random direction — term → definition, or definition → term.`;
+    const cands = [10,25,50].filter(v => v < TERMS.length);
+    $("lenOpts").innerHTML =
+      cands.map(v => `<button type="button" class="lenopt" data-n="${v}">${v}</button>`).join("")
+      + `<button type="button" class="lenopt active" data-n="all">All ${TERMS.length}</button>`;
+  } else {
+    $("eyebrow").textContent = `Original practice set // ${BANK.length} questions`;
+    $("modeDesc").textContent =
+      `${BANK.length} scenario-based questions with explanations, weighted across the exam objectives.`;
+    $("lenOpts").innerHTML = EXAM_LEN_HTML;
+  }
+  selectedLen = "all";
+}
+
+$("modeDefBtn").addEventListener("click", () => setMode("def"));
+$("modeExamBtn").addEventListener("click", () => setMode("exam"));
+
+renderTermDomains();
+setMode("exam");
+
 </script>
 </body>
 </html>

@@ -281,6 +281,38 @@
     .score-head{gap:1.2rem}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+
+  /* ═══════════════ study-mode toggle (definitions vs exam) ═══════════════ */
+  .mode-toggle{display:flex;gap:0.6rem;margin:0 0 0.9rem}
+  .mode-btn{
+    flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--card-border);
+    color:var(--white-dim);font-family:var(--font-mono);font-size:0.72rem;
+    letter-spacing:0.06em;text-transform:uppercase;padding:0.8rem 0.6rem;
+    border-radius:8px;cursor:pointer;
+    transition:border-color .15s,background .15s,color .15s,box-shadow .15s;
+  }
+  .mode-btn:hover{border-color:rgba(15,240,252,0.4);color:var(--white-pure)}
+  .mode-btn.active{
+    background:rgba(15,240,252,0.10);border-color:var(--cyan-glow);
+    color:var(--white-pure);box-shadow:0 0 14px rgba(15,240,252,0.18);
+  }
+  .mode-desc{
+    font-family:var(--font-mono);font-size:0.72rem;color:var(--white-ghost);
+    line-height:1.7;margin:0 0 1.6rem;
+  }
+  /* flashcard prompts in definitions mode */
+  .qtext .term{
+    display:block;font-family:var(--font-display);font-size:1.35rem;font-weight:700;
+    color:var(--cyan-glow);margin-top:0.8rem;letter-spacing:0.01em;
+    text-shadow:0 0 18px rgba(15,240,252,0.35);
+  }
+  .qtext .defn{
+    display:block;margin-top:0.8rem;padding:0.85rem 1rem;
+    background:rgba(20,30,48,0.85);border:1px solid var(--card-border);
+    border-left:3px solid var(--cyan-dim);border-radius:8px;
+    font-size:0.95rem;font-weight:400;color:var(--white-dim);line-height:1.55;
+  }
+  @media(max-width:560px){ .mode-toggle{flex-direction:column} .qtext .term{font-size:1.15rem} }
 </style>
 <style>
   /* ── additions: HCL / CLI snippets inside questions, options and explanations ── */
@@ -316,11 +348,17 @@
 
   <!-- ============ START ============ -->
   <section id="start" class="card hero">
-    <div class="eyebrow">Original practice set // <span id="bankCount">0</span> questions</div>
+    <div class="eyebrow" id="eyebrow">Original practice set // <span id="bankCount">0</span> questions</div>
     <h2>Drill all eight <span class="hl">Terraform Associate</span> exam objectives.</h2>
     <p class="lead">Scenario-driven questions modeled on the real Terraform Associate (004) exam format &mdash; single-answer, multi-select, and code-reading items covering Terraform 1.12. Every question ships with an explanation, so a miss teaches you something.</p>
 
-    <div class="domains">
+    <div class="mode-toggle" role="group" aria-label="Study mode">
+      <button type="button" class="mode-btn active" id="modeExamBtn">Exam-Style Questions</button>
+      <button type="button" class="mode-btn" id="modeDefBtn">Definitions &amp; Terms</button>
+    </div>
+    <p class="mode-desc" id="modeDesc"></p>
+
+    <div class="domains" id="examDomains">
       <div class="domain-row">
         <div class="idx">01</div>
         <div class="nm">Infrastructure as Code<span>iac concepts, declarative model, multi-cloud</span></div>
@@ -362,6 +400,8 @@
         <div class="wt" data-count="8">&mdash;</div>
       </div>
     </div>
+
+    <div class="domains" id="termDomains" style="display:none"></div>
 
     <div class="startbar">
       <button class="btn btn-primary" id="startBtn">Initialize quiz</button>
@@ -436,7 +476,7 @@
       </div>
 
       <div class="breakdown">
-        <h3>Signal by objective</h3>
+        <h3 id="breakdownTitle">Signal by objective</h3>
         <div id="domainBars"></div>
       </div>
 
@@ -1154,8 +1194,180 @@ const BANK = [
 
 ];
 
+/* ================= DEFINITIONS & TERMS BANK ================= */
+const TERM_SECTIONS = {
+  1:"Core concepts",
+  2:"Providers & versioning",
+  3:"CLI commands",
+  4:"Configuration blocks",
+  5:"Meta-arguments & lifecycle",
+  6:"Variables & expressions",
+  7:"Modules",
+  8:"State & backends",
+  9:"HCP Terraform"
+};
+
+const TERMS = [
+/* 1 — core concepts */
+{s:1,f:"Infrastructure as Code (IaC)",b:"Defining and provisioning infrastructure in machine-readable configuration files instead of through manual console clicks."},
+{s:1,f:"Declarative configuration",b:"Describing the desired end state and letting the tool work out which actions to take and in what order."},
+{s:1,f:"HCL",b:"HashiCorp Configuration Language — the syntax used in .tf files."},
+{s:1,f:"Terraform Core",b:"The CLI engine that reads configuration, builds the dependency graph, manages state, and calls provider plugins over RPC."},
+{s:1,f:"Dependency graph (DAG)",b:"The directed acyclic graph Terraform builds to order operations and run independent resources in parallel."},
+{s:1,f:"Execution plan",b:"The preview of create, update and destroy actions produced by diffing configuration, state and real infrastructure."},
+{s:1,f:"Speculative plan",b:"A plan-only run that is never applied, used to preview the effect of a change — for example on a pull request."},
+{s:1,f:"Idempotency",b:"The property that running the same configuration repeatedly converges on the same result instead of duplicating resources."},
+{s:1,f:"Drift",b:"Divergence between real infrastructure and what is recorded in state, usually caused by an out-of-band change."},
+{s:1,f:"Terraform Registry",b:"The public catalog where providers and modules are published, versioned and documented."},
+{s:1,f:"Terraform Community Edition",b:"The free, open-source CLI distribution of Terraform that you run yourself."},
+{s:1,f:"Terraform Enterprise",b:"The self-hosted distribution of HCP Terraform that you install and operate in your own environment."},
+{s:1,f:"Configuration management",b:"The category of tools (Ansible, Chef, Puppet) that install and manage software inside existing machines, complementing Terraform's provisioning."},
+{s:1,f:"Parallelism",b:"How many resource operations Terraform performs concurrently while walking the graph — 10 by default."},
+
+/* 2 — providers & versioning */
+{s:2,f:"Provider",b:"A plugin that implements resource types and data sources for one platform and turns HCL into API calls against it."},
+{s:2,f:"required_providers",b:"The block that declares each provider's source address and version constraint."},
+{s:2,f:"Provider source address",b:"The identifier [HOSTNAME/]NAMESPACE/TYPE that tells Terraform where to download a plugin, such as hashicorp/aws."},
+{s:2,f:"Provider alias",b:"A named additional configuration of the same provider, selected on a resource with provider = aws.west."},
+{s:2,f:"Pessimistic constraint operator (~&gt;)",b:"A version constraint that allows only the rightmost specified component of the version number to increase."},
+{s:2,f:"Dependency lock file",b:"The .terraform.lock.hcl file recording selected plugin versions and checksums; it belongs in version control."},
+{s:2,f:"required_version",b:"A constraint declaring which Terraform CLI versions are allowed to run the configuration."},
+{s:2,f:"Official provider",b:"A registry provider owned and maintained directly by HashiCorp."},
+{s:2,f:"Partner provider",b:"A registry provider maintained by a technology partner that has gone through HashiCorp's partner process."},
+{s:2,f:"Community provider",b:"A registry provider published by an individual or group rather than HashiCorp or a partner."},
+{s:2,f:".terraform directory",b:"The per-working-directory folder where installed plugins and downloaded modules are cached."},
+
+/* 3 — CLI commands */
+{s:3,f:"terraform init",b:"Initializes the working directory: configures the backend, installs providers, downloads modules and writes the lock file."},
+{s:3,f:"terraform validate",b:"Checks that configuration is syntactically valid and internally consistent, without contacting any API or reading state."},
+{s:3,f:"terraform fmt",b:"Rewrites configuration files into the canonical HashiCorp style and indentation."},
+{s:3,f:"terraform plan",b:"Generates an execution plan showing proposed changes without touching real infrastructure."},
+{s:3,f:"terraform apply",b:"Executes the planned actions to move real infrastructure to the desired state."},
+{s:3,f:"terraform destroy",b:"Destroys every remote object the configuration manages; an alias for apply -destroy."},
+{s:3,f:"terraform console",b:"An interactive REPL for evaluating expressions and built-in functions against your configuration and state."},
+{s:3,f:"terraform graph",b:"Emits the dependency graph in DOT format so it can be rendered with a tool such as Graphviz."},
+{s:3,f:"terraform show",b:"Renders the current state — or a saved plan file — in human-readable form, or as JSON for tooling."},
+{s:3,f:"terraform output",b:"Prints the root module's output values; the -raw flag returns a single value as a bare string."},
+{s:3,f:"terraform import",b:"The CLI command that writes an existing unmanaged resource into state, without generating any configuration for it."},
+{s:3,f:"terraform login",b:"Obtains an API token for HCP Terraform through a browser flow and stores it in credentials.tfrc.json."},
+{s:3,f:"terraform force-unlock",b:"Manually releases a stuck state lock by its lock ID."},
+{s:3,f:"terraform get",b:"Downloads and updates only the modules a configuration references, without initializing the backend or providers."},
+{s:3,f:"terraform state list",b:"Lists every resource address currently tracked in state."},
+{s:3,f:"terraform state show",b:"Prints the full attribute set of one resource instance recorded in state."},
+{s:3,f:"terraform state mv",b:"Imperatively moves an item to a different address in state, for example when renaming a resource."},
+{s:3,f:"terraform state rm",b:"Removes a resource from state without destroying the real object, so Terraform stops managing it."},
+{s:3,f:"-auto-approve",b:"The flag that skips the interactive approval prompt on an apply or destroy."},
+{s:3,f:"-replace",b:"The apply flag that forces one specific resource to be destroyed and recreated; it supersedes the deprecated taint command."},
+{s:3,f:"-refresh-only",b:"The apply mode that reconciles state with real infrastructure and asks for approval, without changing any infrastructure."},
+{s:3,f:"-target",b:"The flag that narrows an operation to one resource address and its dependencies; intended for exceptional recovery, not routine use."},
+{s:3,f:"-out",b:"The plan flag that saves the plan to a file, which apply can then execute exactly and without prompting."},
+
+/* 4 — configuration blocks */
+{s:4,f:"resource block",b:"Declares an infrastructure object that Terraform creates, updates and destroys."},
+{s:4,f:"data block",b:"A read-only query for information defined outside the configuration; Terraform never modifies what it reads."},
+{s:4,f:"provider block",b:"Configures a provider with settings such as region, endpoint or credentials."},
+{s:4,f:"terraform block",b:"The top-level settings block holding required_version, required_providers, and either a backend or a cloud block."},
+{s:4,f:"variable block",b:"Declares an input parameter with an optional type, default, description, sensitivity and validation rules."},
+{s:4,f:"output block",b:"Exposes a value to the CLI, to a calling module, or to other configurations."},
+{s:4,f:"locals block",b:"Names an expression for reuse inside a single module; the value cannot be set from outside."},
+{s:4,f:"module block",b:"Calls a child module; its only required argument is source."},
+{s:4,f:"backend block",b:"Configures where state is stored, and cannot reference variables or any other expression."},
+{s:4,f:"cloud block",b:"Connects a configuration to HCP Terraform by naming an organization and its workspaces."},
+{s:4,f:"moved block",b:"Records that a resource was renamed or relocated so the existing object is carried over instead of destroyed and recreated."},
+{s:4,f:"removed block",b:"Declaratively takes a resource out of state, optionally leaving the real object in place."},
+{s:4,f:"import block",b:"Config-driven import that is planned before it is applied and can scaffold configuration with -generate-config-out."},
+{s:4,f:"check block",b:"Holds assertions that are evaluated after apply and produce warnings rather than blocking the run."},
+{s:4,f:"dynamic block",b:"Generates repeated nested blocks from a collection; it cannot generate top-level blocks."},
+
+/* 5 — meta-arguments & lifecycle */
+{s:5,f:"count",b:"Creates a fixed number of instances of a resource, addressed by integer index and exposing count.index."},
+{s:5,f:"for_each",b:"Creates one instance per map entry or set element, addressed by a stable string key and exposing each.key and each.value."},
+{s:5,f:"depends_on",b:"Declares an explicit dependency that Terraform cannot infer from any attribute reference."},
+{s:5,f:"lifecycle",b:"The block controlling how a resource is replaced, protected and compared against drift."},
+{s:5,f:"create_before_destroy",b:"Creates the replacement object before destroying the old one, minimizing downtime during a replacement."},
+{s:5,f:"prevent_destroy",b:"Causes Terraform to reject any plan that would delete the resource, erroring out instead."},
+{s:5,f:"ignore_changes",b:"Tells Terraform to disregard drift on the listed attributes, typically because another system manages them."},
+{s:5,f:"replace_triggered_by",b:"Forces the resource to be replaced when a referenced resource or attribute changes."},
+{s:5,f:"precondition",b:"A custom condition checked before an object is evaluated; a false result fails the run."},
+{s:5,f:"postcondition",b:"A custom condition checked after an object is created, validating a guarantee about the result."},
+{s:5,f:"Implicit dependency",b:"Ordering that Terraform infers automatically because one resource's argument references another's attribute."},
+{s:5,f:"self",b:"The object referring to the current resource instance, usable only inside provisioner, connection and postcondition blocks."},
+
+/* 6 — variables & expressions */
+{s:6,f:"Input variable",b:"A parameter passed into a module and referenced in expressions as var.&lt;name&gt;."},
+{s:6,f:"TF_VAR_ prefix",b:"The environment variable prefix Terraform reads to set the value of an input variable."},
+{s:6,f:"terraform.tfvars",b:"A file loaded automatically to supply values for input variables."},
+{s:6,f:"*.auto.tfvars",b:"Files loaded automatically in lexical order, after the default variable definitions file."},
+{s:6,f:"Variable precedence",b:"The order in which value sources override each other: environment variables, then tfvars files, then auto tfvars, then command-line flags."},
+{s:6,f:"sensitive",b:"The argument that redacts a value from CLI output while still storing it in plain text in state."},
+{s:6,f:"validation block",b:"A rule inside a variable declaration that rejects values failing a condition, with a custom error message."},
+{s:6,f:"Type constraint",b:"The declared type of a value, which may be primitive, a collection, or a structural type."},
+{s:6,f:"list",b:"An ordered collection that allows duplicates and is indexed by position."},
+{s:6,f:"set",b:"An unordered collection of unique values, commonly produced with toset()."},
+{s:6,f:"map",b:"A collection of key/value pairs indexed by unique string keys."},
+{s:6,f:"object",b:"A structural type whose named attributes each carry their own type."},
+{s:6,f:"tuple",b:"A structural type: a fixed-length sequence whose elements may each be a different type."},
+{s:6,f:"Conditional expression",b:"The ternary form condition ? true_value : false_value."},
+{s:6,f:"for expression",b:"An expression that transforms one collection into another, optionally filtering elements with an if clause."},
+{s:6,f:"Splat expression",b:"The [*] shorthand that projects a single attribute across every element of a list."},
+{s:6,f:"Built-in functions",b:"The fixed set of functions Terraform ships with; you cannot define your own in configuration."},
+{s:6,f:"templatefile",b:"The function that renders an external template file using variables you supply."},
+{s:6,f:"Heredoc",b:"Multi-line string syntax such as &lt;&lt;EOT ... EOT, with an indented variant that strips leading whitespace."},
+
+/* 7 — modules */
+{s:7,f:"Module",b:"A container for multiple resources used together — in practice, any directory of .tf files."},
+{s:7,f:"Root module",b:"The working directory Terraform runs in; the top of the module tree."},
+{s:7,f:"Child module",b:"A module invoked by another module through a module block."},
+{s:7,f:"source (module argument)",b:"The required argument naming where a module comes from: a local path, a registry, Git, HTTP or a bucket."},
+{s:7,f:"version (module argument)",b:"A constraint supported only for registry modules; Git sources must be pinned with a ref instead."},
+{s:7,f:"Registry module address",b:"The NAMESPACE/NAME/PROVIDER form used to source a public module, such as terraform-aws-modules/vpc/aws."},
+{s:7,f:"Standard module structure",b:"The convention of main.tf, variables.tf and outputs.tf plus README and LICENSE, with optional nested modules and examples folders."},
+{s:7,f:"Module output reference",b:"The module.&lt;NAME&gt;.&lt;OUTPUT&gt; form — the only way to read a value out of a child module."},
+{s:7,f:"providers argument (module)",b:"The map that passes aliased provider configurations from the caller into a child module."},
+{s:7,f:"Provider inheritance",b:"The behavior by which a child module automatically receives the calling module's default provider configurations."},
+{s:7,f:"Module composition",b:"The practice of keeping the module tree flat and passing data explicitly between modules via inputs and outputs."},
+
+/* 8 — state & backends */
+{s:8,f:"Terraform state",b:"The JSON record that maps configuration to real objects, stores dependency metadata, and caches attribute values."},
+{s:8,f:"terraform.tfstate",b:"The default file name used by the local backend to store state on disk."},
+{s:8,f:"Local backend",b:"The default backend, which keeps state on the local filesystem and runs operations on your machine."},
+{s:8,f:"Remote backend",b:"A backend such as S3, azurerm or gcs that stores state elsewhere so a team can share it safely."},
+{s:8,f:"State locking",b:"Preventing concurrent writes to state so two simultaneous applies cannot corrupt it."},
+{s:8,f:"Partial backend configuration",b:"Leaving backend arguments out of the block and supplying them at init time with -backend-config."},
+{s:8,f:"-migrate-state",b:"The init flag that copies existing state into a newly configured backend."},
+{s:8,f:"-reconfigure",b:"The init flag that configures the backend from scratch, ignoring — and not migrating — existing state."},
+{s:8,f:"terraform_remote_state",b:"The data source that reads another configuration's root outputs out of its state."},
+{s:8,f:"CLI workspace",b:"A named alternate state file inside one backend and working directory, exposed in configuration as terraform.workspace."},
+{s:8,f:"State refactoring",b:"Changing resource addresses without destroying anything, using moved blocks or state mv."},
+{s:8,f:"Sensitive data in state",b:"The fact that secrets land in state in plain text, which is why the backend must be encrypted and access-controlled."},
+
+/* 9 — HCP Terraform */
+{s:9,f:"HCP Terraform",b:"HashiCorp's managed service that stores state and variables and runs plans and applies remotely."},
+{s:9,f:"HCP Terraform workspace",b:"A managed object holding one configuration's state, variables, run history, settings and permissions."},
+{s:9,f:"Project",b:"A container that groups related workspaces so permissions can be managed for the whole group at once."},
+{s:9,f:"Variable set",b:"A reusable collection of variables applied globally, to a project, or to selected workspaces."},
+{s:9,f:"Run trigger",b:"A setting that queues a run in one workspace whenever a source workspace completes a successful apply."},
+{s:9,f:"Remote operations",b:"Plans and applies that execute on HCP Terraform's infrastructure while streaming output back to you."},
+{s:9,f:"Execution mode",b:"The workspace setting choosing whether runs happen remotely, locally, or on a self-hosted agent."},
+{s:9,f:"VCS-driven workflow",b:"Runs triggered automatically by commits and pull requests in a connected version control repository."},
+{s:9,f:"CLI-driven workflow",b:"Runs started from your terminal with plan and apply but executed on the remote service."},
+{s:9,f:"Sentinel",b:"HashiCorp's policy-as-code framework, evaluated between the plan and the apply."},
+{s:9,f:"Open Policy Agent (OPA)",b:"The second policy-as-code framework supported for enforcement, using Rego policies."},
+{s:9,f:"Enforcement level",b:"How strictly a policy blocks a run: advisory, soft-mandatory (overridable), or hard-mandatory."},
+{s:9,f:"Health assessment",b:"Scheduled drift detection and continuous validation performed automatically against a workspace."},
+{s:9,f:"Dynamic provider credentials",b:"Short-lived, OIDC-based credentials generated for each run instead of storing static access keys."},
+{s:9,f:"Private registry",b:"An organization's own catalog of approved modules and providers hosted inside HCP Terraform."},
+{s:9,f:"Explorer",b:"The cross-workspace query and reporting view used to spot outdated versions, drift or provider usage across an organization."},
+{s:9,f:"Change request",b:"A tracked request asking the owners of a workspace to make a specific change."},
+{s:9,f:"Cost estimation",b:"The feature that projects the monthly cost of the resources in a plan before it is applied."},
+{s:9,f:"Team",b:"The entity that permissions are granted to in HCP Terraform, at the organization, project or workspace level."}
+];
+
 /* ---------- state ---------- */
 let questions=[], idx=0, answers=[], checked=false, selectedLen="all";
+let MODE="exam";
+let LABELS=DOMAINS;
+const EXAM_BREAKDOWN_TITLE="Signal by objective";
 
 /* ---------- helpers ---------- */
 const $=id=>document.getElementById(id);
@@ -1187,7 +1399,7 @@ $("lenOpts").addEventListener("click",e=>{
 
 function begin(){
   const shf=$("shuffleToggle").checked;
-  let pool=BANK.slice();
+  let pool = MODE==="def" ? buildDefBank() : BANK.slice();
   if(selectedLen==="all"){
     if(shf) pool=shuffle(pool);
   } else {
@@ -1210,7 +1422,7 @@ function render(){
   checked=false;
   const q=questions[idx];
   $("qNow").textContent=idx+1;
-  $("qDomain").textContent=DOMAINS[q.d];
+  $("qDomain").textContent=LABELS[q.d];
   $("progFill").style.width=((idx)/questions.length*100)+"%";
   $("qType").textContent=q.type==="multi"?"Select all that apply":"Choose one answer";
   $("qHint").textContent=q.type==="multi"?"Keys 1–4 toggle // Enter to check":"Keys 1–4 to pick // Enter to check";
@@ -1317,15 +1529,15 @@ function finish(){
     ? "You cleared the 70% practice mark. Keep drilling the objectives where you slipped and you'll be ready."
     : "You're below the 70% practice mark. Review the explanations below, focus on the weakest objective, then retake.";
 
-  const stat={}; OBJ_KEYS.forEach(d=>stat[d]=[0,0]);
+  const stat={}; Object.keys(LABELS).forEach(d=>stat[d]=[0,0]);
   questions.forEach((q,i)=>{ stat[q.d][1]++; if(answers[i].correct) stat[q.d][0]++; });
   const bars=$("domainBars"); bars.innerHTML="";
-  OBJ_KEYS.forEach(d=>{
+  Object.keys(LABELS).forEach(d=>{
     const [c,t]=stat[d]; if(!t) return;
     const p=Math.round(c/t*100);
     const row=document.createElement("div");
     row.className="bar-row";
-    row.innerHTML=`<div class="name">${DOMAINS[d]}</div><div class="frac">${c}/${t} · ${p}%</div><div class="bar"><div class="in"></div></div>`;
+    row.innerHTML=`<div class="name">${LABELS[d]}</div><div class="frac">${c}/${t} · ${p}%</div><div class="bar"><div class="in"></div></div>`;
     bars.appendChild(row);
     requestAnimationFrame(()=>{ row.querySelector(".in").style.width=p+"%"; });
   });
@@ -1362,6 +1574,90 @@ function buildReview(){
     list.appendChild(item);
   });
 }
+
+
+/* ============================================================
+   STUDY MODE — exam bank vs. generated definitions/terms drill
+   ============================================================ */
+const EXAM_LEN_HTML = $("lenOpts").innerHTML;
+const TERM_KEYS = Object.keys(TERM_SECTIONS).map(Number);
+
+function defDistractors(card, askTerm){
+  const val = c => askTerm ? c.b : c.f;
+  const correct = val(card);
+  const same = shuffle(TERMS.filter(c => c !== card && c.s === card.s));
+  const rest = shuffle(TERMS.filter(c => c !== card && c.s !== card.s));
+  const out = [];
+  for(const c of same.concat(rest)){
+    const v = val(c);
+    if(v !== correct && !out.includes(v)) out.push(v);
+    if(out.length === 3) break;
+  }
+  return out;
+}
+
+/* every term becomes a 4-option question; direction is random each run */
+function buildDefBank(){
+  return shuffle(TERMS).map(card => {
+    const askTerm = Math.random() < 0.5;          // true: term → definition
+    const correct = askTerm ? card.b : card.f;
+    const opts = shuffle([correct, ...defDistractors(card, askTerm)]);
+    const q = askTerm
+      ? `Which description best matches this term?<span class="term">${card.f}</span>`
+      : `Which term does this describe?<span class="defn">${card.b}</span>`;
+    return {
+      d: card.s, type: "single", q, opts,
+      correct: [opts.indexOf(correct)],
+      exp: `<b>${card.f}</b> — ${card.b}`
+    };
+  });
+}
+
+function renderTermDomains(){
+  const box = $("termDomains"); box.innerHTML = "";
+  TERM_KEYS.forEach((k,i) => {
+    const n = TERMS.filter(t => t.s === k).length;
+    const row = document.createElement("div");
+    row.className = "domain-row";
+    row.innerHTML = `<div class="idx">${String(i+1).padStart(2,"0")}</div>`
+      + `<div class="nm">${TERM_SECTIONS[k]}<span>${n} terms</span></div>`
+      + `<div class="wt">${n}</div>`;
+    box.appendChild(row);
+  });
+}
+
+function setMode(m){
+  MODE = m;
+  const def = m === "def";
+  LABELS = def ? TERM_SECTIONS : DOMAINS;
+  $("modeDefBtn").classList.toggle("active", def);
+  $("modeExamBtn").classList.toggle("active", !def);
+  $("examDomains").style.display = def ? "none" : "";
+  $("termDomains").style.display = def ? "" : "none";
+  $("breakdownTitle").textContent = def ? "Signal by section" : EXAM_BREAKDOWN_TITLE;
+
+  if(def){
+    $("eyebrow").textContent = `Glossary drill // ${TERMS.length} terms`;
+    $("modeDesc").textContent =
+      `${TERMS.length} terms across ${TERM_KEYS.length} sections. Each card is asked in a random direction — term → definition, or definition → term.`;
+    const cands = [10,25,50].filter(v => v < TERMS.length);
+    $("lenOpts").innerHTML =
+      cands.map(v => `<button type="button" class="lenopt" data-n="${v}">${v}</button>`).join("")
+      + `<button type="button" class="lenopt active" data-n="all">All ${TERMS.length}</button>`;
+  } else {
+    $("eyebrow").textContent = `Original practice set // ${BANK.length} questions`;
+    $("modeDesc").textContent =
+      `${BANK.length} scenario-based questions with explanations, weighted across the exam objectives.`;
+    $("lenOpts").innerHTML = EXAM_LEN_HTML;
+  }
+  selectedLen = "all";
+}
+
+$("modeDefBtn").addEventListener("click", () => setMode("def"));
+$("modeExamBtn").addEventListener("click", () => setMode("exam"));
+
+renderTermDomains();
+setMode("exam");
 
 </script>
 </body>
