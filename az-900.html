@@ -1387,7 +1387,7 @@ function render(){
   $("progFill").style.width=((idx)/questions.length*100)+"%";
   $("qType").textContent=q.type==="multi"?"Select all that apply":"Choose one answer";
   $("qHint").textContent=q.type==="multi"?"Keys 1–4 toggle // Enter to check":"Keys 1–4 to pick // Enter to check";
-  $("qText").textContent=q.q;
+  $("qText").innerHTML=q.q;
 
   const box=$("options"); box.innerHTML="";
   q.opts.forEach((text,i)=>{
