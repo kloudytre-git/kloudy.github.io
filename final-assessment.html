@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- ✅ FEATURE: Page title -->
+<title>Final Assessment — Module 4 &amp; Course Reflections | Jontre Gregory</title>
+
+<!-- ✅ FEATURE: CSS type 1 of 3 — EXTERNAL stylesheet -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+
+<!-- ✅ FEATURE: CSS type 2 of 3 — INTERNAL stylesheet -->
+<style>
+  /* Subpage header — clears the fixed nav */
+  .subpage-header { position: relative; padding: 9rem 2rem 2rem; max-width: 1100px; margin: 0 auto; overflow: hidden; }
+  .subpage-header .hero-grid { background-size: 60px 60px; opacity: 0.6; }
+  .subpage-header-inner { position: relative; z-index: 2; }
+  .subpage-back { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--white-dim); text-decoration: none; margin-bottom: 1.4rem; transition: color 0.2s; }
+  .subpage-back:hover { color: var(--cyan-glow); }
+
+  /* Table of contents / on-page jump links */
+  .fa-toc { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.4rem 1.6rem; max-width: 1100px; margin: 0 auto 1rem; backdrop-filter: blur(8px); }
+  .fa-toc h2 { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan-soft); margin-bottom: 0.9rem; }
+  .fa-toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; }
+  .fa-toc a { font-family: var(--font-mono); font-size: 0.82rem; color: var(--white-dim); text-decoration: none; transition: color 0.2s; }
+  .fa-toc a::before { content: "→ "; color: var(--cyan-glow); }
+  .fa-toc a:hover { color: var(--cyan-glow); }
+
+  /* ✅ FEATURE: Horizontal rule (styled to theme) */
+  hr.fa-rule { border: none; height: 1px; max-width: 1100px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--card-border), transparent); }
+
+  .fa-h3 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: var(--white-pure); margin: 1.8rem 0 0.6rem; }
+  .fa-h4 { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan-soft); margin: 1.2rem 0 0.5rem; }
+  .fa-p  { color: var(--white-dim); line-height: 1.85; max-width: 760px; margin-bottom: 1.1rem; }
+  .fa-p a, .fa-li a { color: var(--cyan-soft); text-decoration: none; border-bottom: 1px dotted rgba(126,200,227,0.5); transition: color 0.2s; }
+  .fa-p a:hover, .fa-li a:hover { color: var(--cyan-glow); }
+
+  .fa-list { margin: 0 0 1.2rem 1.3rem; color: var(--white-dim); line-height: 1.8; max-width: 760px; }
+  .fa-list li { margin-bottom: 0.5rem; }
+  .fa-list li::marker { color: var(--cyan-glow); }
+
+  /* ✅ FEATURE: Table WITH borders + caption */
+  table.fa-table { width: 100%; max-width: 820px; border-collapse: collapse; margin: 0.6rem 0 1.4rem; font-size: 0.88rem; }
+  table.fa-table caption { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan-soft); text-align: left; padding-bottom: 0.7rem; }
+  table.fa-table th, table.fa-table td { border: 1px solid var(--card-border); padding: 0.7rem 0.9rem; text-align: left; vertical-align: top; }
+  table.fa-table th { background: rgba(15,240,252,0.06); color: var(--white-pure); font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  table.fa-table td { color: var(--white-dim); }
+
+  /* ✅ FEATURE: Table WITHOUT borders */
+  table.fa-table-plain { width: 100%; max-width: 820px; border-collapse: collapse; margin: 0.6rem 0 1rem; font-size: 0.88rem; }
+  table.fa-table-plain th, table.fa-table-plain td { border: none; padding: 0.55rem 0.9rem 0.55rem 0; text-align: left; vertical-align: top; }
+  table.fa-table-plain th { color: var(--cyan-soft); font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  table.fa-table-plain td { color: var(--white-dim); }
+
+  /* ✅ FEATURE: Multimedia / frame wrapper (responsive 16:9 iframe) */
+  .fa-media { position: relative; width: 100%; max-width: 760px; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); margin: 0.6rem 0 0.8rem; }
+  .fa-media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .fa-caption { font-family: var(--font-mono); font-size: 0.72rem; color: var(--white-ghost); margin-bottom: 1.4rem; }
+
+  /* Image-map wrapper (keeps natural pixel size so map coords stay accurate) */
+  .fa-imgmap { overflow-x: auto; margin: 0.4rem 0 1.4rem; }
+  .fa-imgmap img { display: block; border-radius: 10px; border: 1px solid var(--card-border); }
+
+  .fa-figure { margin: 0.4rem 0 1.4rem; }
+  .fa-figure img { display: block; width: 100%; max-width: 640px; height: auto; border-radius: 10px; border: 1px solid var(--card-border); }
+  .fa-figure figcaption { font-family: var(--font-mono); font-size: 0.72rem; color: var(--white-ghost); margin-top: 0.5rem; }
+
+  /* Callout for parts the author must personalize */
+  .fa-callout { display: flex; gap: 0.7rem; background: rgba(234,179,8,0.06); border: 1px solid rgba(234,179,8,0.35); border-left-width: 3px; border-radius: 8px; padding: 0.9rem 1.1rem; max-width: 760px; margin: 0 0 1.3rem; }
+  .fa-callout .fa-callout-icon { color: #eab308; flex-shrink: 0; }
+  .fa-callout p { color: var(--white-dim); font-size: 0.82rem; line-height: 1.6; }
+
+  .fa-toplink { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; color: var(--white-ghost); text-decoration: none; margin-top: 0.5rem; transition: color 0.2s; }
+  .fa-toplink:hover { color: var(--cyan-glow); }
+
+  .fa-contact-links { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.2rem 0 2rem; }
+
+  /* ✅ FEATURE: Custom cursor (ported from index.html for a consistent feel) */
+  @media (hover: hover) and (pointer: fine) {
+    html, body, a, button, input, select, textarea, label, [role="button"] { cursor: none !important; }
+    .cursor-dot, .cursor-ring { position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate3d(-100px,-100px,0) translate(-50%,-50%); opacity: 0; transition: opacity 0.2s ease, width 0.18s ease, height 0.18s ease, border-color 0.18s ease, background 0.18s ease; }
+    .cursor-dot { width: 7px; height: 7px; background: var(--white-pure); box-shadow: 0 0 8px rgba(15,240,252,0.9); }
+    .cursor-ring { width: 34px; height: 34px; border: 1.5px solid var(--cyan-soft); background: rgba(15,240,252,0.04); }
+    .cursor-dot.is-visible, .cursor-ring.is-visible { opacity: 1; }
+    .cursor-ring.is-hovering { width: 52px; height: 52px; border-color: var(--cyan-glow); background: rgba(15,240,252,0.09); }
+    .cursor-dot.is-hovering { opacity: 0; }
+  }
+</style>
+</head>
+
+<!-- id="top" anchor is the target for the "back to top" links -->
+<body id="top">
+
+<!-- ✅ FEATURE: Navigation bar  |  ✅ FEATURE: Internal links (back to home-page sections) -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">KLOUDY<span>.</span>DEV</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="index.html#certifications">Certs</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="index.html#blog">Blog</a></li>
+    <li><a href="final-assessment.html">Assessment</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Hire Me</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ✅ FEATURE: Different-size headings — <h1> here, <h2> per section, <h3>/<h4> in subsections -->
+<header class="subpage-header">
+  <div class="hero-grid"></div>
+  <div class="subpage-header-inner">
+    <a href="index.html" class="subpage-back">← Back to home</a>
+    <p class="section-label">// module 4 · final assessment</p>
+    <h1 class="section-title">Final Assessment</h1>
+    <div class="section-line"></div>
+    <!-- ✅ FEATURE: Inline style (CSS type 3 of 3) -->
+    <p class="hero-desc" style="margin-left: 0; text-align: left; max-width: 720px;">
+      Module 4 explores how websites are actually built and where the craft is
+      heading — followed by my reflections on the course as a whole.
+    </p>
+  </div>
+</header>
+
+<!-- ✅ FEATURE: Target links within the same page (jump menu) + ✅ Unordered list -->
+<nav class="fa-toc" aria-label="On this page">
+  <h2>On this page</h2>
+  <ul>
+    <li><a href="#build">How websites are built</a></li>
+    <li><a href="#stack">HTML, CSS &amp; JavaScript</a></li>
+    <li><a href="#future">The future of the web</a></li>
+    <li><a href="#favorites">Favorite / least favorite</a></li>
+    <li><a href="#thoughts">Overview &amp; thoughts</a></li>
+    <li><a href="#feedback">Questions &amp; feedback</a></li>
+  </ul>
+</nav>
+
+<hr class="fa-rule"/>
+
+<!-- ═══════════════ MODULE 4a — HOW WEBSITES ARE BUILT ═══════════════ -->
+<section id="build">
+  <p class="section-label">// module 4 · a</p>
+  <h2 class="section-title">How Websites Are Built</h2>
+  <div class="section-line"></div>
+
+  <p class="fa-p">
+    A website is a set of files served over the internet. When you type an address,
+    your <strong>browser</strong> (the client) sends a request to a <strong>web
+    server</strong>, and the server responds with the files that make up the page.
+    The browser then reads those files and renders — draws — the page you see.
+  </p>
+
+  <!-- ✅ FEATURE: Images + ✅ ADA alt text (self-contained data-URI SVG, no extra files to upload) -->
+  <figure class="fa-figure">
+    <img alt="Diagram: a browser sends a GET request to a web server, and the server responds with HTML, CSS, and JavaScript files." src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NDAiIGhlaWdodD0iMjMwIiB2aWV3Qm94PSIwIDAgNjQwIDIzMCIgcm9sZT0iaW1nIj4KICA8cmVjdCB3aWR0aD0iNjQwIiBoZWlnaHQ9IjIzMCIgZmlsbD0iIzE0MUUzMCIvPgogIDxyZWN0IHg9IjEiIHk9IjEiIHdpZHRoPSI2MzgiIGhlaWdodD0iMjI4IiBmaWxsPSJub25lIiBzdHJva2U9IiMzNTU3N0QiIHN0cm9rZS1vcGFjaXR5PSIwLjUiLz4KICA8IS0tIGJyb3dzZXIgLS0+CiAgPHJlY3QgeD0iNDAiIHk9IjcwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjEwMCIgcng9IjgiIGZpbGw9IiMxYTJhNGEiIHN0cm9rZT0iIzBGRjBGQyIgc3Ryb2tlLW9wYWNpdHk9IjAuNiIvPgogIDxyZWN0IHg9IjQwIiB5PSI3MCIgd2lkdGg9IjE4MCIgaGVpZ2h0PSIyMiIgcng9IjgiIGZpbGw9IiMzNTU3N0QiIGZpbGwtb3BhY2l0eT0iMC40Ii8+CiAgPGNpcmNsZSBjeD0iNTQiIGN5PSI4MSIgcj0iNCIgZmlsbD0iIzBGRjBGQyIvPjxjaXJjbGUgY3g9IjY4IiBjeT0iODEiIHI9IjQiIGZpbGw9IiM3RUM4RTMiLz48Y2lyY2xlIGN4PSI4MiIgY3k9IjgxIiByPSI0IiBmaWxsPSIjNGE2ZDk2Ii8+CiAgPHRleHQgeD0iMTMwIiB5PSIxMzUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNFOEY0RjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJyb3dzZXI8L3RleHQ+CiAgPHRleHQgeD0iMTMwIiB5PSIxNTUiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM5YmJkZDQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPihjbGllbnQpPC90ZXh0PgogIDwhLS0gc2VydmVyIC0tPgogIDxyZWN0IHg9IjQyMCIgeT0iNzAiIHdpZHRoPSIxODAiIGhlaWdodD0iMTAwIiByeD0iOCIgZmlsbD0iIzFhMmE0YSIgc3Ryb2tlPSIjMEZGMEZDIiBzdHJva2Utb3BhY2l0eT0iMC42Ii8+CiAgPHJlY3QgeD0iNDQwIiB5PSI4OCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxMCIgcng9IjMiIGZpbGw9IiMzNTU3N0QiLz4KICA8cmVjdCB4PSI0NDAiIHk9IjEwNiIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxMCIgcng9IjMiIGZpbGw9IiMzNTU3N0QiLz4KICA8cmVjdCB4PSI0NDAiIHk9IjEyNCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxMCIgcng9IjMiIGZpbGw9IiMzNTU3N0QiLz4KICA8dGV4dCB4PSI1MTAiIHk9IjE1OCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxNiIgZmlsbD0iI0U4RjRGOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+V2ViIFNlcnZlcjwvdGV4dD4KICA8IS0tIHJlcXVlc3QgYXJyb3cgLS0+CiAgPGxpbmUgeDE9IjIzMCIgeTE9IjEwNSIgeDI9IjQxMCIgeTI9IjEwNSIgc3Ryb2tlPSIjN0VDOEUzIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cG9seWdvbiBwb2ludHM9IjQxMCwxMDUgMzk4LDEwMCAzOTgsMTEwIiBmaWxsPSIjN0VDOEUzIi8+CiAgPHRleHQgeD0iMzIwIiB5PSI5NyIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzdFQzhFMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+R0VUIC9wYWdlPC90ZXh0PgogIDwhLS0gcmVzcG9uc2UgYXJyb3cgLS0+CiAgPGxpbmUgeDE9IjQxMCIgeTE9IjE0MCIgeDI9IjIzMCIgeTI9IjE0MCIgc3Ryb2tlPSIjMEZGMEZDIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cG9seWdvbiBwb2ludHM9IjIzMCwxNDAgMjQyLDEzNSAyNDIsMTQ1IiBmaWxsPSIjMEZGMEZDIi8+CiAgPHRleHQgeD0iMzIwIiB5PSIxNjAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiMwRkYwRkMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkhUTUwgKyBDU1MgKyBKUzwvdGV4dD4KICA8dGV4dCB4PSIzMjAiIHk9IjIwNSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzRkNmU4NyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+cmVxdWVzdCAvIHJlc3BvbnNlIGN5Y2xlPC90ZXh0Pgo8L3N2Zz4K"/>
+    <figcaption>The request/response cycle: the browser asks, the server answers with files.</figcaption>
+  </figure>
+
+  <h3 class="fa-h3">The typical build, step by step</h3>
+  <!-- ✅ FEATURE: Ordered list -->
+  <ol class="fa-list">
+    <li><strong>Structure</strong> the content with HTML (headings, paragraphs, images, links).</li>
+    <li><strong>Style</strong> the appearance with CSS (colors, layout, spacing, fonts).</li>
+    <li><strong>Add behavior</strong> with JavaScript (menus, forms, interactivity).</li>
+    <li><strong>Test</strong> across browsers and screen sizes, and check accessibility.</li>
+    <li><strong>Publish</strong> by hosting the files on a web server — this site uses GitHub Pages.</li>
+  </ol>
+
+  <p class="fa-p">
+    Alongside these three core languages, developers often use tools like version
+    control (Git), build tools, frameworks, and hosting platforms — but every website,
+    no matter how large, still comes down to HTML, CSS, and JavaScript reaching the browser.
+  </p>
+  <a href="#top" class="fa-toplink">↑ Back to top</a>
+</section>
+
+<hr class="fa-rule"/>
+
+<!-- ═══════════════ MODULE 4b — HTML / CSS / JS ═══════════════ -->
+<section id="stack">
+  <p class="section-label">// module 4 · b</p>
+  <h2 class="section-title">HTML, CSS &amp; JavaScript</h2>
+  <div class="section-line"></div>
+
+  <p class="fa-p">
+    These three languages each handle one job. A common analogy: HTML is the skeleton,
+    CSS is the skin and clothing, and JavaScript is the muscles that make things move.
+    <em>Tip: the labels in the image below are clickable.</em>
+  </p>
+
+  <!-- ✅ FEATURE: Image map (clickable regions over one image) + ✅ ADA alt text -->
+  <div class="fa-imgmap">
+    <img width="660" height="120" usemap="#stackmap" alt="Three-part bar labeled HTML (structure), CSS (style), and JS (behavior). Each part links to its explanation below." src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgNjYwIDEyMCIgcm9sZT0iaW1nIj4KICA8cmVjdCB3aWR0aD0iNjYwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzE0MUUzMCIvPgogIDxyZWN0IHg9IjAiICAgeT0iMCIgd2lkdGg9IjIyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYTJhNGEiIHN0cm9rZT0iIzBGRjBGQyIgc3Ryb2tlLW9wYWNpdHk9IjAuNSIvPgogIDxyZWN0IHg9IjIyMCIgeT0iMCIgd2lkdGg9IjIyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxNjIzM2QiIHN0cm9rZT0iIzBGRjBGQyIgc3Ryb2tlLW9wYWNpdHk9IjAuNSIvPgogIDxyZWN0IHg9IjQ0MCIgeT0iMCIgd2lkdGg9IjIyMCIgaGVpZ2h0PSIxMjAiIGZpbGw9IiMxYTJhNGEiIHN0cm9rZT0iIzBGRjBGQyIgc3Ryb2tlLW9wYWNpdHk9IjAuNSIvPgogIDx0ZXh0IHg9IjExMCIgeT0iNTUiIGZvbnQtZmFtaWx5PSInT3JiaXRyb24nLG1vbm9zcGFjZSIgZm9udC1zaXplPSIyNiIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzBGRjBGQyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SFRNTDwvdGV4dD4KICA8dGV4dCB4PSIxMTAiIHk9IjgwIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOWJiZGQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5zdHJ1Y3R1cmU8L3RleHQ+CiAgPHRleHQgeD0iMzMwIiB5PSI1NSIgZm9udC1mYW1pbHk9IidPcmJpdHJvbicsbW9ub3NwYWNlIiBmb250LXNpemU9IjI2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjN0VDOEUzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DU1M8L3RleHQ+CiAgPHRleHQgeD0iMzMwIiB5PSI4MCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzliYmRkNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+c3R5bGU8L3RleHQ+CiAgPHRleHQgeD0iNTUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IidPcmJpdHJvbicsbW9ub3NwYWNlIiBmb250LXNpemU9IjI2IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMEZGMEZDIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5KUzwvdGV4dD4KICA8dGV4dCB4PSI1NTAiIHk9IjgwIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOWJiZGQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5iZWhhdmlvcjwvdGV4dD4KPC9zdmc+Cg=="/>
+    <map name="stackmap">
+      <area shape="rect" coords="0,0,220,120" href="#q-html" alt="Jump to the HTML explanation"/>
+      <area shape="rect" coords="220,0,440,120" href="#q-css" alt="Jump to the CSS explanation"/>
+      <area shape="rect" coords="440,0,660,120" href="#q-js" alt="Jump to the JavaScript explanation"/>
+    </map>
+  </div>
+
+  <h3 class="fa-h3" id="q-html">HTML — HyperText Markup Language</h3>
+  <p class="fa-p">HTML provides the <strong>structure and meaning</strong> of a page. Tags label content as headings, paragraphs, lists, images, links, and so on. Without HTML there is no content for the browser to show.</p>
+
+  <h3 class="fa-h3" id="q-css">CSS — Cascading Style Sheets</h3>
+  <p class="fa-p">CSS controls <strong>presentation</strong>: colors, fonts, spacing, and layout. The same HTML can look completely different depending on the CSS — that separation lets you restyle a whole site without touching its content.</p>
+
+  <h3 class="fa-h3" id="q-js">JavaScript</h3>
+  <p class="fa-p">JavaScript adds <strong>behavior and interactivity</strong>: responding to clicks, validating forms, loading data, animating elements. It is the only one of the three that is a full programming language.</p>
+
+  <!-- ✅ FEATURE: Table WITH borders + caption -->
+  <table class="fa-table">
+    <caption>The three core web languages at a glance</caption>
+    <thead>
+      <tr><th>Language</th><th>Job</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>HTML</td><td>Structure &amp; content</td><td><code>&lt;h1&gt;Hello&lt;/h1&gt;</code></td></tr>
+      <tr><td>CSS</td><td>Style &amp; layout</td><td><code>h1 { color: cyan; }</code></td></tr>
+      <tr><td>JavaScript</td><td>Behavior &amp; interactivity</td><td><code>button.onclick = run;</code></td></tr>
+    </tbody>
+  </table>
+  <a href="#top" class="fa-toplink">↑ Back to top</a>
+</section>
+
+<hr class="fa-rule"/>
+
+<!-- ═══════════════ MODULE 4c — THE FUTURE ═══════════════ -->
+<section id="future">
+  <p class="section-label">// module 4 · c</p>
+  <h2 class="section-title">The Future of Web Development</h2>
+  <div class="section-line"></div>
+
+  <p class="fa-p">
+    The core languages aren't being replaced — they're being extended. Rather than brand-new
+    languages, most change arrives as new <strong>standards and tools</strong> layered on top
+    of HTML, CSS, and JavaScript. A few current directions:
+  </p>
+
+  <!-- ✅ FEATURE: Unordered list + ✅ External links -->
+  <ul class="fa-list">
+    <li class="fa-li"><strong>Modern CSS</strong> — container queries and native nesting reduce how much JavaScript layout needs. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank" rel="noopener noreferrer">MDN CSS docs ↗</a>.</li>
+    <li class="fa-li"><strong>WebAssembly</strong> — lets languages like Rust and C++ run in the browser at near-native speed for demanding apps.</li>
+    <li class="fa-li"><strong>TypeScript</strong> — JavaScript with type checking, now standard on most large projects.</li>
+    <li class="fa-li"><strong>Component frameworks</strong> — React, Vue, and Svelte structure big interfaces into reusable pieces.</li>
+    <li class="fa-li"><strong>AI-assisted development</strong> — tools that help write, review, and explain code are reshaping the day-to-day workflow.</li>
+    <li class="fa-li"><strong>Progressive Web Apps</strong> — websites that install and work offline like native apps.</li>
+  </ul>
+
+  <p class="fa-p">
+    The standards themselves are stewarded openly by the
+    <a href="https://www.w3.org/" target="_blank" rel="noopener noreferrer">W3C ↗</a> and the
+    <a href="https://html.spec.whatwg.org/" target="_blank" rel="noopener noreferrer">WHATWG HTML Living Standard ↗</a>,
+    so the web stays backward-compatible while it grows.
+  </p>
+
+  <h3 class="fa-h3">Watch: how a web page is built</h3>
+  <!-- ✅ FEATURE: Multimedia content + ✅ Frames (iframe) + ✅ ADA (title attribute) -->
+  <div class="fa-media">
+    <iframe src="https://www.youtube.com/embed/916GWv2Qs08" title="freeCodeCamp — HTML crash course for beginners" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  <p class="fa-caption">Embedded via an &lt;iframe&gt; — freeCodeCamp's beginner HTML crash course.</p>
+  <a href="#top" class="fa-toplink">↑ Back to top</a>
+</section>
+
+<hr class="fa-rule"/>
+
+<!-- ═══════════════ MODULE 4d — FAVORITE / LEAST FAVORITE ═══════════════ -->
+<section id="favorites">
+  <p class="section-label">// module 4 · d</p>
+  <h2 class="section-title">Favorite &amp; Least Favorite Topics</h2>
+  <div class="section-line"></div>
+
+  <!-- ⚠️ PERSONALIZE: this must be YOUR real opinion for the grade. Edit the table below. -->
+  <div class="fa-callout">
+    <span class="fa-callout-icon" aria-hidden="true">✎</span>
+    <p><strong>Replace this with your own answers.</strong> The text below is an example layout — swap in the topics you actually liked and disliked, and why. Your instructor is looking for your genuine reflection here.</p>
+  </div>
+
+  <!-- ✅ FEATURE: Table WITHOUT borders -->
+  <table class="fa-table-plain">
+    <tbody>
+      <tr><th>Favorite topic</th><td><em>[e.g., styling with CSS]</em> — [why you enjoyed it].</td></tr>
+      <tr><th>Least favorite</th><td><em>[e.g., debugging layout issues]</em> — [why it was frustrating].</td></tr>
+      <tr><th>Takeaway</th><td>[one sentence on what you'd like to get better at next].</td></tr>
+    </tbody>
+  </table>
+  <a href="#top" class="fa-toplink">↑ Back to top</a>
+</section>
+
+<hr class="fa-rule"/>
+
+<!-- ═══════════════ OVERVIEW & THOUGHTS ═══════════════ -->
+<section id="thoughts">
+  <p class="section-label">// overview &amp; thoughts</p>
+  <h2 class="section-title">Three Things I Learned</h2>
+  <div class="section-line"></div>
+
+  <!-- ⚠️ PERSONALIZE: these must be YOUR real takeaways. Edit each item. -->
+  <div class="fa-callout">
+    <span class="fa-callout-icon" aria-hidden="true">✎</span>
+    <p><strong>Make these your own.</strong> Below is a scaffold with example takeaways. Replace each with something you actually learned and how you'll use it in personal, professional, or academic life.</p>
+  </div>
+
+  <!-- ✅ FEATURE: Ordered list -->
+  <ol class="fa-list">
+    <li><strong>How the web works end to end</strong> — <em>[example]</em> understanding the request/response cycle helps me troubleshoot pages. <em>I'll use this to…</em></li>
+    <li><strong>Separating structure, style, and behavior</strong> — <em>[example]</em> keeping HTML, CSS, and JS in their lanes makes projects easier to maintain. <em>I'll use this to…</em></li>
+    <li><strong>Publishing with GitHub Pages</strong> — <em>[example]</em> I can now put a live site online for free. <em>I'll use this to…</em></li>
+  </ol>
+  <a href="#top" class="fa-toplink">↑ Back to top</a>
+</section>
+
+<hr class="fa-rule"/>
+
+<!-- ═══════════════ FEEDBACK / CONTACT ═══════════════ -->
+<section id="feedback">
+  <p class="section-label">// let's connect</p>
+  <h2 class="section-title">Questions &amp; Feedback</h2>
+  <div class="section-line"></div>
+
+  <p class="fa-p">Have a question about this project? Reach out or leave a note below.</p>
+
+  <div class="fa-contact-links">
+    <!-- ✅ FEATURE: Email contact link with a subject line -->
+    <a class="contact-link" href="mailto:info.kloudytre@gmail.com?subject=Final%20Assessment%20Feedback&amp;body=Hi%20Jontre%2C">
+      <span class="contact-link-icon" aria-hidden="true">✉️</span> Email me
+    </a>
+    <!-- ✅ FEATURE: External links -->
+    <a class="contact-link" href="https://github.com/kloudytre-git" target="_blank" rel="noopener noreferrer">
+      <span class="contact-link-icon" aria-hidden="true">⌥</span> GitHub ↗
+    </a>
+    <a class="contact-link" href="https://linkedin.com/in/jontregregory" target="_blank" rel="noopener noreferrer">
+      <span class="contact-link-icon" aria-hidden="true">in</span> LinkedIn ↗
+    </a>
+  </div>
+
+  <!-- ✅ FEATURE: Form (+ ADA: every field has a <label>) -->
+  <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.6rem; max-width: 520px; backdrop-filter: blur(8px);">
+    <h3 class="fa-h4" style="margin-top: 0;">Send a quick note</h3>
+    <div class="form-row">
+      <label for="fname" style="display:block; font-size:0.72rem; color:var(--cyan-soft); font-family:var(--font-mono); margin-bottom:0.35rem;">Name</label>
+      <input id="fname" type="text" placeholder="Your name"/>
+    </div>
+    <div class="form-row">
+      <label for="femail" style="display:block; font-size:0.72rem; color:var(--cyan-soft); font-family:var(--font-mono); margin-bottom:0.35rem;">Email</label>
+      <input id="femail" type="email" placeholder="you@example.com"/>
+    </div>
+    <div class="form-row">
+      <label for="fmsg" style="display:block; font-size:0.72rem; color:var(--cyan-soft); font-family:var(--font-mono); margin-bottom:0.35rem;">Message</label>
+      <textarea id="fmsg" rows="4" placeholder="What's on your mind?"></textarea>
+    </div>
+    <button class="btn-submit" id="faSubmit" type="button">Send message</button>
+  </div>
+  <a href="#top" class="fa-toplink" style="margin-top:1rem;">↑ Back to top</a>
+</section>
+
+<!-- ✅ FEATURE: Footer -->
+<footer>
+  <div class="footer-inner">
+    <span class="logo">KLOUDY.DEV</span>
+    <p>© 2026 Jontre Gregory · Built with purpose, secured by design</p>
+    <p>DevOps · Cloud · Security</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✓ Thanks — your note was captured!</div>
+
+<!-- Custom cursor elements -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<script>
+/* Mobile nav toggle (matches home page) */
+(function () {
+  var nav = document.getElementById('navbar');
+  var hamburger = document.getElementById('hamburger');
+  if (hamburger && nav) hamburger.addEventListener('click', function () { nav.classList.toggle('mobile-open'); });
+})();
+
+/* Form handler — static sites can't email on their own, so we confirm with the
+   existing toast. To actually receive submissions, point this at a service like
+   Formspree (https://formspree.io) by giving the form an action + method. */
+(function () {
+  var btn = document.getElementById('faSubmit');
+  var toast = document.getElementById('toast');
+  if (!btn || !toast) return;
+  btn.addEventListener('click', function () {
+    toast.classList.add('show');
+    setTimeout(function () { toast.classList.remove('show'); }, 3000);
+    document.getElementById('fname').value = '';
+    document.getElementById('femail').value = '';
+    document.getElementById('fmsg').value = '';
+  });
+})();
+
+/* Custom cursor (ported from index.html) */
+(function () {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  var dot = document.getElementById('cursorDot');
+  var ring = document.getElementById('cursorRing');
+  var mouseX = innerWidth / 2, mouseY = innerHeight / 2, ringX = mouseX, ringY = mouseY, hasMoved = false;
+  document.addEventListener('mousemove', function (e) {
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.transform = 'translate3d(' + mouseX + 'px,' + mouseY + 'px,0) translate(-50%,-50%)';
+    if (!hasMoved) { hasMoved = true; dot.classList.add('is-visible'); ring.classList.add('is-visible'); ringX = mouseX; ringY = mouseY; }
+  });
+  document.documentElement.addEventListener('mouseleave', function () { dot.classList.remove('is-visible'); ring.classList.remove('is-visible'); });
+  document.documentElement.addEventListener('mouseenter', function () { if (hasMoved) { dot.classList.add('is-visible'); ring.classList.add('is-visible'); } });
+  var EASE = 0.2;
+  (function tick() { ringX += (mouseX - ringX) * EASE; ringY += (mouseY - ringY) * EASE; ring.style.transform = 'translate3d(' + ringX + 'px,' + ringY + 'px,0) translate(-50%,-50%)'; requestAnimationFrame(tick); })();
+  var HOVER = 'a, button, input, select, textarea, label, [role="button"], [onclick], area';
+  document.addEventListener('mouseover', function (e) { if (e.target.closest(HOVER)) { ring.classList.add('is-hovering'); dot.classList.add('is-hovering'); } });
+  document.addEventListener('mouseout', function (e) { if (e.target.closest(HOVER) && !(e.relatedTarget && e.relatedTarget.closest(HOVER))) { ring.classList.remove('is-hovering'); dot.classList.remove('is-hovering'); } });
+})();
+</script>
+
+</body>
+</html>
